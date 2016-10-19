@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Nancy.Bootstrapper;
 using NLog;
 using RawRabbit;
+using RawRabbit.Configuration;
 using RawRabbit.vNext;
 using System.Reflection;
 using Nancy;
@@ -54,7 +55,9 @@ namespace Coolector.Services.Users.Framework
                 builder.RegisterType<Auth0RestClient>().As<IAuth0RestClient>();
                 builder.RegisterType<UserRepository>().As<IUserRepository>();
                 builder.RegisterType<UserService>().As<IUserService>();
-                builder.RegisterInstance(BusClientFactory.CreateDefault()).As<IBusClient>();
+                var rawRabbitConfiguration = _configuration.GetSettings<RawRabbitConfiguration>();
+                builder.RegisterInstance(rawRabbitConfiguration).SingleInstance();
+                builder.RegisterInstance(BusClientFactory.CreateDefault(rawRabbitConfiguration)).As<IBusClient>();
 
                 var coreAssembly = typeof(Startup).GetTypeInfo().Assembly;
                 builder.RegisterAssemblyTypes(coreAssembly).AsClosedTypesOf(typeof(ICommandHandler<>));
