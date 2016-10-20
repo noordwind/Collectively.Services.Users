@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Coolector.Common.Types;
-using Coolector.Services.Domain;
+using Coolector.Common.Domain;
 using Coolector.Services.Users.Domain;
 using Coolector.Services.Users.Queries;
 using MongoDB.Driver;
-using Coolector.Services.Mongo;
+using Coolector.Common.Mongo;
 using Coolector.Services.Users.Repositories.Queries;
 
 namespace Coolector.Services.Users.Repositories

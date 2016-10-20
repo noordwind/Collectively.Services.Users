@@ -1,6 +1,6 @@
 ﻿using System;
 using Coolector.Common.Extensions;
-using Coolector.Services.Domain;
+using Coolector.Common.Domain;
 
 namespace Coolector.Services.Users.Domain
 {

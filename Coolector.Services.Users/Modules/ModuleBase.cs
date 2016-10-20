@@ -1,4 +1,4 @@
-﻿using Coolector.Services.Nancy;
+﻿using Coolector.Common.Nancy;
 
 namespace Coolector.Services.Users.Modules
 {

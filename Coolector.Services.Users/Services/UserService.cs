@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Coolector.Common.Extensions;
 using Coolector.Common.Types;
-using Coolector.Services.Domain;
+using Coolector.Common.Domain;
 using Coolector.Services.Users.Domain;
 using Coolector.Services.Users.Queries;
 using Coolector.Services.Users.Repositories;

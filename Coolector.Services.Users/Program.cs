@@ -1,5 +1,5 @@
 ﻿using Coolector.Common.Commands.Users;
-using Coolector.Services.Host;
+using Coolector.Common.Host;
 using Coolector.Services.Users.Framework;
 
 namespace Coolector.Services.Users

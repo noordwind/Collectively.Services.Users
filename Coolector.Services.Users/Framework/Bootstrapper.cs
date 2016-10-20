@@ -2,10 +2,8 @@
 using System.Globalization;
 using Autofac;
 using Coolector.Common.Commands;
-using Coolector.Services.Encryption;
-using Coolector.Services.Extensions;
-using Coolector.Services.Mongo;
-using Coolector.Services.Nancy;
+using Coolector.Common.Mongo;
+using Coolector.Common.Nancy;
 using Coolector.Services.Users.Auth0;
 using Coolector.Services.Users.Repositories;
 using Coolector.Services.Users.Services;
@@ -16,8 +14,10 @@ using RawRabbit;
 using RawRabbit.Configuration;
 using RawRabbit.vNext;
 using System.Reflection;
+using Coolector.Common.Encryption;
 using Nancy;
 using Nancy.Configuration;
+using Coolector.Common.Extensions;
 
 namespace Coolector.Services.Users.Framework
 {
