@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using System.Linq;
 
-namespace Coolector.Tests.EndToEnd.Framework
+namespace Coolector.Services.Users.Tests.EndToEnd.Framework
 {
     public class CustomHttpClient : IHttpClient
     {

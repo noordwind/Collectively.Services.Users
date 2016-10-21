@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Coolector.Services.Users.Domain;
-using Coolector.Tests.EndToEnd.Framework;
+using Coolector.Services.Users.Tests.EndToEnd.Framework;
 using Machine.Specifications;
 
-namespace Coolector.Tests.EndToEnd.Specs
+namespace Coolector.Services.Users.Tests.EndToEnd.Specs
 {
     public abstract class UserModule_specs
     {

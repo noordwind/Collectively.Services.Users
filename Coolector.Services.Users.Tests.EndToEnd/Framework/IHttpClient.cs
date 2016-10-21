@@ -3,7 +3,7 @@ using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Coolector.Tests.EndToEnd.Framework
+namespace Coolector.Services.Users.Tests.EndToEnd.Framework
 {
     public interface IHttpClient
     {
