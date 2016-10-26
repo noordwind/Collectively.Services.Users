@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using Autofac;
 using Coolector.Common.Commands;
@@ -18,6 +19,8 @@ using Coolector.Common.Encryption;
 using Nancy;
 using Nancy.Configuration;
 using Coolector.Common.Extensions;
+using Polly;
+using RabbitMQ.Client.Exceptions;
 
 namespace Coolector.Services.Users.Framework
 {
@@ -45,6 +48,16 @@ namespace Coolector.Services.Users.Framework
         protected override void ConfigureApplicationContainer(ILifetimeScope container)
         {
             base.ConfigureApplicationContainer(container);
+
+            var rmqRetryPolicy = Policy
+                .Handle<ConnectFailureException>()
+                .WaitAndRetry(5, retryAttempt =>
+                    TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                    (exception, timeSpan, retryCount, context) => {
+                        Logger.Error(exception, $"Cannot connect to RabbitMQ. retryCount:{retryCount}, duration:{timeSpan}");
+                    }
+                );
+
             container.Update(builder =>
             {
                 builder.RegisterInstance(_configuration.GetSettings<MongoDbSettings>());
@@ -57,7 +70,10 @@ namespace Coolector.Services.Users.Framework
                 builder.RegisterType<UserService>().As<IUserService>();
                 var rawRabbitConfiguration = _configuration.GetSettings<RawRabbitConfiguration>();
                 builder.RegisterInstance(rawRabbitConfiguration).SingleInstance();
-                builder.RegisterInstance(BusClientFactory.CreateDefault(rawRabbitConfiguration)).As<IBusClient>();
+                rmqRetryPolicy.Execute(() => builder
+                        .RegisterInstance(BusClientFactory.CreateDefault(rawRabbitConfiguration))
+                        .As<IBusClient>()
+                );
 
                 var coreAssembly = typeof(Startup).GetTypeInfo().Assembly;
                 builder.RegisterAssemblyTypes(coreAssembly).AsClosedTypesOf(typeof(ICommandHandler<>));
