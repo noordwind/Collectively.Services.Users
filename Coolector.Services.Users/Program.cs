@@ -11,7 +11,7 @@ namespace Coolector.Services.Users
             WebServiceHost
                 .Create<Startup>(port: 10001)
                 .UseAutofac(Bootstrapper.LifetimeScope)
-                .UseRabbitMq()
+                .UseRabbitMq(queueName: typeof(Program).Namespace)
                 .SubscribeToCommand<SignInUser>()
                 .SubscribeToCommand<ChangeUserName>()
                 .SubscribeToCommand<ChangeAvatar>()
