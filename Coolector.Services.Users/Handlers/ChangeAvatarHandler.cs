@@ -21,7 +21,7 @@ namespace Coolector.Services.Users.Handlers
         public async Task HandleAsync(ChangeAvatar command)
         {
             await _userService.ChangeAvatarAsync(command.UserId, command.PictureUrl);
-            await _bus.PublishAsync(new AvatarChanged(command.UserId, command.PictureUrl));
+            await _bus.PublishAsync(new AvatarChanged(command.Request.Id, command.UserId, command.PictureUrl));
         }
     }
 }

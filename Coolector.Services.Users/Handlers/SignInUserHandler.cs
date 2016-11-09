@@ -35,13 +35,13 @@ namespace Coolector.Services.Users.Handlers
                     name: auth0User.Name, pictureUrl: auth0User.Picture);
                 user = await _userService.GetAsync(auth0User.UserId);
                 userId = user.Value.UserId;
-                await _bus.PublishAsync(new NewUserSignedIn(userId, user.Value.Email, user.Value.Name,
+                await _bus.PublishAsync(new NewUserSignedIn(command.Request.Id, userId, user.Value.Email, user.Value.Name,
                     auth0User.Picture, user.Value.Role, user.Value.State, user.Value.CreatedAt));
 
                 return;
             }
             userId = user.Value.UserId;
-            await _bus.PublishAsync(new UserSignedIn(userId, user.Value.Email, user.Value.Name));
+            await _bus.PublishAsync(new UserSignedIn(command.Request.Id, userId, user.Value.Email, user.Value.Name));
         }
     }
 }
