@@ -67,9 +67,11 @@ namespace Coolector.Services.Users.Framework
                 builder.RegisterInstance(_configuration.GetSettings<Auth0Settings>());
                 builder.RegisterModule<MongoDbModule>();
                 builder.RegisterType<MongoDbInitializer>().As<IDatabaseInitializer>();
-                builder.RegisterType<Encrypter>().As<IEncrypter>();
+                builder.RegisterType<Encrypter>().As<IEncrypter>().SingleInstance();
                 builder.RegisterType<Auth0RestClient>().As<IAuth0RestClient>();
                 builder.RegisterType<UserRepository>().As<IUserRepository>();
+                builder.RegisterType<UserSessionRepository>().As<IUserSessionRepository>();
+                builder.RegisterType<AuthenticationService>().As<IAuthenticationService>();
                 builder.RegisterType<UserService>().As<IUserService>();
                 var rawRabbitConfiguration = _configuration.GetSettings<RawRabbitConfiguration>();
                 builder.RegisterInstance(rawRabbitConfiguration).SingleInstance();

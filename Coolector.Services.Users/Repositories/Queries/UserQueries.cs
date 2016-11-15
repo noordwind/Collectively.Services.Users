@@ -21,12 +21,14 @@ namespace Coolector.Services.Users.Repositories.Queries
             return await users.AsQueryable().FirstOrDefaultAsync(x => x.UserId == userId);
         }
 
-        public static async Task<User> GetByEmailAsync(this IMongoCollection<User> users, string email)
+        public static async Task<User> GetByEmailAsync(this IMongoCollection<User> users, string email, string provider)
         {
             if (email.Empty())
                 return null;
+            if (provider.Empty())
+                return null;
 
-            return await users.AsQueryable().FirstOrDefaultAsync(x => x.Email == email);
+            return await users.AsQueryable().FirstOrDefaultAsync(x => x.Email == email && x.Provider == provider);
         }
 
         public static async Task<User> GetByNameAsync(this IMongoCollection<User> users, string name)

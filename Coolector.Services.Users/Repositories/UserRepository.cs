@@ -21,8 +21,8 @@ namespace Coolector.Services.Users.Repositories
         public async Task<Maybe<User>> GetByUserIdAsync(string userId)
             => await _database.Users().GetByUserIdAsync(userId);
 
-        public async Task<Maybe<User>> GetByEmailAsync(string email)
-            => await _database.Users().GetByEmailAsync(email);
+        public async Task<Maybe<User>> GetByEmailAsync(string email, string provider)
+            => await _database.Users().GetByEmailAsync(email, provider);
 
         public async Task<Maybe<User>> GetByNameAsync(string name)
             => await _database.Users().GetByNameAsync(name);

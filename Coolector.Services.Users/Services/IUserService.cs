@@ -9,9 +9,12 @@ namespace Coolector.Services.Users.Services
     {
         Task<Maybe<User>> GetAsync(string userId);
         Task<Maybe<User>> GetByNameAsync(string name);
+        Task<Maybe<User>> GetByEmailAsync(string email, string provider);
         Task<Maybe<PagedResult<User>>> BrowseAsync(BrowseUsers query);
 
-        Task CreateAsync(string userId, string email, string role, bool activate = true, string pictureUrl = null,
+        Task SignUpAsync(string userId, string email, string role,
+            string provider, string password = null,
+            bool activate = true, string pictureUrl = null,
             string name = null);
 
         Task ChangeNameAsync(string userId, string name);

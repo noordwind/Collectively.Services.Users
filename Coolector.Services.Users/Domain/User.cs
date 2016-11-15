@@ -1,6 +1,7 @@
 ﻿using System;
 using Coolector.Common.Extensions;
 using Coolector.Common.Domain;
+using Coolector.Common.Encryption;
 
 namespace Coolector.Services.Users.Domain
 {
@@ -9,6 +10,9 @@ namespace Coolector.Services.Users.Domain
         public string UserId { get; protected set; }
         public string Email { get; protected set; }
         public string Name { get; protected set; }
+        public string Password { get; protected set; }
+        public string Salt { get; protected set; }
+        public string Provider { get; protected set; }
         public string PictureUrl { get; protected set; }
         public string Role { get; protected set; }
         public string State { get; protected set; }
@@ -19,10 +23,11 @@ namespace Coolector.Services.Users.Domain
         {
         }
 
-        public User(string userId, string email, string role, string pictureUrl = null)
+        public User(string userId, string email, string role, string provider, string pictureUrl = null)
         {
             SetUserId(userId);
             SetEmail(email);
+            Provider = provider;
             Role = role;
             PictureUrl = pictureUrl;
             State = States.Inactive;
@@ -105,6 +110,28 @@ namespace Coolector.Services.Users.Domain
         public void SetAvatar(string pictureUrl)
         {
             PictureUrl = pictureUrl;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void SetPassword(string password, IEncrypter encrypter)
+        {
+            if(password.Empty())
+                throw new DomainException("Password can not be empty.");
+
+            var salt = encrypter.GetSalt(password);
+            var hash = encrypter.GetHash(password, salt);
+
+            Password = hash;
+            Salt = salt;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public bool ValidatePassword(string password, IEncrypter encrypter)
+        {
+            var hashedPassword = encrypter.GetHash(password, Salt);
+            var areEqual = Password.Equals(hashedPassword);
+
+            return areEqual;
         }
     }
 }
