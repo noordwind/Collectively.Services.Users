@@ -7,6 +7,7 @@ namespace Coolector.Services.Users.Repositories
 {
     public interface IUserRepository
     {
+        Task<bool> ExistsAsync(string name); 
         Task<Maybe<User>> GetByUserIdAsync(string userId);
         Task<Maybe<User>> GetByEmailAsync(string email, string provider);
         Task<Maybe<User>> GetByNameAsync(string name);

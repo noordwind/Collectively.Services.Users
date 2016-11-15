@@ -16,6 +16,9 @@ namespace Coolector.Services.Users.Modules
 
             Get("{name}/account", async args => await Fetch<GetUserByName, User>
                 (async x => await userService.GetByNameAsync(x.Name)).HandleAsync());
+
+            Get("{name}/available", async args => await Fetch<GetNameAvailability, dynamic>
+                (async x => await userService.IsNameAvailableAsync(x.Name)).HandleAsync());
         }
     }
 }

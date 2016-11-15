@@ -18,6 +18,9 @@ namespace Coolector.Services.Users.Repositories
             _database = database;
         }
 
+        public async Task<bool> ExistsAsync(string name)
+            => await _database.Users().ExistsAsync(name);
+
         public async Task<Maybe<User>> GetByUserIdAsync(string userId)
             => await _database.Users().GetByUserIdAsync(userId);
 

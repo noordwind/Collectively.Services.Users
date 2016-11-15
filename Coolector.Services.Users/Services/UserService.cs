@@ -20,6 +20,9 @@ namespace Coolector.Services.Users.Services
             _encrypter = encrypter;
         }
 
+        public async Task<bool> IsNameAvailableAsync(string name)
+            => await _userRepository.ExistsAsync(name) == false;
+
         public async Task<Maybe<User>> GetAsync(string userId)
             => await _userRepository.GetByUserIdAsync(userId);
 

@@ -7,6 +7,7 @@ namespace Coolector.Services.Users.Services
 {
     public interface IUserService
     {
+        Task<bool> IsNameAvailableAsync(string name);
         Task<Maybe<User>> GetAsync(string userId);
         Task<Maybe<User>> GetByNameAsync(string name);
         Task<Maybe<User>> GetByEmailAsync(string email, string provider);
