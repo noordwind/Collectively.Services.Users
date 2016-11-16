@@ -35,6 +35,7 @@ namespace Coolector.Services.Users.Domain
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
             UserId = userId;
+            Name = $"user-{Id:N}";
         }
 
         public void SetUserId(string userId)
@@ -85,6 +86,7 @@ namespace Coolector.Services.Users.Domain
                 throw new ArgumentException("User name doesn't meet the required criteria.", nameof(name));
             
             Name = name.ToLowerInvariant();
+            State = States.Inactive;
             UpdatedAt = DateTime.UtcNow;
         }
 
