@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using Coolector.Common.Extensions;
 using Coolector.Common.Domain;
 
@@ -64,13 +65,20 @@ namespace Coolector.Services.Users.Domain
 
         public void SetName(string name)
         {
+            const string nameRegex = "^(?![_.-])(?!.*[_.-]{2})[a-zA-Z0-9._.-]+(?<![_.-])$";
+            if (State != States.Incomplete)
+                throw new ServiceException($"User name has been already set: {Name}");
             if (name.Empty())
                 throw new ArgumentException("User name can not be empty.", nameof(name));
-            if (name.Length > 50)
-                throw new ArgumentException("User name is too long.", nameof(name));
             if (Name.EqualsCaseInvariant(name))
                 return;
-
+            if (name.Length < 2)
+                throw new ArgumentException("User name is too short.", nameof(name));
+            if (name.Length > 50)
+                throw new ArgumentException("User name is too long.", nameof(name));
+            if (Regex.IsMatch(name, nameRegex) == false)
+                throw new ArgumentException("User name doesn't meet the required criteria.", nameof(name));
+            
             Name = name.ToLowerInvariant();
             UpdatedAt = DateTime.UtcNow;
         }
