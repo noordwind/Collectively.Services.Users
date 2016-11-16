@@ -47,6 +47,10 @@ namespace Coolector.Services.Users.Services
             if (user.HasValue)
                 throw new ServiceException($"User with email: {email} already exists!");
 
+            user = await _userRepository.GetByNameAsync(name);
+            if (user.HasValue)
+                throw new ServiceException($"User with name: {name} already exists!");
+
             user = new User(userId, email, role, provider, pictureUrl);
             if(provider == Providers.Coolector && password.Empty())
                 throw new ServiceException($"Password can not be empty!");
