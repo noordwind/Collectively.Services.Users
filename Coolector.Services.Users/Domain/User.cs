@@ -71,8 +71,8 @@ namespace Coolector.Services.Users.Domain
         public void SetName(string name)
         {
             const string nameRegex = "^(?![_.-])(?!.*[_.-]{2})[a-zA-Z0-9._.-]+(?<![_.-])$";
-            if (State != States.Incomplete)
-                throw new ServiceException($"User name has been already set: {Name}");
+            if (State != States.Inactive || State != States.Incomplete)
+                throw new DomainException($"User name has been already set: {Name}");
             if (name.Empty())
                 throw new ArgumentException("User name can not be empty.", nameof(name));
             if (Name.EqualsCaseInvariant(name))
