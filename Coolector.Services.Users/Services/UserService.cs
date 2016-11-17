@@ -57,8 +57,10 @@ namespace Coolector.Services.Users.Services
 
             if(!password.Empty())
                 user.Value.SetPassword(password, _encrypter);
-            
-            user.Value.SetName(name.Empty() ? $"user-{user.Value.Id:N}" : name);
+
+            if (name.NotEmpty())
+                user.Value.SetName(name);
+
             if (activate)
                 user.Value.Activate();
 
