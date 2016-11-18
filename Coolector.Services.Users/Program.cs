@@ -1,6 +1,8 @@
-﻿using Coolector.Common.Commands.Users;
+﻿using Coolector.Common.Commands.Facebook;
+using Coolector.Common.Commands.Users;
 using Coolector.Common.Host;
 using Coolector.Services.Users.Framework;
+using Coolector.Services.Users.Handlers;
 
 namespace Coolector.Services.Users
 {
@@ -17,6 +19,7 @@ namespace Coolector.Services.Users
                 .SubscribeToCommand<SignOut>()
                 .SubscribeToCommand<ChangeUserName>()
                 .SubscribeToCommand<ChangeAvatar>()
+                .SubscribeToCommand<PostMessageOnFacebookWall>()
                 .Build()
                 .Run();
         }

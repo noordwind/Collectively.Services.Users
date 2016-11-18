@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Coolector.Common.Extensions;
+﻿using System.Threading.Tasks;
 using Coolector.Common.Types;
 using Coolector.Services.Users.Domain;
 using Coolector.Services.Users.Settings;
@@ -22,7 +20,7 @@ namespace Coolector.Services.Users.Services
         {
             var user = await _facebookClient.GetAsync<dynamic>(
                 "me?fields=id,name,email,first_name,last_name,age_range,birthday,gender,locale", accessToken);
-            if(user == null)
+            if (user == null)
                 return new Maybe<FacebookUser>();
 
             var facebookUser = new FacebookUser
@@ -55,6 +53,6 @@ namespace Coolector.Services.Users.Services
         }
 
         public async Task PostOnWallAsync(string accessToken, string message)
-          =>  await _facebookClient.PostAsync("me/feed", new {message}, accessToken);
+            => await _facebookClient.PostAsync("me/feed", accessToken, new {message});
     }
 }

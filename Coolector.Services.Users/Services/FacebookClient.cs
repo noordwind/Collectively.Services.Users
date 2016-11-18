@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -28,9 +29,17 @@ namespace Coolector.Services.Users.Services
             return JsonConvert.DeserializeObject<T>(result);
         }
 
-        public async Task PostAsync(string endpoint, dynamic data, string accessToken)
+        public async Task PostAsync(string endpoint, string accessToken, object data)
         {
-            var response = await _httpClient.PostAsync($"{endpoint}&access_token={accessToken}", data);
+            var payload = GetJsonContent(data);
+            var response = await _httpClient.PostAsync($"{endpoint}&access_token={accessToken}", payload);
+        }
+
+        private static StringContent GetJsonContent(object data)
+        {
+            var json = JsonConvert.SerializeObject(data);
+
+            return new StringContent(json, Encoding.UTF8, "application/json");
         }
     }
 }
