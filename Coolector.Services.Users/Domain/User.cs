@@ -92,7 +92,6 @@ namespace Coolector.Services.Users.Domain
                 throw new ArgumentException("User name doesn't meet the required criteria.", nameof(name));
 
             Name = name.ToLowerInvariant();
-            State = States.Inactive;
             UpdatedAt = DateTime.UtcNow;
         }
 

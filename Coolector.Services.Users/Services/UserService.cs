@@ -79,6 +79,7 @@ namespace Coolector.Services.Users.Services
                 throw new ServiceException($"User with id {userId} has not been found.");
 
             user.Value.SetName(name);
+            user.Value.Activate();
             await _userRepository.UpdateAsync(user.Value);
         }
 

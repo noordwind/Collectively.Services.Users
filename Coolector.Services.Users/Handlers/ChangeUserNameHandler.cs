@@ -21,7 +21,8 @@ namespace Coolector.Services.Users.Handlers
         public async Task HandleAsync(ChangeUserName command)
         {
             await _userService.ChangeNameAsync(command.UserId, command.Name);
-            await _bus.PublishAsync(new UserNameChanged(command.Request.Id, command.UserId, command.Name));
+            var user = await _userService.GetAsync(command.UserId);
+            await _bus.PublishAsync(new UserNameChanged(command.Request.Id, command.UserId, command.Name, user.Value.State));
         }
     }
 }
