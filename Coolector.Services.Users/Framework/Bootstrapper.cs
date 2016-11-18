@@ -20,6 +20,7 @@ using Coolector.Common.Encryption;
 using Nancy;
 using Nancy.Configuration;
 using Coolector.Common.Extensions;
+using Coolector.Services.Users.Settings;
 using Polly;
 using RabbitMQ.Client.Exceptions;
 
@@ -65,6 +66,7 @@ namespace Coolector.Services.Users.Framework
             {
                 builder.RegisterInstance(_configuration.GetSettings<MongoDbSettings>());
                 builder.RegisterInstance(_configuration.GetSettings<Auth0Settings>());
+                builder.RegisterInstance(_configuration.GetSettings<FacebookSettings>());
                 builder.RegisterModule<MongoDbModule>();
                 builder.RegisterType<MongoDbInitializer>().As<IDatabaseInitializer>();
                 builder.RegisterType<Encrypter>().As<IEncrypter>().SingleInstance();
@@ -72,6 +74,8 @@ namespace Coolector.Services.Users.Framework
                 builder.RegisterType<UserRepository>().As<IUserRepository>();
                 builder.RegisterType<UserSessionRepository>().As<IUserSessionRepository>();
                 builder.RegisterType<AuthenticationService>().As<IAuthenticationService>();
+                builder.RegisterType<FacebookClient>().As<IFacebookClient>();
+                builder.RegisterType<FacebookService>().As<IFacebookService>();
                 builder.RegisterType<UserService>().As<IUserService>();
                 var rawRabbitConfiguration = _configuration.GetSettings<RawRabbitConfiguration>();
                 builder.RegisterInstance(rawRabbitConfiguration).SingleInstance();

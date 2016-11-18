@@ -33,8 +33,9 @@ namespace Coolector.Services.Users.Handlers
                     Roles.User, Providers.Coolector,
                     password: command.Password, name: command.Name);
                 var user = await _userService.GetAsync(userId);
-                await _bus.PublishAsync(new UserSignedUp(command.Request.Id, userId, user.Value.Email, user.Value.Name,
-                    string.Empty, user.Value.Role, user.Value.State, user.Value.Provider, user.Value.CreatedAt));
+                await _bus.PublishAsync(new UserSignedUp(command.Request.Id, userId, user.Value.Email,
+                    user.Value.Name, string.Empty, user.Value.Role, user.Value.State,
+                    user.Value.Provider, string.Empty, user.Value.CreatedAt));
             }
             catch (ServiceException ex)
             {

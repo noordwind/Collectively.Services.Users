@@ -9,6 +9,7 @@ namespace Coolector.Services.Users.Repositories
     {
         Task<bool> ExistsAsync(string name); 
         Task<Maybe<User>> GetByUserIdAsync(string userId);
+        Task<Maybe<User>> GetByExternalUserIdAsync(string externalUserId);
         Task<Maybe<User>> GetByEmailAsync(string email, string provider);
         Task<Maybe<User>> GetByNameAsync(string name);
         Task<Maybe<PagedResult<User>>> BrowseAsync(BrowseUsers query);

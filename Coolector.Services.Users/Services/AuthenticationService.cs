@@ -12,14 +12,17 @@ namespace Coolector.Services.Users.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IUserSessionRepository _userSessionRepository;
+        private readonly IFacebookService _facebookService;
         private readonly IEncrypter _encrypter;
 
         public AuthenticationService(IUserRepository userRepository,
             IUserSessionRepository userSessionRepository,
+            IFacebookService facebookService,
             IEncrypter encrypter)
         {
             _userRepository = userRepository;
             _userSessionRepository = userSessionRepository;
+            _facebookService = facebookService;
             _encrypter = encrypter;
         }
 
@@ -36,6 +39,25 @@ namespace Coolector.Services.Users.Services
                 throw new ServiceException($"User '{user.Value.Id}' is not active.");
             if (!user.Value.ValidatePassword(password, _encrypter))
                 throw new ServiceException("Invalid credentials.");
+
+            await CreateSessionAsync(sessionId, user.Value);
+        }
+
+        public async Task SignInViaFacebookAsync(Guid sessionId, string accessToken,
+            string ipAddress = null, string userAgent = null)
+        {
+            var facebookUser = await _facebookService.GetUserAsync(accessToken);
+            if(facebookUser.HasNoValue)
+                throw new ServiceException($"Facebook user has not been found for given access token.");
+
+            var user = await _userRepository.GetByExternalUserIdAsync(facebookUser.Value.Id);
+            if (user.HasNoValue)
+            {
+                throw new ServiceException($"User with Facebook external id: " +
+                                           $"'{facebookUser.Value.Id}' has not been found.");
+            }
+            if (user.Value.State != States.Active && user.Value.State != States.Incomplete)
+                throw new ServiceException($"User '{user.Value.Id}' is neither active nor incomplete.");
 
             await CreateSessionAsync(sessionId, user.Value);
         }

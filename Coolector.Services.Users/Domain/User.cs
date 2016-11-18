@@ -8,6 +8,9 @@ namespace Coolector.Services.Users.Domain
 {
     public class User : IdentifiableEntity, ITimestampable
     {
+        private static readonly Regex NameRegex = new Regex("^(?![_.-])(?!.*[_.-]{2})[a-zA-Z0-9._.-]+(?<![_.-])$",
+            RegexOptions.Compiled);
+
         public string UserId { get; protected set; }
         public string Email { get; protected set; }
         public string Name { get; protected set; }
@@ -17,6 +20,7 @@ namespace Coolector.Services.Users.Domain
         public string PictureUrl { get; protected set; }
         public string Role { get; protected set; }
         public string State { get; protected set; }
+        public string ExternalUserId { get; protected set; }
         public DateTime CreatedAt { get; protected set; }
         public DateTime UpdatedAt { get; protected set; }
 
@@ -47,7 +51,13 @@ namespace Coolector.Services.Users.Domain
             UpdatedAt = DateTime.UtcNow;
         }
 
-        //TODO: Doesn't work with FB etc.
+        public void SetExternalUserId(string externalUserId)
+        {
+            ExternalUserId = externalUserId;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        //TODO: Might not work with FB etc.
         public void SetEmail(string email)
         {
             if (email.Empty())
@@ -57,9 +67,6 @@ namespace Coolector.Services.Users.Domain
 
                 return;
             }
-
-            //if (email.Empty())
-            //    throw new ArgumentException("Email can not be empty.", nameof(email));
             if (!email.IsEmail())
                 throw new ArgumentException($"Invalid email {email}.", nameof(email));
             if (Email.EqualsCaseInvariant(email))
@@ -71,7 +78,6 @@ namespace Coolector.Services.Users.Domain
 
         public void SetName(string name)
         {
-            const string nameRegex = "^(?![_.-])(?!.*[_.-]{2})[a-zA-Z0-9._.-]+(?<![_.-])$";
             if (State != States.Incomplete)
                 throw new DomainException($"User name has been already set: {Name}");
             if (name.Empty())
@@ -82,9 +88,9 @@ namespace Coolector.Services.Users.Domain
                 throw new ArgumentException("User name is too short.", nameof(name));
             if (name.Length > 50)
                 throw new ArgumentException("User name is too long.", nameof(name));
-            if (Regex.IsMatch(name, nameRegex) == false)
+            if (NameRegex.IsMatch(name) == false)
                 throw new ArgumentException("User name doesn't meet the required criteria.", nameof(name));
-            
+
             Name = name.ToLowerInvariant();
             State = States.Inactive;
             UpdatedAt = DateTime.UtcNow;
@@ -125,8 +131,12 @@ namespace Coolector.Services.Users.Domain
 
         public void SetPassword(string password, IEncrypter encrypter)
         {
-            if(password.Empty())
+            if (password.Empty())
                 throw new DomainException("Password can not be empty.");
+            if (password.Length < 4)
+                throw new DomainException("Password must contain at least 4 characters.");
+            if (password.Length > 100)
+                throw new DomainException("Password can not contain more than 100 characters.");
 
             var salt = encrypter.GetSalt(password);
             var hash = encrypter.GetHash(password, salt);

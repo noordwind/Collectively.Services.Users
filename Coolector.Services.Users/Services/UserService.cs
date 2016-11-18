@@ -29,6 +29,9 @@ namespace Coolector.Services.Users.Services
         public async Task<Maybe<User>> GetByNameAsync(string name)
             => await _userRepository.GetByNameAsync(name);
 
+        public async Task<Maybe<User>> GetByExternalUserIdAsync(string externalUserId)
+            => await _userRepository.GetByExternalUserIdAsync(externalUserId);
+
         public async Task<Maybe<User>> GetByEmailAsync(string email, string provider)
             => await _userRepository.GetByEmailAsync(email, provider);
 
@@ -36,14 +39,14 @@ namespace Coolector.Services.Users.Services
             => await _userRepository.BrowseAsync(query);
 
         public async Task SignUpAsync(string userId, string email, string role,
-            string provider, string password = null,
+            string provider, string password = null, string externalUserId = null,
             bool activate = true, string pictureUrl = null, string name = null)
         {
             var user = await _userRepository.GetByUserIdAsync(userId);
             if (user.HasValue)
                 throw new ServiceException($"User with id: {userId} already exists!");
 
-            user = await _userRepository.GetByEmailAsync(email,provider);
+            user = await _userRepository.GetByEmailAsync(email, provider);
             if (user.HasValue)
                 throw new ServiceException($"User with email: {email} already exists!");
 
@@ -52,17 +55,19 @@ namespace Coolector.Services.Users.Services
                 throw new ServiceException($"User with name: {name} already exists!");
 
             user = new User(userId, email, role, provider, pictureUrl);
-            if(provider == Providers.Coolector && password.Empty())
+            if (provider == Providers.Coolector && password.Empty())
                 throw new ServiceException($"Password can not be empty!");
 
-            if(!password.Empty())
+            if (!password.Empty())
                 user.Value.SetPassword(password, _encrypter);
-
             if (name.NotEmpty())
+            {
                 user.Value.SetName(name);
-
-            if (activate)
-                user.Value.Activate();
+                if (activate)
+                    user.Value.Activate();
+            }
+            if (externalUserId.NotEmpty())
+                user.Value.SetExternalUserId(externalUserId);
 
             await _userRepository.AddAsync(user.Value);
         }

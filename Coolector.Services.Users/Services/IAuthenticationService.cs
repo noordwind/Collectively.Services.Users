@@ -12,6 +12,9 @@ namespace Coolector.Services.Users.Services
         Task SignInAsync(Guid sessionId, string email, string password,
             string ipAddress = null, string userAgent = null);
 
+        Task SignInViaFacebookAsync(Guid sessionId, string accessToken,
+            string ipAddress = null, string userAgent = null);
+
         Task SignOutAsync(Guid sessionId, string userId);
 
         Task CreateSessionAsync(Guid sessionId, string userId,

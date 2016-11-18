@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Coolector.Common.Types;
-using Coolector.Common.Domain;
 using Coolector.Services.Users.Domain;
 using Coolector.Services.Users.Queries;
 using MongoDB.Driver;
@@ -23,6 +22,9 @@ namespace Coolector.Services.Users.Repositories
 
         public async Task<Maybe<User>> GetByUserIdAsync(string userId)
             => await _database.Users().GetByUserIdAsync(userId);
+
+        public async Task<Maybe<User>> GetByExternalUserIdAsync(string externalUserId)
+            => await _database.Users().GetByExternalUserIdAsync(externalUserId);
 
         public async Task<Maybe<User>> GetByEmailAsync(string email, string provider)
             => await _database.Users().GetByEmailAsync(email, provider);
