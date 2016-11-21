@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -16,11 +17,14 @@ namespace Coolector.Services.Users.Services
             {
                 BaseAddress = new Uri("https://graph.facebook.com/v2.8/")
             };
+            _httpClient.DefaultRequestHeaders
+                .Accept
+                .Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public async Task<T> GetAsync<T>(string endpoint, string accessToken)
+        public async Task<T> GetAsync<T>(string endpoint, string accessToken, string args = null)
         {
-            var response = await _httpClient.GetAsync($"{endpoint}&access_token={accessToken}");
+            var response = await _httpClient.GetAsync($"{endpoint}?access_token={accessToken}&{args}");
             if (!response.IsSuccessStatusCode)
                 return default(T);
 
@@ -29,10 +33,10 @@ namespace Coolector.Services.Users.Services
             return JsonConvert.DeserializeObject<T>(result);
         }
 
-        public async Task PostAsync(string endpoint, string accessToken, object data)
+        public async Task PostAsync(string endpoint, string accessToken, object data, string args = null)
         {
             var payload = GetJsonContent(data);
-            var response = await _httpClient.PostAsync($"{endpoint}&access_token={accessToken}", payload);
+            var response = await _httpClient.PostAsync($"{endpoint}?access_token={accessToken}&{args}", payload);
         }
 
         private static StringContent GetJsonContent(object data)

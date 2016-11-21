@@ -19,7 +19,7 @@ namespace Coolector.Services.Users.Services
         public async Task<Maybe<FacebookUser>> GetUserAsync(string accessToken)
         {
             var user = await _facebookClient.GetAsync<dynamic>(
-                "me?fields=id,name,email,first_name,last_name,age_range,birthday,gender,locale", accessToken);
+                "me", accessToken, "fields=id,name,email,first_name,last_name,age_range,birthday,gender,locale");
             if (user == null)
                 return new Maybe<FacebookUser>();
 
