@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Coolector.Common;
 using Coolector.Common.Commands;
 using Coolector.Common.Commands.Facebook;
 using Coolector.Common.Events.Facebook;
@@ -33,7 +34,7 @@ namespace Coolector.Services.Users.Handlers
             catch (Exception exception)
             {
                 await _bus.PublishAsync(new PostMessageOnFacebookWallRejected(command.Request.Id,
-                    command.UserId, exception.Message, command.Message));
+                    command.UserId, OperationCodes.Error, exception.Message, command.Message));
             }
         }
     }

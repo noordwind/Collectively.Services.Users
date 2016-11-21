@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Coolector.Common;
 using Coolector.Common.Commands;
 using Coolector.Common.Commands.Users;
 using Coolector.Common.Domain;
@@ -41,13 +42,13 @@ namespace Coolector.Services.Users.Handlers
             {
                 Logger.Error(ex);
                 await _bus.PublishAsync(new UserSignUpRejected(command.Request.Id,
-                    null, ex.Message, command.Provider));
+                    null, OperationCodes.InvalidCredentials, ex.Message, command.Provider));
             }
             catch (Exception ex)
             {
                 Logger.Error(ex);
                 await _bus.PublishAsync(new UserSignUpRejected(command.Request.Id,
-                    null, "Invalid credentials", command.Provider));
+                    null, OperationCodes.InvalidCredentials, "Invalid credentials", command.Provider));
             }
         }
     }
