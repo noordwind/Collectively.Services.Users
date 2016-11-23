@@ -19,6 +19,7 @@ namespace Coolector.Services.Users
                 .SubscribeToCommand<SignOut>()
                 .SubscribeToCommand<ChangeUserName>()
                 .SubscribeToCommand<ChangeAvatar>()
+                .SubscribeToCommand<ChangePassword>()
                 .SubscribeToCommand<PostMessageOnFacebookWall>()
                 .Build()
                 .Run();

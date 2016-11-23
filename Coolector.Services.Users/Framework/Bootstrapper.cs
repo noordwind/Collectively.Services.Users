@@ -76,6 +76,7 @@ namespace Coolector.Services.Users.Framework
                 builder.RegisterType<AuthenticationService>().As<IAuthenticationService>();
                 builder.RegisterType<FacebookClient>().As<IFacebookClient>();
                 builder.RegisterType<FacebookService>().As<IFacebookService>();
+                builder.RegisterType<PasswordService>().As<IPasswordService>();
                 builder.RegisterType<UserService>().As<IUserService>();
                 var rawRabbitConfiguration = _configuration.GetSettings<RawRabbitConfiguration>();
                 builder.RegisterInstance(rawRabbitConfiguration).SingleInstance();
