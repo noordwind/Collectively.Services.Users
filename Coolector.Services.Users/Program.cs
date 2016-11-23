@@ -2,7 +2,6 @@
 using Coolector.Common.Commands.Users;
 using Coolector.Common.Host;
 using Coolector.Services.Users.Framework;
-using Coolector.Services.Users.Handlers;
 
 namespace Coolector.Services.Users
 {
@@ -20,6 +19,8 @@ namespace Coolector.Services.Users
                 .SubscribeToCommand<ChangeUserName>()
                 .SubscribeToCommand<ChangeAvatar>()
                 .SubscribeToCommand<ChangePassword>()
+                .SubscribeToCommand<ResetPassword>()
+                .SubscribeToCommand<SetNewPassword>()
                 .SubscribeToCommand<PostMessageOnFacebookWall>()
                 .Build()
                 .Run();

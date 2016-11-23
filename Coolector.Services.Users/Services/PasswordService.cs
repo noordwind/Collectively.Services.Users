@@ -30,5 +30,13 @@ namespace Coolector.Services.Users.Services
             user.Value.SetPassword(newPassword, _encrypter);
             await _userRepository.UpdateAsync(user.Value);
         }
+
+        public async Task ResetAsync(string email)
+        {
+        }
+
+        public async Task SetNewAsync(string email, string token, string password)
+        {
+        }
     }
 }
