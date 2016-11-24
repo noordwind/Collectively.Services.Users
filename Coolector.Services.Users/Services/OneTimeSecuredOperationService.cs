@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Coolector.Common.Domain;
 using Coolector.Common.Encryption;
+using Coolector.Common.Types;
 using Coolector.Services.Users.Domain;
 using Coolector.Services.Users.Repositories;
 
@@ -18,6 +19,9 @@ namespace Coolector.Services.Users.Services
             _oneTimeSecuredOperationRepository = oneTimeSecuredOperationRepository;
             _encrypter = encrypter;
         }
+
+        public async Task<Maybe<OneTimeSecuredOperation>> GetAsync(Guid id)
+            => await _oneTimeSecuredOperationRepository.GetAsync(id);
 
         public async Task CreateAsync(Guid id, string type, string user, DateTime expiry)
         {

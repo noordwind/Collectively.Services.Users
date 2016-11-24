@@ -31,12 +31,12 @@ namespace Coolector.Services.Users.Handlers
             catch (ServiceException exception)
             {
                 await _bus.PublishAsync(new ResetPasswordRejected(command.Request.Id,
-                    OperationCodes.InvalidEmail, exception.Message, command.Email));
+                    exception.Message, OperationCodes.InvalidEmail, command.Email));
             }
             catch (Exception exception)
             {
                 await _bus.PublishAsync(new ResetPasswordRejected(command.Request.Id,
-                    OperationCodes.InvalidEmail, "Error when trying to reset password.", command.Email));
+                    exception.Message, OperationCodes.Error, command.Email));
             }
         }
     }

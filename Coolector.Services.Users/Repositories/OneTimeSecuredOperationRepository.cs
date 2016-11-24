@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Coolector.Common.Types;
 using Coolector.Services.Users.Domain;
 using Coolector.Services.Users.Repositories.Queries;
@@ -14,6 +15,9 @@ namespace Coolector.Services.Users.Repositories
         {
             _database = database;
         }
+
+        public async Task<Maybe<OneTimeSecuredOperation>> GetAsync(Guid id)
+            => await _database.OneTimeSecuredOperations().GetAsync(id);
 
         public async Task<Maybe<OneTimeSecuredOperation>> GetAsync(string type, string user, string token)
             => await _database.OneTimeSecuredOperations().GetAsync(type, user, token);

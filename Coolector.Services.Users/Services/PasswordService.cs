@@ -11,14 +11,17 @@ namespace Coolector.Services.Users.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IOneTimeSecuredOperationService _oneTimeSecuredOperationService;
+        private readonly IEmailMessenger _emailMessenger;
         private readonly IEncrypter _encrypter;
 
         public PasswordService(IUserRepository userRepository,
             IOneTimeSecuredOperationService oneTimeSecuredOperationService,
+            IEmailMessenger emailMessenger,
             IEncrypter encrypter)
         {
             _userRepository = userRepository;
             _oneTimeSecuredOperationService = oneTimeSecuredOperationService;
+            _emailMessenger = emailMessenger;
             _encrypter = encrypter;
         }
 
@@ -46,7 +49,10 @@ namespace Coolector.Services.Users.Services
             await _oneTimeSecuredOperationService.CreateAsync(operationId, OneTimeSecuredOperations.ResetPassword,
                 email, DateTime.UtcNow.AddDays(1));
 
-            //TODO: Send email message;
+            var operation = await _oneTimeSecuredOperationService.GetAsync(operationId);
+
+            //TODO: Send email message.
+//            await _emailMessenger.SendPasswordResetAsync(email, operation.Value.Token);
         }
 
         public async Task SetNewAsync(string email, string token, string password)
