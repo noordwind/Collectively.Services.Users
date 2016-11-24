@@ -70,12 +70,13 @@ namespace Coolector.Services.Users.Framework
                 builder.RegisterModule<MongoDbModule>();
                 builder.RegisterType<MongoDbInitializer>().As<IDatabaseInitializer>();
                 builder.RegisterType<Encrypter>().As<IEncrypter>().SingleInstance();
-                builder.RegisterType<Auth0RestClient>().As<IAuth0RestClient>();
+                builder.RegisterType<OneTimeSecuredOperationRepository>().As<IOneTimeSecuredOperationRepository>();
                 builder.RegisterType<UserRepository>().As<IUserRepository>();
                 builder.RegisterType<UserSessionRepository>().As<IUserSessionRepository>();
                 builder.RegisterType<AuthenticationService>().As<IAuthenticationService>();
                 builder.RegisterType<FacebookClient>().As<IFacebookClient>();
                 builder.RegisterType<FacebookService>().As<IFacebookService>();
+                builder.RegisterType<OneTimeSecuredOperationService>().As<IOneTimeSecuredOperationService>();
                 builder.RegisterType<PasswordService>().As<IPasswordService>();
                 builder.RegisterType<UserService>().As<IUserService>();
                 var rawRabbitConfiguration = _configuration.GetSettings<RawRabbitConfiguration>();
