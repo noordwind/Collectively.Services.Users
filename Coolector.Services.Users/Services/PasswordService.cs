@@ -38,6 +38,10 @@ namespace Coolector.Services.Users.Services
 
         public async Task ResetAsync(string email)
         {
+            var user = await _userRepository.GetByEmailAsync(email, Providers.Coolector);
+            if (user.HasNoValue)
+                throw new ServiceException($"User with email: '{email}' has not been found.");
+
             var operationId = Guid.NewGuid();
             await _oneTimeSecuredOperationService.CreateAsync(operationId, OneTimeSecuredOperations.ResetPassword,
                 email, DateTime.UtcNow.AddDays(1));
