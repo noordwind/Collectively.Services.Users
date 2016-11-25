@@ -17,12 +17,12 @@ namespace Coolector.Services.Users.SendGrid
 
         public async Task SendPasswordResetAsync(string email, string token)
         {
-            //TODO: Fetch template from database.
+            //TODO: Fetch template and parameters from database.
             var templateId = "4febd104-85b1-4b57-a07f-85805b4e4241";
+            var resetPasswordUrl = $"https://coolector.tk/set-new-password?email={email}&token={token}";
             var templateParameters = new List<SendGridEmailTemplateParameter>
             {
-                SendGridEmailTemplateParameter.Create("email", email),
-                SendGridEmailTemplateParameter.Create("token", token)
+                SendGridEmailTemplateParameter.Create("resetPasswordUrl", resetPasswordUrl),
             };
             var emailMessage = CreateMessage(email, "no-reply@coolector.tk", "Reset Coolector account password");
             ApplyTemplate(emailMessage, templateId, templateParameters);
@@ -50,7 +50,7 @@ namespace Coolector.Services.Users.SendGrid
                         Email = receiver
                     }
                 },
-                Substitutions = new Dictionary<string, List<string>>()
+                Substitutions = new Dictionary<string, string>()
             });
             if (message.NotEmpty())
             {
@@ -74,7 +74,8 @@ namespace Coolector.Services.Users.SendGrid
             var personalization = emailMessage.Personalizations.First();
             foreach (var parameter in templateParameters)
             {
-                personalization.Substitutions[parameter.ReplacementTag] = parameter.Values.ToList();
+                var parameterValue = string.Format("{0}", parameter.Values.FirstOrDefault());
+                personalization.Substitutions[$"-{parameter.ReplacementTag}-"] = parameterValue;
             }
         }
     }

@@ -25,9 +25,9 @@ namespace Coolector.Services.Users.SendGrid
 
         public async Task SendMessageAsync(SendGridEmailMessage message)
         {
-            Logger.Info("Sending an email message via SendGrid.");
             _httpClient.DefaultRequestHeaders.Remove("Authorization");
             _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_sendGridSettings.ApiKey}");
+            Logger.Info("Sending an email message via SendGrid.");
             var payload = JsonConvert.SerializeObject(message);
             var content = new StringContent(payload, Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("mail/send", content);

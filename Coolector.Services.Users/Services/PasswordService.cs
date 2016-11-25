@@ -51,8 +51,7 @@ namespace Coolector.Services.Users.Services
 
             var operation = await _oneTimeSecuredOperationService.GetAsync(operationId);
 
-            //TODO: Send email message.
-//            await _emailMessenger.SendPasswordResetAsync(email, operation.Value.Token);
+            await _emailMessenger.SendPasswordResetAsync(email, operation.Value.Token);
         }
 
         public async Task SetNewAsync(string email, string token, string password)

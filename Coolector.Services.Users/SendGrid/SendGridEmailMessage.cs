@@ -21,7 +21,7 @@ namespace Coolector.Services.Users.SendGrid
         public class Personalization
         {
             public List<Person> To { get; set; }
-            public Dictionary<string, List<string>> Substitutions { get; set; }
+            public Dictionary<string, string> Substitutions { get; set; }
         }
 
         public class MessageContent
