@@ -69,6 +69,7 @@ namespace Coolector.Services.Users.Framework
                 builder.RegisterInstance(_configuration.GetSettings<Auth0Settings>());
                 builder.RegisterInstance(_configuration.GetSettings<FacebookSettings>());
                 builder.RegisterInstance(_configuration.GetSettings<SendGridSettings>());
+                builder.RegisterInstance(AutoMapperConfig.InitializeMapper());
                 builder.RegisterModule<MongoDbModule>();
                 builder.RegisterType<MongoDbInitializer>().As<IDatabaseInitializer>();
                 builder.RegisterType<Encrypter>().As<IEncrypter>().SingleInstance();

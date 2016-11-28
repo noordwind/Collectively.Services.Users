@@ -7,6 +7,7 @@
   "dependencies": {
     "Coolector.Common": "1.0.*",
     "Autofac": "4.1.0",
+    "AutoMapper": "5.2.0",
     "Nancy": "2.0.0-barneyrubble",
     "NLog.Extensions.Logging": "1.0.0-*",
     "MongoDB.Driver": "2.3.0",
@@ -20,7 +21,7 @@
     "RawRabbit": "1.10.0",
     "RawRabbit.vNext": "1.10.0",
     "Newtonsoft.Json": "9.0.1",
-	  "System.Net.Http": "4.3.0"
+    "System.Net.Http": "4.3.0"
   },
   "frameworks": {
     "netcoreapp1.1": {
