@@ -11,17 +11,14 @@ namespace Coolector.Services.Users.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IOneTimeSecuredOperationService _oneTimeSecuredOperationService;
-        private readonly IEmailMessenger _emailMessenger;
         private readonly IEncrypter _encrypter;
 
         public PasswordService(IUserRepository userRepository,
             IOneTimeSecuredOperationService oneTimeSecuredOperationService,
-            IEmailMessenger emailMessenger,
             IEncrypter encrypter)
         {
             _userRepository = userRepository;
             _oneTimeSecuredOperationService = oneTimeSecuredOperationService;
-            _emailMessenger = emailMessenger;
             _encrypter = encrypter;
         }
 
@@ -39,19 +36,16 @@ namespace Coolector.Services.Users.Services
             await _userRepository.UpdateAsync(user.Value);
         }
 
-        public async Task ResetAsync(string email)
+        public async Task ResetAsync(Guid operationId, string email)
         {
             var user = await _userRepository.GetByEmailAsync(email, Providers.Coolector);
             if (user.HasNoValue)
                 throw new ServiceException($"User with email: '{email}' has not been found.");
 
-            var operationId = Guid.NewGuid();
             await _oneTimeSecuredOperationService.CreateAsync(operationId, OneTimeSecuredOperations.ResetPassword,
                 email, DateTime.UtcNow.AddDays(1));
 
             var operation = await _oneTimeSecuredOperationService.GetAsync(operationId);
-
-            await _emailMessenger.SendPasswordResetAsync(email, operation.Value.Token);
         }
 
         public async Task SetNewAsync(string email, string token, string password)
