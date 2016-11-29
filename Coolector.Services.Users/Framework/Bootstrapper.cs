@@ -20,7 +20,6 @@ using Coolector.Common.Encryption;
 using Nancy;
 using Nancy.Configuration;
 using Coolector.Common.Extensions;
-using Coolector.Services.Users.SendGrid;
 using Coolector.Services.Users.Settings;
 using Polly;
 using RabbitMQ.Client.Exceptions;
@@ -68,7 +67,6 @@ namespace Coolector.Services.Users.Framework
                 builder.RegisterInstance(_configuration.GetSettings<MongoDbSettings>());
                 builder.RegisterInstance(_configuration.GetSettings<Auth0Settings>());
                 builder.RegisterInstance(_configuration.GetSettings<FacebookSettings>());
-                builder.RegisterInstance(_configuration.GetSettings<SendGridSettings>());
                 builder.RegisterInstance(AutoMapperConfig.InitializeMapper());
                 builder.RegisterModule<MongoDbModule>();
                 builder.RegisterType<MongoDbInitializer>().As<IDatabaseInitializer>();
@@ -79,8 +77,6 @@ namespace Coolector.Services.Users.Framework
                 builder.RegisterType<AuthenticationService>().As<IAuthenticationService>();
                 builder.RegisterType<FacebookClient>().As<IFacebookClient>();
                 builder.RegisterType<FacebookService>().As<IFacebookService>();
-                builder.RegisterType<SendGridClient>().As<ISendGridClient>();
-                builder.RegisterType<SendGridEmailMessenger>().As<IEmailMessenger>();
                 builder.RegisterType<OneTimeSecuredOperationService>().As<IOneTimeSecuredOperationService>();
                 builder.RegisterType<PasswordService>().As<IPasswordService>();
                 builder.RegisterType<UserService>().As<IUserService>();

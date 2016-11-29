@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Coolector.Common;
 using Coolector.Common.Commands;
+using Coolector.Common.Commands.Mailing;
 using Coolector.Common.Commands.Users;
 using Coolector.Common.Domain;
 using Coolector.Common.Events.Users;
@@ -14,19 +15,30 @@ namespace Coolector.Services.Users.Handlers
     {
         private readonly IBusClient _bus;
         private readonly IPasswordService _passwordService;
+        private readonly IOneTimeSecuredOperationService _oneTimeSecuredOperationService;
 
-        public ResetPasswordHandler(IBusClient bus, IPasswordService passwordService)
+        public ResetPasswordHandler(IBusClient bus, IPasswordService passwordService,
+            IOneTimeSecuredOperationService oneTimeSecuredOperationService)
         {
             _bus = bus;
             _passwordService = passwordService;
+            _oneTimeSecuredOperationService = oneTimeSecuredOperationService;
         }
 
         public async Task HandleAsync(ResetPassword command)
         {
             try
             {
-                await _passwordService.ResetAsync(command.Email);
-                await _bus.PublishAsync(new ResetPasswordInitiated(command.Request.Id, command.Email));
+                var operationId = Guid.NewGuid();
+                await _passwordService.ResetAsync(operationId, command.Email);
+                var operation = await _oneTimeSecuredOperationService.GetAsync(operationId);
+                await _bus.PublishAsync(new SendResetPasswordEmailMessage
+                {
+                    Email = command.Email,
+                    Endpoint = command.Endpoint,
+                    Token = operation.Value.Token,
+                    Request = Request.From<SendResetPasswordEmailMessage>(command.Request)
+                });
             }
             catch (ServiceException exception)
             {
