@@ -79,7 +79,10 @@ namespace Coolector.Services.Users.Domain
         public void SetName(string name)
         {
             if (State != States.Incomplete)
-                throw new DomainException($"User name has been already set: {Name}");
+            {
+                throw new DomainException(OperationCodes.NameAlreadySet,
+                    $"User name has been already set: {Name}");
+            }
             if (name.Empty())
                 throw new ArgumentException("User name can not be empty.", nameof(name));
             if (Name.EqualsCaseInvariant(name))
@@ -131,11 +134,21 @@ namespace Coolector.Services.Users.Domain
         public void SetPassword(string password, IEncrypter encrypter)
         {
             if (password.Empty())
-                throw new DomainException("Password can not be empty.");
+            {
+                throw new DomainException(OperationCodes.InvalidPassword,
+                    "Password can not be empty.");
+            }
             if (password.Length < 4)
-                throw new DomainException("Password must contain at least 4 characters.");
+            {
+                throw new DomainException(OperationCodes.InvalidPassword,
+                    "Password must contain at least 4 characters.");
+
+            }
             if (password.Length > 100)
-                throw new DomainException("Password can not contain more than 100 characters.");
+            {
+                throw new DomainException(OperationCodes.InvalidPassword,
+                    "Password can not contain more than 100 characters.");
+            }
 
             var salt = encrypter.GetSalt(password);
             var hash = encrypter.GetHash(password, salt);

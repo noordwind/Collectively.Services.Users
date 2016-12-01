@@ -60,13 +60,15 @@ namespace Coolector.Services.Users.Domain
         {
             if (Refreshed)
             {
-                throw new DomainException($"Session for user id: '{UserId}' " +
-                                          $"with key: '{Key}' has been already refreshed.");
+                throw new DomainException(OperationCodes.SessionExpired,
+                    $"Session for user id: '{UserId}' " +
+                    $"with key: '{Key}' has been already refreshed.");
             }
             if (Destroyed)
             {
-                throw new DomainException($"Session for user id: '{UserId}' " +
-                                          $"with key: '{Key}' has been already destroyed.");
+                throw new DomainException(OperationCodes.SessionExpired,
+                    $"Session for user id: '{UserId}' " +
+                    $"with key: '{Key}' has been already destroyed.");
             }
         }
     }

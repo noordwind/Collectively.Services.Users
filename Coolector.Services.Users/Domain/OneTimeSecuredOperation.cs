@@ -27,12 +27,20 @@ namespace Coolector.Services.Users.Domain
             string ipAddress = null, string userAgent = null)
         {
             if (type.Empty())
-                throw new DomainException("Type can not be empty.");
+            {
+                throw new DomainException(OperationCodes.InvalidSecuredOperation,
+                    "Type can not be empty.");
+            }
             if (user.Empty())
-                throw new DomainException("User can not be empty.");
+            {
+                throw new DomainException(OperationCodes.InvalidSecuredOperation,
+                    "User can not be empty.");
+            }
             if (token.Empty())
-                throw new DomainException("Token can not be empty.");
-
+            {
+                throw new DomainException(OperationCodes.InvalidSecuredOperation,
+                    "Token can not be empty.");
+            }
             Id = id;
             Type = type;
             User = user;
@@ -46,7 +54,10 @@ namespace Coolector.Services.Users.Domain
         public void Consume(string ipAddress = null, string userAgent = null)
         {
             if (!CanBeConsumed())
-                throw new DomainException("Operation can not be consumed.");
+            {
+                throw new DomainException(OperationCodes.InvalidSecuredOperation,
+                    "Operation can not be consumed.");
+            }
 
             ConsumerIpAddress = ipAddress;
             ConsumerUserAgent = userAgent;

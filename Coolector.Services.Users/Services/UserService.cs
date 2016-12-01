@@ -44,20 +44,32 @@ namespace Coolector.Services.Users.Services
         {
             var user = await _userRepository.GetByUserIdAsync(userId);
             if (user.HasValue)
-                throw new ServiceException($"User with id: {userId} already exists!");
-
+            {
+                throw new ServiceException(OperationCodes.UserIdInUse,
+                    $"User with id: '{userId}' already exists.");
+            }
             user = await _userRepository.GetByEmailAsync(email, provider);
             if (user.HasValue)
-                throw new ServiceException($"User with email: {email} already exists!");
+            {
+                throw new ServiceException(OperationCodes.EmailInUse,
+                    $"User with email: {email} already exists!");
+            }
 
             user = await _userRepository.GetByNameAsync(name);
             if (user.HasValue)
-                throw new ServiceException($"User with name: {name} already exists!");
+            {
+                throw new ServiceException(OperationCodes.NameInUse,
+                    $"User with name: {name} already exists!");
+            }
+
+            if (provider == Providers.Coolector && password.Empty())
+            {
+                throw new ServiceException(OperationCodes.InvalidPassword,
+                    $"Password can not be empty!");
+
+            }
 
             user = new User(userId, email, role, provider, pictureUrl);
-            if (provider == Providers.Coolector && password.Empty())
-                throw new ServiceException($"Password can not be empty!");
-
             if (!password.Empty())
                 user.Value.SetPassword(password, _encrypter);
             if (name.NotEmpty())
@@ -76,7 +88,10 @@ namespace Coolector.Services.Users.Services
         {
             var user = await GetAsync(userId);
             if (user.HasNoValue)
-                throw new ServiceException($"User with id {userId} has not been found.");
+            {
+                throw new ServiceException(OperationCodes.UserNotFound,
+                    $"User with id: '{userId}' has not been found.");
+            }
 
             user.Value.SetName(name);
             user.Value.Activate();
@@ -87,7 +102,10 @@ namespace Coolector.Services.Users.Services
         {
             var user = await GetAsync(userId);
             if (user.HasNoValue)
-                throw new ServiceException($"User with id {userId} has not been found.");
+            {
+                throw new ServiceException(OperationCodes.UserNotFound,
+                    $"User with id: '{userId}' has not been found.");
+            }
 
             user.Value.SetAvatar(pictureUrl);
             await _userRepository.UpdateAsync(user.Value);

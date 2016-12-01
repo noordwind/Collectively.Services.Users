@@ -43,8 +43,11 @@ namespace Coolector.Services.Users.Services
             var operation = await _oneTimeSecuredOperationRepository
                 .GetAsync(type, user, token);
 
-            if(operation.HasNoValue)
-                throw new ServiceException("Operation has not been found.");
+            if (operation.HasNoValue)
+            {
+                throw new ServiceException(OperationCodes.OperationNotFound,
+                    "Operation has not been found.");
+            }
 
             operation.Value.Consume();
             await _oneTimeSecuredOperationRepository.UpdateAsync(operation.Value);
