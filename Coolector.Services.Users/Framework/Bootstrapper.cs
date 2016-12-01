@@ -16,7 +16,7 @@ using RawRabbit;
 using RawRabbit.Configuration;
 using RawRabbit.vNext;
 using System.Reflection;
-using Coolector.Common.Encryption;
+using Coolector.Common.Services;
 using Nancy;
 using Nancy.Configuration;
 using Coolector.Common.Extensions;

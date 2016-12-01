@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using Coolector.Common.Extensions;
 using Coolector.Common.Domain;
-using Coolector.Common.Encryption;
+using Coolector.Common.Services;
 
 namespace Coolector.Services.Users.Domain
 {

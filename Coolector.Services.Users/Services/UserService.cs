@@ -2,7 +2,7 @@
 using Coolector.Common.Extensions;
 using Coolector.Common.Types;
 using Coolector.Common.Domain;
-using Coolector.Common.Encryption;
+using Coolector.Common.Services;
 using Coolector.Services.Users.Domain;
 using Coolector.Services.Users.Queries;
 using Coolector.Services.Users.Repositories;

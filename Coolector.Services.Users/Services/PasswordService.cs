@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Coolector.Common.Domain;
-using Coolector.Common.Encryption;
+using Coolector.Common.Services;
 using Coolector.Services.Users.Domain;
 using Coolector.Services.Users.Repositories;
 
