@@ -35,7 +35,7 @@ namespace Coolector.Services.Users.Handlers
                     new PasswordChanged(command.Request.Id, command.UserId)))
                 .OnCustomError(async ex => await _bus.PublishAsync(
                     new ChangePasswordRejected(command.Request.Id, command.UserId,
-                        OperationCodes.InvalidPassword, ex.Message)))
+                        ex.Code, ex.Message)))
                 .OnError(async (ex, logger) =>
                 {
                     logger.Error(ex, "Error when trying to change password.");

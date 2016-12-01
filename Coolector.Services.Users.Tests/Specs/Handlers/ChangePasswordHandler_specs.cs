@@ -1,6 +1,7 @@
 ﻿using System;
 using Coolector.Common.Commands;
 using Coolector.Common.Commands.Users;
+using Coolector.Common.Domain;
 using Coolector.Common.Events.Users;
 using Coolector.Common.Services;
 using Coolector.Services.Users.Handlers;
@@ -50,7 +51,7 @@ namespace Coolector.Services.Users.Tests.Specs.Handlers
     }
 
     [Subject("ChangePasswordHandler HandleAsync")]
-    public class When_handle_async : ChangePasswordHandler_specs
+    public class When_handle_async_change_password_command : ChangePasswordHandler_specs
     {
         Establish context = () => Initialize();
 
@@ -72,5 +73,73 @@ namespace Coolector.Services.Users.Tests.Specs.Handlers
             Moq.It.IsAny<ChangePasswordRejected>(),
             Moq.It.IsAny<Guid>(),
             Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()), Times.Never);
+    }
+
+    [Subject("ChangePasswordHandler HandleAsync")]
+    public class When_handle_async_change_password_command_and_it_fails : ChangePasswordHandler_specs
+    {
+        private Establish context = () =>
+        {
+            Initialize();
+            PasswordServiceMock
+                .Setup(x => x.ChangeAsync(Moq.It.IsAny<string>(),
+                    Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Throws<Exception>();
+        };
+
+        Because of = () => ChangePasswordHandler.HandleAsync(Command).Await();
+
+        It should_call_change_async = () => PasswordServiceMock.Verify(x => x.ChangeAsync(
+            Command.UserId,
+            Command.CurrentPassword,
+            Command.NewPassword), Times.Once);
+
+        It should_not_publish_password_changed_event = () => BusClientMock.Verify(x => x.PublishAsync(
+            Moq.It.IsAny<PasswordChanged>(),
+            Moq.It.IsAny<Guid>(),
+            Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()), Times.Never);
+
+
+        It should_publish_change_password_rejected_event = () => BusClientMock.Verify(x => x.PublishAsync(
+            Moq.It.Is<ChangePasswordRejected>(m => m.RequestId == Command.Request.Id
+                                                   && m.UserId == Command.UserId
+                                                   && m.Code == OperationCodes.Error),
+            Moq.It.IsAny<Guid>(),
+            Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()), Times.Once);
+    }
+
+    [Subject("ChangePasswordHandler HandleAsync")]
+    public class When_handle_async_change_password_command_and_it_throws_custom_exception : ChangePasswordHandler_specs
+    {
+        protected static string ErrorCode = "Error";
+
+        private Establish context = () =>
+        {
+            Initialize();
+            PasswordServiceMock
+                .Setup(x => x.ChangeAsync(Moq.It.IsAny<string>(),
+                    Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Throws(new ServiceException(ErrorCode));
+        };
+
+        Because of = () => ChangePasswordHandler.HandleAsync(Command).Await();
+
+        It should_call_change_async = () => PasswordServiceMock.Verify(x => x.ChangeAsync(
+            Command.UserId,
+            Command.CurrentPassword,
+            Command.NewPassword), Times.Once);
+
+        It should_not_publish_password_changed_event = () => BusClientMock.Verify(x => x.PublishAsync(
+            Moq.It.IsAny<PasswordChanged>(),
+            Moq.It.IsAny<Guid>(),
+            Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()), Times.Never);
+
+
+        It should_publish_change_password_rejected_event = () => BusClientMock.Verify(x => x.PublishAsync(
+            Moq.It.Is<ChangePasswordRejected>(m => m.RequestId == Command.Request.Id
+                                                   && m.UserId == Command.UserId
+                                                   && m.Code == ErrorCode),
+            Moq.It.IsAny<Guid>(),
+            Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()), Times.Once);
     }
 }
