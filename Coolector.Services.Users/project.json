@@ -8,6 +8,8 @@
     "Coolector.Common": "1.0.*",
     "Autofac": "4.1.0",
     "AutoMapper": "5.2.0",
+    "Lockbox.Client": "1.0.0-beta-2",
+    "Exceptionless": "4.0.1922",
     "Nancy": "2.0.0-barneyrubble",
     "NLog.Extensions.Logging": "1.0.0-*",
     "MongoDB.Driver": "2.3.0",

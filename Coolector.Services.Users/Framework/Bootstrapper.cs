@@ -16,6 +16,7 @@ using RawRabbit;
 using RawRabbit.Configuration;
 using RawRabbit.vNext;
 using System.Reflection;
+using Coolector.Common.Exceptionless;
 using Coolector.Common.Services;
 using Nancy;
 using Nancy.Configuration;
@@ -29,6 +30,7 @@ namespace Coolector.Services.Users.Framework
     public class Bootstrapper : AutofacNancyBootstrapper
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static IExceptionHandler _exceptionHandler;
         private static readonly string DecimalSeparator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
         private static readonly string InvalidDecimalSeparator = DecimalSeparator == "." ? "," : ".";
         private readonly IConfiguration _configuration;
@@ -80,6 +82,8 @@ namespace Coolector.Services.Users.Framework
                 builder.RegisterType<OneTimeSecuredOperationService>().As<IOneTimeSecuredOperationService>();
                 builder.RegisterType<PasswordService>().As<IPasswordService>();
                 builder.RegisterType<UserService>().As<IUserService>();
+                builder.RegisterInstance(_configuration.GetSettings<ExceptionlessSettings>()).SingleInstance();
+                builder.RegisterType<ExceptionlessExceptionHandler>().As<IExceptionHandler>().SingleInstance();
                 var rawRabbitConfiguration = _configuration.GetSettings<RawRabbitConfiguration>();
                 builder.RegisterInstance(rawRabbitConfiguration).SingleInstance();
                 rmqRetryPolicy.Execute(() => builder
@@ -91,6 +95,17 @@ namespace Coolector.Services.Users.Framework
                 builder.RegisterAssemblyTypes(coreAssembly).AsClosedTypesOf(typeof(ICommandHandler<>));
             });
             LifetimeScope = container;
+        }
+
+        protected override void RequestStartup(ILifetimeScope container, IPipelines pipelines, NancyContext context)
+        {
+            pipelines.OnError.AddItemToEndOfPipeline((ctx, ex) =>
+            {
+                _exceptionHandler.Handle(ex, ctx.ToExceptionData(),
+                    "Request details", "Coolector", "Service", "Users");
+
+                return ctx.Response;
+            });
         }
 
         protected override void ApplicationStartup(ILifetimeScope container, IPipelines pipelines)
@@ -111,7 +126,8 @@ namespace Coolector.Services.Users.Framework
                 ctx.Response.Headers.Add("Access-Control-Allow-Methods", "POST,PUT,GET,OPTIONS,DELETE");
                 ctx.Response.Headers.Add("Access-Control-Allow-Headers", "Authorization, Origin, X-Requested-With, Content-Type, Accept");
             };
-            Logger.Info("Coolector.Services.Users API Started");
+            _exceptionHandler = container.Resolve<IExceptionHandler>();
+            Logger.Info("Coolector.Services.Users API has started.");
         }
 
         private void FixNumberFormat(NancyContext ctx)
