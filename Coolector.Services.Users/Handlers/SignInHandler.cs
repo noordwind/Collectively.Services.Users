@@ -5,6 +5,7 @@ using Coolector.Common.Commands;
 using Coolector.Common.Commands.Users;
 using Coolector.Common.Domain;
 using Coolector.Common.Events.Users;
+using Coolector.Common.Services;
 using Coolector.Common.Types;
 using Coolector.Services.Users.Domain;
 using Coolector.Services.Users.Services;
@@ -16,16 +17,19 @@ namespace Coolector.Services.Users.Handlers
     public class SignInHandler : ICommandHandler<SignIn>
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly IHandler _handler;
         private readonly IBusClient _bus;
         private readonly IUserService _userService;
         private readonly IFacebookService _facebookService;
         private readonly IAuthenticationService _authenticationService;
 
-        public SignInHandler(IBusClient bus,
+        public SignInHandler(IHandler handler,
+            IBusClient bus,
             IUserService userService,
             IFacebookService facebookService,
             IAuthenticationService authenticationService)
         {
+            _handler = handler;
             _bus = bus;
             _userService = userService;
             _facebookService = facebookService;
@@ -34,36 +38,33 @@ namespace Coolector.Services.Users.Handlers
 
         public async Task HandleAsync(SignIn command)
         {
-            try
-            {
-                Maybe<User> user = null;
-                switch (command.Provider?.ToLowerInvariant())
+            Maybe<User> user = null;
+            await _handler
+                .Run(async () =>
                 {
-                    case "coolector":
-                        user = await HandleDefaultSignInAsync(command);
-                        break;
-                    case "facebook":
-                        user = await HandleFacebookSignInAsync(command);
-                        break;
-                    default:
-                        throw new ArgumentException($"Invalid provider: {command.Provider}", nameof(command.Provider));
-                }
-
-                await _bus.PublishAsync(new UserSignedIn(command.Request.Id,
-                    user.Value.UserId, user.Value.Email, user.Value.Name, user.Value.Provider));
-            }
-            catch (ServiceException ex)
-            {
-                Logger.Error(ex);
-                await _bus.PublishAsync(new UserSignInRejected(command.Request.Id,
-                    null, OperationCodes.InvalidCredentials, ex.Message, command.Provider));
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex);
-                await _bus.PublishAsync(new UserSignInRejected(command.Request.Id,
-                    null, OperationCodes.InvalidCredentials, "Invalid credentials", command.Provider));
-            }
+                    switch (command.Provider?.ToLowerInvariant())
+                    {
+                        case "coolector":
+                            user = await HandleDefaultSignInAsync(command);
+                            break;
+                        case "facebook":
+                            user = await HandleFacebookSignInAsync(command);
+                            break;
+                        default:
+                            throw new ArgumentException($"Invalid provider: {command.Provider}", nameof(command.Provider));
+                    }
+                })
+                .OnSuccess(async () => await _bus.PublishAsync(new UserSignedIn(command.Request.Id,
+                    user.Value.UserId, user.Value.Email, user.Value.Name, user.Value.Provider)))
+                .OnCustomError(async ex => await _bus.PublishAsync(new UserSignInRejected(command.Request.Id,
+                    null, ex.Code, ex.Message, command.Provider)))
+                .OnError(async (ex, logger) =>
+                {
+                    Logger.Error(ex, "Error occured while signing in");
+                    await _bus.PublishAsync(new UserSignInRejected(command.Request.Id,
+                        null, OperationCodes.Error, ex.Message, command.Provider));
+                })
+                .ExecuteAsync();
         }
 
         private async Task<Maybe<User>> HandleDefaultSignInAsync(SignIn command)
