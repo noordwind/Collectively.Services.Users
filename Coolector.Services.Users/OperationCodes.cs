@@ -12,7 +12,7 @@
         public static string InvalidCredentials => "invalid_credentials";
         public static string EmailInUse => "email_in_use";
         public static string NameInUse => "name_in_use";
-        public static string NameAlreadySet => "name_ialready_set";
+        public static string NameAlreadySet => "name_already_set";
         public static string InvalidAccountType => "invalid_account_type";
         public static string InvalidName => "invalid_name";
         public static string InvalidEmail => "invalid_email";
