@@ -92,6 +92,11 @@ namespace Coolector.Services.Users.Services
                 throw new ServiceException(OperationCodes.UserNotFound,
                     $"User with id: '{userId}' has not been found.");
             }
+            if (await IsNameAvailableAsync(name) == false)
+            {
+                throw new ServiceException(OperationCodes.NameInUse,
+                    $"User with name: '{name}' already exists.");
+            }
 
             user.Value.SetName(name);
             user.Value.Activate();
