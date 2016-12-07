@@ -14,7 +14,8 @@ namespace Coolector.Services.Users.Handlers
         private readonly IBusClient _bus;
         private readonly IUserService _userService;
 
-        public ChangeUserNameHandler(IHandler handler, IBusClient bus, IUserService userService)
+        public ChangeUserNameHandler(IHandler handler, 
+            IBusClient bus, IUserService userService)
         {
             _handler = handler;
             _bus = bus;
@@ -28,9 +29,8 @@ namespace Coolector.Services.Users.Handlers
                 .OnSuccess(async () =>
                 {
                     var user = await _userService.GetAsync(command.UserId);
-                    await
-                        _bus.PublishAsync(new UserNameChanged(command.Request.Id, command.UserId, command.Name,
-                            user.Value.State));
+                    await _bus.PublishAsync(new UserNameChanged(command.Request.Id, 
+                        command.UserId, command.Name, user.Value.State));
                 })
                 .OnCustomError(async ex => await _bus.PublishAsync(new ChangeUsernameRejected(command.Request.Id,
                     command.UserId, ex.Code, ex.Message, command.Name)))
