@@ -6,6 +6,7 @@ using Coolector.Services.Users.Domain;
 using Coolector.Services.Users.Queries;
 using Coolector.Services.Users.Repositories;
 using Coolector.Services.Users.Services;
+using Coolector.Services.Users.Shared;
 using Machine.Specifications;
 using Moq;
 using It = Machine.Specifications.It;

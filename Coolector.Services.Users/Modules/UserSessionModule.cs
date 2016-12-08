@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Coolector.Common.Dto.Users;
 using Coolector.Services.Users.Domain;
 using Coolector.Services.Users.Queries;
 using Coolector.Services.Users.Services;
+using Coolector.Services.Users.Shared.Dto;
 
 namespace Coolector.Services.Users.Modules
 {

@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "Coolector.Common": "1.0.*",
+    "Coolector.Services.Users.Shared": "1.0.*",
     "Autofac": "4.1.0",
     "AutoMapper": "5.2.0",
     "Lockbox.Client": "1.0.0-beta-2",

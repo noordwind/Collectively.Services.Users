@@ -1,4 +1,4 @@
-﻿namespace Coolector.Services.Users
+﻿namespace Coolector.Services.Users.Shared
 {
     public static class OperationCodes
     {

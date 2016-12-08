@@ -1,13 +1,20 @@
 ﻿{
+  "name": "Coolector.Services.Users.Shared",
+  "authors": [ "Noordwind" ],
+  "title": "Coolector.Services.Users.Shared",
   "version": "1.0.0-*",
+  "packOptions": {
+    "licenseUrl": "https://github.com/noordwind/Coolector.Services.Users/blob/master/LICENSE",
+    "projectUrl": "https://github.com/noordwind/Coolector.Services.Users",
+    "packageType": "DotnetCliTool"
+  },
 
   "dependencies": {
+    "Coolector.Common": "1.0.*",
     "NETStandard.Library": "1.6.0"
   },
 
   "frameworks": {
-    "netstandard1.6": {
-      "imports": "dnxcore50"
-    }
+    "netstandard1.6": {}
   }
 }

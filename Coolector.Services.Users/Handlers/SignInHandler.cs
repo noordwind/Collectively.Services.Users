@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Coolector.Common;
 using Coolector.Common.Commands;
-using Coolector.Common.Commands.Users;
-using Coolector.Common.Domain;
-using Coolector.Common.Events.Users;
 using Coolector.Common.Services;
 using Coolector.Common.Types;
 using Coolector.Services.Users.Domain;
 using Coolector.Services.Users.Services;
+using Coolector.Services.Users.Shared;
+using Coolector.Services.Users.Shared.Commands;
+using Coolector.Services.Users.Shared.Events;
 using NLog;
 using RawRabbit;
 

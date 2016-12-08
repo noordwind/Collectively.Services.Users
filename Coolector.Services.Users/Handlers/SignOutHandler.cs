@@ -1,9 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Coolector.Common.Commands;
-using Coolector.Common.Commands.Users;
-using Coolector.Common.Events.Users;
 using Coolector.Common.Services;
 using Coolector.Services.Users.Services;
+using Coolector.Services.Users.Shared;
+using Coolector.Services.Users.Shared.Commands;
+using Coolector.Services.Users.Shared.Events;
 using RawRabbit;
 
 namespace Coolector.Services.Users.Handlers
@@ -12,16 +13,14 @@ namespace Coolector.Services.Users.Handlers
     {
         private readonly IHandler _handler;
         private readonly IBusClient _bus;
-        private readonly IUserService _userService;
         private readonly IAuthenticationService _authenticationService;
 
-        public SignOutHandler(IHandler handler, IBusClient bus,
-            IUserService userService,
+        public SignOutHandler(IHandler handler, 
+            IBusClient bus,
             IAuthenticationService authenticationService)
         {
             _handler = handler;
             _bus = bus;
-            _userService = userService;
             _authenticationService = authenticationService;
         }
 

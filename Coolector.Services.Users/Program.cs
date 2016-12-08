@@ -1,7 +1,7 @@
 ﻿using Coolector.Common.Commands.Facebook;
-using Coolector.Common.Commands.Users;
 using Coolector.Common.Host;
 using Coolector.Services.Users.Framework;
+using Coolector.Services.Users.Shared.Commands;
 
 namespace Coolector.Services.Users
 {

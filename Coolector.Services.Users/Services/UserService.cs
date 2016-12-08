@@ -6,6 +6,7 @@ using Coolector.Common.Services;
 using Coolector.Services.Users.Domain;
 using Coolector.Services.Users.Queries;
 using Coolector.Services.Users.Repositories;
+using Coolector.Services.Users.Shared;
 
 namespace Coolector.Services.Users.Services
 {

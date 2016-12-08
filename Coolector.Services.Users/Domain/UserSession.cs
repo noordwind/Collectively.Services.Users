@@ -1,5 +1,6 @@
 ﻿using System;
 using Coolector.Common.Domain;
+using Coolector.Services.Users.Shared;
 
 namespace Coolector.Services.Users.Domain
 {
