@@ -19,20 +19,28 @@ namespace Coolector.Services.Users.Tests.Specs.Services
         protected static Mock<IEncrypter> EncrypterMock;
 
         protected static Exception Exception;
-        protected static string UserId = "userId";
-        protected static string Username = "user";
-        protected static string Email = "email@email.com";
-        protected static string ExternalId = "externalId";
-        protected static string Provider = Providers.Coolector;
-        protected static string Password = "password";
-        protected static string Hash = "hash";
-        protected static string Role = Roles.User;
+        protected static string UserId;
+        protected static string Username;
+        protected static string Email;
+        protected static string ExternalId;
+        protected static string Provider;
+        protected static string Password;
+        protected static string Hash;
+        protected static string Role;
         protected static User User;
         protected static BrowseUsers Query;
         protected static PagedResult<User> Users;
 
         protected static void Initialize()
         {
+            UserId = "userId";
+            Username = "Test-user_1";
+            Email = "email@email.com";
+            ExternalId = "externalId";
+            Provider = Providers.Coolector;
+            Password = "password";
+            Hash = "hash";
+            Role = Roles.User;
             UserRepositoryMock = new Mock<IUserRepository>();
             EncrypterMock = new Mock<IEncrypter>();
             UserService = new UserService(UserRepositoryMock.Object, EncrypterMock.Object);
@@ -55,13 +63,16 @@ namespace Coolector.Services.Users.Tests.Specs.Services
         {
             Initialize();
             UserRepositoryMock
-                .Setup(x => x.ExistsAsync(Username))
+                .Setup(x => x.ExistsAsync(Username.ToLowerInvariant()))
                 .ReturnsAsync(true);
         };
 
         Because of = async () => Result = await UserService.IsNameAvailableAsync(Username);
 
         It should_return_false = () => Result.ShouldBeFalse();
+
+        It should_call_exists_async_with_lowercase_name =
+            () => UserRepositoryMock.Verify(x => x.ExistsAsync(Username.ToLowerInvariant()), Times.Once);
     }
 
     [Subject("UserService IsNameAvailableAsync")]
@@ -73,13 +84,16 @@ namespace Coolector.Services.Users.Tests.Specs.Services
         {
             Initialize();
             UserRepositoryMock
-                .Setup(x => x.ExistsAsync(Username))
+                .Setup(x => x.ExistsAsync(Username.ToLowerInvariant()))
                 .ReturnsAsync(false);
         };
 
         Because of = async () => Result = await UserService.IsNameAvailableAsync(Username);
 
         It should_return_true = () => Result.ShouldBeTrue();
+
+        It should_call_exists_async_with_lowercase_name =
+            () => UserRepositoryMock.Verify(x => x.ExistsAsync(Username.ToLowerInvariant()), Times.Once);
     }
 
     [Subject("UserService GetAsync")]
@@ -286,7 +300,7 @@ namespace Coolector.Services.Users.Tests.Specs.Services
         };
 
         Because of = async () => await UserService.SignUpAsync(UserId,
-            Email, Role, Provider, Password, name: Username);
+                Email, Role, Provider, Password, name: Username);
 
         It should_call_get_by_user_id_async =
             () => UserRepositoryMock.Verify(x => x.GetByUserIdAsync(UserId), Times.Once);
@@ -297,7 +311,7 @@ namespace Coolector.Services.Users.Tests.Specs.Services
 
         It should_call_add_async = () => UserRepositoryMock.Verify(x => x.AddAsync(Moq.It.Is<User>(u =>
             u.UserId == UserId
-            && u.Name == Username
+            && u.Name == Username.ToLowerInvariant()
             && u.Email == Email
             && u.Role == Role
             && u.Provider == Provider
@@ -504,6 +518,448 @@ namespace Coolector.Services.Users.Tests.Specs.Services
         {
             var exception = Exception as DomainException;
             exception.Code.ShouldEqual(OperationCodes.InvalidPassword);
+        };
+    }
+
+
+    [Subject("UserService SignUpAsync")]
+    public class When_signing_up_async_and_password_is_too_long : UserService_specs
+    {
+        Establish context = () =>
+        {
+            Initialize();
+            Password = "abcdefghijabcdefghijabcdefghijabcdefghij" +
+                       "abcdefghijabcdefghijabcdefghijabcdefghij" +
+                       "abcdefghijabcdefghijabcdefghijabcdefghij";
+            UserRepositoryMock
+                .Setup(x => x.GetByUserIdAsync(UserId))
+                .ReturnsAsync(null);
+            UserRepositoryMock
+                .Setup(x => x.GetByEmailAsync(Email, Provider))
+                .ReturnsAsync(null);
+            UserRepositoryMock
+                .Setup(x => x.GetByNameAsync(Username))
+                .ReturnsAsync(null);
+        };
+
+        Because of = () => Exception = Catch.Exception(() =>
+        {
+            UserService.SignUpAsync(UserId, Email, Role,
+                Provider, Password, name: Username).Await();
+        });
+
+        It should_call_get_by_user_id_async =
+            () => UserRepositoryMock.Verify(x => x.GetByUserIdAsync(UserId), Times.Once);
+        It should_call_get_by_email_async =
+            () => UserRepositoryMock.Verify(x => x.GetByEmailAsync(Email, Provider), Times.Once);
+        It should_call_get_by_name_async =
+            () => UserRepositoryMock.Verify(x => x.GetByNameAsync(Username), Times.Once);
+        It should_not_call_add_async =
+            () => UserRepositoryMock.Verify(x => x.AddAsync(Moq.It.IsAny<User>()), Times.Never);
+        It should_throw_service_exception =
+            () => Exception.ShouldBeOfExactType<DomainException>();
+        It should_throw_exception_with_correct_operation_code = () =>
+        {
+            var exception = Exception as DomainException;
+            exception.Code.ShouldEqual(OperationCodes.InvalidPassword);
+        };
+    }
+
+    [Subject("UserService SignUpAsync")]
+    public class When_signing_up_async_and_name_is_too_short : UserService_specs
+    {
+        Establish context = () =>
+        {
+            Initialize();
+            Username = "a";
+            UserRepositoryMock
+                .Setup(x => x.GetByUserIdAsync(UserId))
+                .ReturnsAsync(null);
+            UserRepositoryMock
+                .Setup(x => x.GetByEmailAsync(Email, Provider))
+                .ReturnsAsync(null);
+            UserRepositoryMock
+                .Setup(x => x.GetByNameAsync(Username))
+                .ReturnsAsync(null);
+        };
+
+        Because of = () => Exception = Catch.Exception(() =>
+        {
+            UserService.SignUpAsync(UserId, Email, Role,
+                Provider, Password, name: Username).Await();
+        });
+
+        It should_call_get_by_user_id_async =
+            () => UserRepositoryMock.Verify(x => x.GetByUserIdAsync(UserId), Times.Once);
+        It should_call_get_by_email_async =
+            () => UserRepositoryMock.Verify(x => x.GetByEmailAsync(Email, Provider), Times.Once);
+        It should_call_get_by_name_async =
+            () => UserRepositoryMock.Verify(x => x.GetByNameAsync(Username), Times.Once);
+        It should_not_call_add_async =
+            () => UserRepositoryMock.Verify(x => x.AddAsync(Moq.It.IsAny<User>()), Times.Never);
+        It should_throw_service_exception =
+            () => Exception.ShouldBeOfExactType<ArgumentException>();
+    }
+
+    [Subject("UserService SignUpAsync")]
+    public class When_signing_up_async_and_name_is_too_long : UserService_specs
+    {
+        Establish context = () =>
+        {
+            Initialize();
+            Username = "abcdefgjijabcdefgjijabcdefgjij" +
+                       "abcdefgjijabcdefgjijabcdefgjij";
+            UserRepositoryMock
+                .Setup(x => x.GetByUserIdAsync(UserId))
+                .ReturnsAsync(null);
+            UserRepositoryMock
+                .Setup(x => x.GetByEmailAsync(Email, Provider))
+                .ReturnsAsync(null);
+            UserRepositoryMock
+                .Setup(x => x.GetByNameAsync(Username))
+                .ReturnsAsync(null);
+        };
+
+        Because of = () => Exception = Catch.Exception(() =>
+        {
+            UserService.SignUpAsync(UserId, Email, Role,
+                Provider, Password, name: Username).Await();
+        });
+
+        It should_call_get_by_user_id_async =
+            () => UserRepositoryMock.Verify(x => x.GetByUserIdAsync(UserId), Times.Once);
+        It should_call_get_by_email_async =
+            () => UserRepositoryMock.Verify(x => x.GetByEmailAsync(Email, Provider), Times.Once);
+        It should_call_get_by_name_async =
+            () => UserRepositoryMock.Verify(x => x.GetByNameAsync(Username), Times.Once);
+        It should_not_call_add_async =
+            () => UserRepositoryMock.Verify(x => x.AddAsync(Moq.It.IsAny<User>()), Times.Never);
+        It should_throw_service_exception =
+            () => Exception.ShouldBeOfExactType<ArgumentException>();
+    }
+
+    [Subject("UserService SignUpAsync")]
+    public class When_signing_up_async_and_name_do_not_match_criteria : UserService_specs
+    {
+        Establish context = () =>
+        {
+            Initialize();
+            Username = "user-asdf ^*(^*&^I sdsasda..";
+            UserRepositoryMock
+                .Setup(x => x.GetByUserIdAsync(UserId))
+                .ReturnsAsync(null);
+            UserRepositoryMock
+                .Setup(x => x.GetByEmailAsync(Email, Provider))
+                .ReturnsAsync(null);
+            UserRepositoryMock
+                .Setup(x => x.GetByNameAsync(Username))
+                .ReturnsAsync(null);
+        };
+
+        Because of = () => Exception = Catch.Exception(() =>
+        {
+            UserService.SignUpAsync(UserId, Email, Role,
+                Provider, Password, name: Username).Await();
+        });
+
+        It should_call_get_by_user_id_async =
+            () => UserRepositoryMock.Verify(x => x.GetByUserIdAsync(UserId), Times.Once);
+        It should_call_get_by_email_async =
+            () => UserRepositoryMock.Verify(x => x.GetByEmailAsync(Email, Provider), Times.Once);
+        It should_call_get_by_name_async =
+            () => UserRepositoryMock.Verify(x => x.GetByNameAsync(Username), Times.Once);
+        It should_not_call_add_async =
+            () => UserRepositoryMock.Verify(x => x.AddAsync(Moq.It.IsAny<User>()), Times.Never);
+        It should_throw_service_exception =
+            () => Exception.ShouldBeOfExactType<ArgumentException>();
+    }
+
+    [Subject("UserService ChangeNameAsync")]
+    public class When_changing_name_async : UserService_specs
+    {
+        protected static string NewName = "New-username";
+
+        Establish context = () =>
+        {
+            Initialize();
+            UserRepositoryMock
+                .Setup(x => x.GetByUserIdAsync(UserId))
+                .ReturnsAsync(User);
+            UserRepositoryMock
+                .Setup(x => x.ExistsAsync(NewName.ToLowerInvariant()))
+                .ReturnsAsync(false);
+        };
+
+        Because of = () => UserService.ChangeNameAsync(UserId, NewName);
+
+        It should_call_update_async =
+            () => UserRepositoryMock.Verify(x => x.UpdateAsync(Moq.It.Is<User>(u =>
+                u.UserId == UserId
+                && u.Name == NewName.ToLowerInvariant())), Times.Once);
+    }
+    
+    [Subject("UserService ChangeNameAsync")]
+    public class When_changing_name_async_and_user_do_not_exist : UserService_specs
+    {
+        protected static string NewName = "New-username";
+
+        Establish context = () =>
+        {
+            Initialize();
+            UserRepositoryMock
+                .Setup(x => x.GetByUserIdAsync(UserId))
+                .ReturnsAsync(null);
+            UserRepositoryMock
+                .Setup(x => x.ExistsAsync(NewName.ToLowerInvariant()))
+                .ReturnsAsync(false);
+        };
+
+        Because of = () => Exception = Catch.Exception(
+            () => UserService.ChangeNameAsync(UserId, NewName).Await());
+
+        It should_not_call_update_async =
+            () => UserRepositoryMock.Verify(x => x.UpdateAsync(Moq.It.IsAny<User>()), Times.Never);
+        It should_throw_service_exception = 
+            () => Exception.ShouldBeOfExactType<ServiceException>();
+        It should_throw_exception_with_user_not_found_code = () =>
+        {
+            var exception = Exception as ServiceException;
+            exception.Code.ShouldEqual(OperationCodes.UserNotFound);
+        };
+    }
+
+
+    [Subject("UserService ChangeNameAsync")]
+    public class When_changing_name_async_and_new_name_is_in_use : UserService_specs
+    {
+        protected static string NewName = "New-username";
+
+        Establish context = () =>
+        {
+            Initialize();
+            UserRepositoryMock
+                .Setup(x => x.GetByUserIdAsync(UserId))
+                .ReturnsAsync(User);
+            UserRepositoryMock
+                .Setup(x => x.ExistsAsync(NewName.ToLowerInvariant()))
+                .ReturnsAsync(true);
+        };
+
+        Because of = () => Exception = Catch.Exception(
+            () => UserService.ChangeNameAsync(UserId, NewName).Await());
+
+        It should_not_call_update_async =
+            () => UserRepositoryMock.Verify(x => x.UpdateAsync(Moq.It.IsAny<User>()), Times.Never);
+        It should_throw_service_exception =
+            () => Exception.ShouldBeOfExactType<ServiceException>();
+        It should_throw_exception_with_name_in_use_code = () =>
+        {
+            var exception = Exception as ServiceException;
+            exception.Code.ShouldEqual(OperationCodes.NameInUse);
+        };
+    }
+
+    [Subject("UserService ChangeNameAsync")]
+    public class When_changing_name_async_and_user_is_already_activated : UserService_specs
+    {
+        protected static string NewName = "New-username";
+
+        Establish context = () =>
+        {
+            Initialize();
+            User.Activate();
+            UserRepositoryMock
+                .Setup(x => x.GetByUserIdAsync(UserId))
+                .ReturnsAsync(User);
+            UserRepositoryMock
+                .Setup(x => x.ExistsAsync(NewName.ToLowerInvariant()))
+                .ReturnsAsync(false);
+        };
+
+        Because of = () => Exception = Catch.Exception(
+            () => UserService.ChangeNameAsync(UserId, NewName).Await());
+
+        It should_not_call_update_async =
+            () => UserRepositoryMock.Verify(x => x.UpdateAsync(Moq.It.IsAny<User>()), Times.Never);
+        It should_throw_domain_exception =
+            () => Exception.ShouldBeOfExactType<DomainException>();
+        It should_throw_exception_with_name_already_set_code = () =>
+        {
+            var exception = Exception as DomainException;
+            exception.Code.ShouldEqual(OperationCodes.NameAlreadySet);
+        };
+    }
+
+    [Subject("UserService ChangeNameAsync")]
+    public class When_changing_name_async_and_name_is_empty : UserService_specs
+    {
+        protected static string NewName = "";
+
+        Establish context = () =>
+        {
+            Initialize();
+            UserRepositoryMock
+                .Setup(x => x.GetByUserIdAsync(UserId))
+                .ReturnsAsync(User);
+            UserRepositoryMock
+                .Setup(x => x.ExistsAsync(NewName.ToLowerInvariant()))
+                .ReturnsAsync(false);
+        };
+
+        Because of = () => Exception = Catch.Exception(
+            () => UserService.ChangeNameAsync(UserId, NewName).Await());
+
+        It should_not_call_update_async =
+            () => UserRepositoryMock.Verify(x => x.UpdateAsync(Moq.It.IsAny<User>()), Times.Never);
+        It should_throw_argument_exception =
+            () => Exception.ShouldBeOfExactType<ArgumentException>();
+    }
+
+    [Subject("UserService ChangeNameAsync")]
+    public class When_changing_name_async_and_name_equals_case_invariant : UserService_specs
+    {
+        protected static string NewName = Username.ToUpperInvariant();
+
+        Establish context = () =>
+        {
+            Initialize();
+            UserRepositoryMock
+                .Setup(x => x.GetByUserIdAsync(UserId))
+                .ReturnsAsync(User);
+            UserRepositoryMock
+                .Setup(x => x.ExistsAsync(NewName.ToLowerInvariant()))
+                .ReturnsAsync(false);
+        };
+
+        Because of = () => UserService.ChangeNameAsync(UserId, NewName).Await();
+
+        It should_call_update_async =
+            () => UserRepositoryMock.Verify(x => x.UpdateAsync(Moq.It.Is<User>(u =>
+                u.UserId == UserId
+                && u.Name == NewName.ToLowerInvariant())), Times.Once);
+    }
+
+    [Subject("UserService ChangeNameAsync")]
+    public class When_changing_name_async_and_name_is_too_short : UserService_specs
+    {
+        protected static string NewName = "A";
+
+        Establish context = () =>
+        {
+            Initialize();
+            UserRepositoryMock
+                .Setup(x => x.GetByUserIdAsync(UserId))
+                .ReturnsAsync(User);
+            UserRepositoryMock
+                .Setup(x => x.ExistsAsync(NewName.ToLowerInvariant()))
+                .ReturnsAsync(false);
+        };
+
+        Because of = () => Exception = Catch.Exception(
+            () => UserService.ChangeNameAsync(UserId, NewName).Await());
+
+        It should_not_call_update_async =
+            () => UserRepositoryMock.Verify(x => x.UpdateAsync(Moq.It.IsAny<User>()), Times.Never);
+        It should_throw_argument_exception =
+            () => Exception.ShouldBeOfExactType<ArgumentException>();
+    }
+
+    [Subject("UserService ChangeNameAsync")]
+    public class When_changing_name_async_and_name_is_too_long : UserService_specs
+    {
+        protected static string NewName = "AbcdefghijAbcdefghijAbcdefghij" +
+                                          "AbcdefghijAbcdefghijAbcdefghij";
+
+        Establish context = () =>
+        {
+            Initialize();
+            UserRepositoryMock
+                .Setup(x => x.GetByUserIdAsync(UserId))
+                .ReturnsAsync(User);
+            UserRepositoryMock
+                .Setup(x => x.ExistsAsync(NewName.ToLowerInvariant()))
+                .ReturnsAsync(false);
+        };
+
+        Because of = () => Exception = Catch.Exception(
+            () => UserService.ChangeNameAsync(UserId, NewName).Await());
+
+        It should_not_call_update_async =
+            () => UserRepositoryMock.Verify(x => x.UpdateAsync(Moq.It.IsAny<User>()), Times.Never);
+        It should_throw_argument_exception =
+            () => Exception.ShouldBeOfExactType<ArgumentException>();
+    }
+
+    [Subject("UserService ChangeNameAsync")]
+    public class When_changing_name_async_and_name_do_not_match_the_criteria : UserService_specs
+    {
+        protected static string NewName = "Ab cd ef .. *&*(";
+
+        Establish context = () =>
+        {
+            Initialize();
+            UserRepositoryMock
+                .Setup(x => x.GetByUserIdAsync(UserId))
+                .ReturnsAsync(User);
+            UserRepositoryMock
+                .Setup(x => x.ExistsAsync(NewName.ToLowerInvariant()))
+                .ReturnsAsync(false);
+        };
+
+        Because of = () => Exception = Catch.Exception(
+            () => UserService.ChangeNameAsync(UserId, NewName).Await());
+
+        It should_not_call_update_async =
+            () => UserRepositoryMock.Verify(x => x.UpdateAsync(Moq.It.IsAny<User>()), Times.Never);
+        It should_throw_argument_exception =
+            () => Exception.ShouldBeOfExactType<ArgumentException>();
+    }
+
+    [Subject("UserService ChangeAvatarAsync")]
+    public class When_changing_avatar_async : UserService_specs
+    {
+        protected static string NewUrl = "url";
+
+        Establish context = () =>
+        {
+            Initialize();
+            UserRepositoryMock
+                .Setup(x => x.GetByUserIdAsync(UserId))
+                .ReturnsAsync(User);
+        };
+
+        Because of = () => UserService.ChangeAvatarAsync(UserId, NewUrl);
+
+        It should_call_update_async =
+            () => UserRepositoryMock.Verify(x => x.UpdateAsync(Moq.It.Is<User>(u =>
+                u.UserId == UserId
+                && u.PictureUrl == NewUrl)), Times.Once);
+    }
+
+    [Subject("UserService ChangeAvatarAsync")]
+    public class When_changing_avatar_async_and_user_do_not_exist : UserService_specs
+    {
+        protected static string NewUrl = "url";
+
+        Establish context = () =>
+        {
+            Initialize();
+            UserRepositoryMock
+                .Setup(x => x.GetByUserIdAsync(UserId))
+                .ReturnsAsync(null);
+        };
+
+        Because of = () => Exception = Catch.Exception(
+            () => UserService.ChangeAvatarAsync(UserId, NewUrl).Await());
+
+        It should_not_call_update_async =
+            () => UserRepositoryMock.Verify(x => x.UpdateAsync(Moq.It.IsAny<User>()), Times.Never);
+        It should_throw_service_exception =
+            () => Exception.ShouldBeOfExactType<ServiceException>();
+        It should_throw_exception_with_user_not_found_code = () =>
+        {
+            var exception = Exception as ServiceException;
+            exception.Code.ShouldEqual(OperationCodes.UserNotFound);
         };
     }
 }
