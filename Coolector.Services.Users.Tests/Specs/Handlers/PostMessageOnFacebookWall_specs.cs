@@ -1,11 +1,11 @@
 ﻿using System;
 using Coolector.Common.Commands;
-using Coolector.Common.Commands.Facebook;
 using Coolector.Common.Events.Facebook;
 using Coolector.Common.Services;
 using Coolector.Services.Users.Handlers;
 using Coolector.Services.Users.Services;
 using Coolector.Services.Users.Shared;
+using Coolector.Services.Users.Shared.Commands.Facebook;
 using Machine.Specifications;
 using Moq;
 using RawRabbit;
