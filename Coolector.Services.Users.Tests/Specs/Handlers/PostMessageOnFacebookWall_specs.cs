@@ -4,7 +4,7 @@ using Coolector.Common.Services;
 using Coolector.Services.Users.Handlers;
 using Coolector.Services.Users.Services;
 using Coolector.Services.Users.Shared;
-using Coolector.Services.Users.Shared.Commands.Facebook;
+using Coolector.Services.Users.Shared.Commands;
 using Coolector.Services.Users.Shared.Events.Facebook;
 using Machine.Specifications;
 using Moq;
@@ -16,21 +16,21 @@ namespace Coolector.Services.Users.Tests.Specs.Handlers
 {
     public abstract class PostMessageOnFacebookWall_specs
     {
-        protected static PostMessageOnFacebookWallHandler PostMessageOnFacebookWallHandler;
+        protected static PostOnFacebookWallHandler PostOnFacebookWallHandler;
         protected static IHandler Handler;
         protected static Mock<IBusClient> BusClientMock;
         protected static Mock<IFacebookService> FacebookServiceMock;
-        protected static PostMessageOnFacebookWall Command;
+        protected static PostOnFacebookWall Command;
 
         protected static void Initialize()
         {
             Handler = new Handler();
             BusClientMock = new Mock<IBusClient>();
             FacebookServiceMock = new Mock<IFacebookService>();
-            PostMessageOnFacebookWallHandler = new PostMessageOnFacebookWallHandler(Handler,
+            PostOnFacebookWallHandler = new PostOnFacebookWallHandler(Handler,
                 BusClientMock.Object, FacebookServiceMock.Object);
 
-            Command = new PostMessageOnFacebookWall
+            Command = new PostOnFacebookWall
             {
                 AccessToken = "token",
                 Message = "message",
@@ -48,12 +48,12 @@ namespace Coolector.Services.Users.Tests.Specs.Handlers
         }
     }
 
-    [Subject("PostMessageOnFacebookWallHandler HandleAsync")]
+    [Subject("PostOnFacebookWallHandler HandleAsync")]
     public class When_handle_async_post_message_on_facebook : PostMessageOnFacebookWall_specs
     {
         Establish context = () => Initialize();
 
-        Because of = () => PostMessageOnFacebookWallHandler.HandleAsync(Command).Await();
+        Because of = () => PostOnFacebookWallHandler.HandleAsync(Command).Await();
 
         It should_call_post_on_wall_async = () => FacebookServiceMock.Verify(x => x.PostOnWallAsync(
                 Command.AccessToken, Command.Message),
@@ -68,14 +68,14 @@ namespace Coolector.Services.Users.Tests.Specs.Handlers
             Times.Once);
 
         It should_not_publish_post_message_rejected = () => BusClientMock.Verify(x => x.PublishAsync(
-                Moq.It.IsAny<PostMessageOnFacebookWallRejected>(),
+                Moq.It.IsAny<PostOnFacebookWallRejected>(),
                 Moq.It.IsAny<Guid>(),
                 Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()),
             Times.Never);
 
     }
 
-    [Subject("PostMessageOnFacebookWallHandler HandleAsync")]
+    [Subject("PostOnFacebookWallHandler HandleAsync")]
     public class When_handle_async_post_message_on_facebook_and_it_fails : PostMessageOnFacebookWall_specs
     {
         Establish context = () =>
@@ -85,7 +85,7 @@ namespace Coolector.Services.Users.Tests.Specs.Handlers
                 .Throws<Exception>();
         };
 
-        Because of = () => PostMessageOnFacebookWallHandler.HandleAsync(Command).Await();
+        Because of = () => PostOnFacebookWallHandler.HandleAsync(Command).Await();
 
         It should_call_post_on_wall_async = () => FacebookServiceMock.Verify(x => x.PostOnWallAsync(
                 Command.AccessToken, Command.Message),
@@ -98,7 +98,7 @@ namespace Coolector.Services.Users.Tests.Specs.Handlers
             Times.Never);
 
         It should_not_publish_post_message_rejected = () => BusClientMock.Verify(x => x.PublishAsync(
-                Moq.It.Is<PostMessageOnFacebookWallRejected>(m => m.RequestId == Command.Request.Id
+                Moq.It.Is<PostOnFacebookWallRejected>(m => m.RequestId == Command.Request.Id
                                                                   && m.UserId == Command.UserId
                                                                   && m.Code == OperationCodes.Error
                                                                   && m.Message == Command.Message),

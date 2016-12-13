@@ -1,8 +1,8 @@
 ﻿using Coolector.Common.Commands;
 
-namespace Coolector.Services.Users.Shared.Commands.Facebook
+namespace Coolector.Services.Users.Shared.Commands
 {
-    public class PostMessageOnFacebookWall : IAuthenticatedCommand
+    public class PostOnFacebookWall : IAuthenticatedCommand
     {
         public Request Request { get; set; }
         public string UserId { get; set; }

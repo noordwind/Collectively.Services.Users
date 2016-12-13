@@ -3,7 +3,7 @@ using Coolector.Common.Events;
 
 namespace Coolector.Services.Users.Shared.Events.Facebook
 {
-    public class PostMessageOnFacebookWallRejected : IRejectedEvent
+    public class PostOnFacebookWallRejected : IRejectedEvent
     {
         public Guid RequestId { get; }
         public string UserId { get; }
@@ -11,11 +11,11 @@ namespace Coolector.Services.Users.Shared.Events.Facebook
         public string Reason { get; }
         public string Message { get; }
 
-        protected PostMessageOnFacebookWallRejected()
+        protected PostOnFacebookWallRejected()
         {
         }
 
-        public PostMessageOnFacebookWallRejected(Guid requestId,
+        public PostOnFacebookWallRejected(Guid requestId,
             string userId, string code,
             string reason, string message)
         {
