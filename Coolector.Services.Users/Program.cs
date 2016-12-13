@@ -1,7 +1,6 @@
 ﻿using Coolector.Common.Host;
 using Coolector.Services.Users.Framework;
 using Coolector.Services.Users.Shared.Commands;
-using Coolector.Services.Users.Shared.Commands.Facebook;
 
 namespace Coolector.Services.Users
 {
@@ -21,7 +20,7 @@ namespace Coolector.Services.Users
                 .SubscribeToCommand<ChangePassword>()
                 .SubscribeToCommand<ResetPassword>()
                 .SubscribeToCommand<SetNewPassword>()
-                .SubscribeToCommand<PostMessageOnFacebookWall>()
+                .SubscribeToCommand<PostOnFacebookWall>()
                 .Build()
                 .Run();
         }

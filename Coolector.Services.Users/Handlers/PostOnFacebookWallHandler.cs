@@ -3,19 +3,19 @@ using Coolector.Common.Commands;
 using Coolector.Common.Services;
 using Coolector.Services.Users.Services;
 using Coolector.Services.Users.Shared;
-using Coolector.Services.Users.Shared.Commands.Facebook;
-using Coolector.Services.Users.Shared.Events.Facebook;
+using Coolector.Services.Users.Shared.Commands;
+using Coolector.Services.Users.Shared.Events;
 using RawRabbit;
 
 namespace Coolector.Services.Users.Handlers
 {
-    public class PostMessageOnFacebookWallHandler : ICommandHandler<PostMessageOnFacebookWall>
+    public class PostOnFacebookWallHandler : ICommandHandler<PostOnFacebookWall>
     {
         private readonly IHandler _handler;
         private readonly IBusClient _bus;
         private readonly IFacebookService _facebookService;
 
-        public PostMessageOnFacebookWallHandler(IHandler handler,
+        public PostOnFacebookWallHandler(IHandler handler,
             IBusClient bus,
             IFacebookService facebookService)
         {
@@ -24,7 +24,7 @@ namespace Coolector.Services.Users.Handlers
             _facebookService = facebookService;
         }
 
-        public async Task HandleAsync(PostMessageOnFacebookWall command)
+        public async Task HandleAsync(PostOnFacebookWall command)
         {
             await _handler
                 .Run(async () => await _facebookService.PostOnWallAsync(command.AccessToken, command.Message))
@@ -33,7 +33,7 @@ namespace Coolector.Services.Users.Handlers
                 .OnError(async (ex, logger) =>
                 {
                     logger.Error(ex, "Error occured while posting message on facebook wall");
-                    await _bus.PublishAsync(new PostMessageOnFacebookWallRejected(command.Request.Id,
+                    await _bus.PublishAsync(new PostOnFacebookWallRejected(command.Request.Id,
                         command.UserId, OperationCodes.Error, ex.Message, command.Message));
                 })
                 .ExecuteAsync();
