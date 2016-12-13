@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Coolector.Common.Commands;
-using Coolector.Common.Commands.Mailing;
 using Coolector.Common.Services;
 using Coolector.Services.Users.Services;
 using Coolector.Services.Users.Shared;
 using Coolector.Services.Users.Shared.Commands;
 using Coolector.Services.Users.Shared.Events;
+using Coolector.Services.Mailing.Shared.Commands;
 using RawRabbit;
 
 namespace Coolector.Services.Users.Handlers

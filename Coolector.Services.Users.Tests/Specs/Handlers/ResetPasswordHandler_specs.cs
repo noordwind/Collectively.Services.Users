@@ -1,6 +1,5 @@
 ﻿using System;
 using Coolector.Common.Commands;
-using Coolector.Common.Commands.Mailing;
 using Coolector.Common.Domain;
 using Coolector.Common.Services;
 using Coolector.Services.Users.Domain;
@@ -9,6 +8,7 @@ using Coolector.Services.Users.Services;
 using Coolector.Services.Users.Shared;
 using Coolector.Services.Users.Shared.Commands;
 using Coolector.Services.Users.Shared.Events;
+using Coolector.Services.Mailing.Shared.Commands;
 using Machine.Specifications;
 using Moq;
 using RawRabbit;

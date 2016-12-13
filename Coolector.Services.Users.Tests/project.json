@@ -13,6 +13,7 @@
   "dependencies": {
     "Coolector.Services.Users": "1.0.0-*",
     "Coolector.Services.Users.Shared": "1.0.*",
+    "Coolector.Services.Mailing.Shared": "1.0.*",
     "Coolector.Common": "1.0.*",
     "FluentAssertions": "4.12.0",
     "Machine.Specifications": "0.11.0",
