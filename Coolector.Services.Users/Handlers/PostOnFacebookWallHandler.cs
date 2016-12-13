@@ -4,7 +4,7 @@ using Coolector.Common.Services;
 using Coolector.Services.Users.Services;
 using Coolector.Services.Users.Shared;
 using Coolector.Services.Users.Shared.Commands;
-using Coolector.Services.Users.Shared.Events.Facebook;
+using Coolector.Services.Users.Shared.Events;
 using RawRabbit;
 
 namespace Coolector.Services.Users.Handlers

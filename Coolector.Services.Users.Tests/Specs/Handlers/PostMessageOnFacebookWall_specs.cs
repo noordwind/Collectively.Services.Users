@@ -5,7 +5,7 @@ using Coolector.Services.Users.Handlers;
 using Coolector.Services.Users.Services;
 using Coolector.Services.Users.Shared;
 using Coolector.Services.Users.Shared.Commands;
-using Coolector.Services.Users.Shared.Events.Facebook;
+using Coolector.Services.Users.Shared.Events;
 using Machine.Specifications;
 using Moq;
 using RawRabbit;

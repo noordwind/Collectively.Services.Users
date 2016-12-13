@@ -1,7 +1,7 @@
 ﻿using System;
 using Coolector.Common.Events;
 
-namespace Coolector.Services.Users.Shared.Events.Facebook
+namespace Coolector.Services.Users.Shared.Events
 {
     public class PostOnFacebookWallRejected : IRejectedEvent
     {
