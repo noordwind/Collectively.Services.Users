@@ -38,6 +38,7 @@ namespace Coolector.Services.Users.Tests.Specs.Handlers
             ResetPasswordHandler = new ResetPasswordHandler(Handler, BusMock.Object,
                 PasswordServiceMock.Object, OneTimeOperationServiceMock.Object);
 
+            var email = "email@email.com";
             Command = new ResetPassword
             {
                 Request = new Request
@@ -49,13 +50,13 @@ namespace Coolector.Services.Users.Tests.Specs.Handlers
                     Origin = "coolector",
                     Resource = "resource"
                 },
-                Email = "email",
+                Email = email,
                 Endpoint = "endpoint"
             };
 
             Token = "token";
             var oneTimeOperation = new OneTimeSecuredOperation(Guid.Empty, "type", 
-                "user", Token, DateTime.MaxValue);
+                email, Token, DateTime.MaxValue);
             OneTimeOperationServiceMock.Setup(x => x.GetAsync(Moq.It.IsAny<Guid>()))
                 .ReturnsAsync(oneTimeOperation);
         }
