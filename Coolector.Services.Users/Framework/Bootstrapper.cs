@@ -6,24 +6,22 @@ using Autofac;
 using Coolector.Common.Commands;
 using Coolector.Common.Mongo;
 using Coolector.Common.Nancy;
-using Coolector.Services.Users.Auth0;
+using Coolector.Common.Nancy.Serialization;
+using Coolector.Common.RabbitMq;
 using Coolector.Services.Users.Repositories;
 using Coolector.Services.Users.Services;
 using Microsoft.Extensions.Configuration;
 using Nancy.Bootstrapper;
 using NLog;
-using RawRabbit;
 using RawRabbit.Configuration;
-using RawRabbit.vNext;
 using System.Reflection;
 using Coolector.Common.Exceptionless;
 using Coolector.Common.Services;
 using Nancy;
 using Nancy.Configuration;
+using Newtonsoft.Json;
 using Coolector.Common.Extensions;
 using Coolector.Services.Users.Settings;
-using Polly;
-using RabbitMQ.Client.Exceptions;
 
 namespace Coolector.Services.Users.Framework
 {
@@ -52,22 +50,10 @@ namespace Coolector.Services.Users.Framework
         protected override void ConfigureApplicationContainer(ILifetimeScope container)
         {
             base.ConfigureApplicationContainer(container);
-
-            var rmqRetryPolicy = Policy
-                .Handle<ConnectFailureException>()
-                .Or<BrokerUnreachableException>()
-                .Or<IOException>()
-                .WaitAndRetry(5, retryAttempt =>
-                    TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                    (exception, timeSpan, retryCount, context) => {
-                        Logger.Error(exception, $"Cannot connect to RabbitMQ. retryCount:{retryCount}, duration:{timeSpan}");
-                    }
-                );
-
             container.Update(builder =>
             {
+                builder.RegisterType<CustomJsonSerializer>().As<JsonSerializer>().SingleInstance();
                 builder.RegisterInstance(_configuration.GetSettings<MongoDbSettings>());
-                builder.RegisterInstance(_configuration.GetSettings<Auth0Settings>());
                 builder.RegisterInstance(_configuration.GetSettings<FacebookSettings>());
                 builder.RegisterInstance(AutoMapperConfig.InitializeMapper());
                 builder.RegisterModule<MongoDbModule>();
@@ -85,15 +71,10 @@ namespace Coolector.Services.Users.Framework
                 builder.RegisterType<Handler>().As<IHandler>();
                 builder.RegisterInstance(_configuration.GetSettings<ExceptionlessSettings>()).SingleInstance();
                 builder.RegisterType<ExceptionlessExceptionHandler>().As<IExceptionHandler>().SingleInstance();
-                var rawRabbitConfiguration = _configuration.GetSettings<RawRabbitConfiguration>();
-                builder.RegisterInstance(rawRabbitConfiguration).SingleInstance();
-                rmqRetryPolicy.Execute(() => builder
-                        .RegisterInstance(BusClientFactory.CreateDefault(rawRabbitConfiguration))
-                        .As<IBusClient>()
-                );
+                RabbitMqContainer.Register(builder, _configuration.GetSettings<RawRabbitConfiguration>());
 
-                var coreAssembly = typeof(Startup).GetTypeInfo().Assembly;
-                builder.RegisterAssemblyTypes(coreAssembly).AsClosedTypesOf(typeof(ICommandHandler<>));
+                var assembly = typeof(Startup).GetTypeInfo().Assembly;
+                builder.RegisterAssemblyTypes(assembly).AsClosedTypesOf(typeof(ICommandHandler<>));
             });
             LifetimeScope = container;
         }
