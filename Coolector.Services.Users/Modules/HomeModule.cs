@@ -1,12 +1,10 @@
-﻿using Nancy;
-
-namespace Coolector.Services.Users.Modules
+﻿namespace Coolector.Services.Users.Modules
 {
     public class HomeModule : ModuleBase
     {
-        public HomeModule()
+        public HomeModule() : base(requireAuthentication: false)
         {
-            Get("", args => Response.AsJson(new { name = "Coolector.Services.Users" }));
+            Get("", args => "Welcome to the Coolector.Services.Users API!");
         }
     }
 }
