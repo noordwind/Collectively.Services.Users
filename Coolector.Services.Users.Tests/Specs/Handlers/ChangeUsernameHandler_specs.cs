@@ -24,7 +24,7 @@ namespace Coolector.Services.Users.Tests.Specs.Handlers
         protected static Mock<IBusClient> BusClientMock;
         protected static Mock<IUserService> UserServiceMock;
 
-        protected static ChangeUserName Command;
+        protected static ChangeUsername Command;
         protected static User User;
 
         protected static void Initialize()
@@ -36,7 +36,7 @@ namespace Coolector.Services.Users.Tests.Specs.Handlers
             ChangeUserNameHandler = new ChangeUserNameHandler(Handler, 
                 BusClientMock.Object, UserServiceMock.Object);
 
-            Command = new ChangeUserName
+            Command = new ChangeUsername
             {
                 Name = "newName",
                 UserId = "userId",
@@ -78,7 +78,7 @@ namespace Coolector.Services.Users.Tests.Specs.Handlers
             () => UserServiceMock.Verify(x => x.GetAsync(Command.UserId), Times.Once);
 
         It should_publish_username_changed_event =
-            () => BusClientMock.Verify(x => x.PublishAsync(Moq.It.Is<UserNameChanged>(m =>
+            () => BusClientMock.Verify(x => x.PublishAsync(Moq.It.Is<UsernameChanged>(m =>
                     m.RequestId == Command.Request.Id
                     && m.UserId == Command.UserId
                     && m.NewName == Command.Name
@@ -108,7 +108,7 @@ namespace Coolector.Services.Users.Tests.Specs.Handlers
         It should_not_call_get_user_async =
             () => UserServiceMock.Verify(x => x.GetAsync(Command.UserId), Times.Never);
         It should_not_publish_username_changed_event =
-            () => BusClientMock.Verify(x => x.PublishAsync(Moq.It.IsAny<UserNameChanged>(),
+            () => BusClientMock.Verify(x => x.PublishAsync(Moq.It.IsAny<UsernameChanged>(),
                 Moq.It.IsAny<Guid>(),
                 Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()), Times.Never);
         It should_publish_change_username_rejected_event =
@@ -142,7 +142,7 @@ namespace Coolector.Services.Users.Tests.Specs.Handlers
         It should_not_call_get_user_async =
             () => UserServiceMock.Verify(x => x.GetAsync(Command.UserId), Times.Never);
         It should_not_publish_username_changed_event =
-            () => BusClientMock.Verify(x => x.PublishAsync(Moq.It.IsAny<UserNameChanged>(),
+            () => BusClientMock.Verify(x => x.PublishAsync(Moq.It.IsAny<UsernameChanged>(),
                 Moq.It.IsAny<Guid>(),
                 Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()), Times.Never);
         It should_publish_change_username_rejected_event =

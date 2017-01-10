@@ -2,7 +2,7 @@
 
 namespace Coolector.Services.Users.Shared.Commands
 {
-    public class ChangeUserName : IAuthenticatedCommand
+    public class ChangeUsername : IAuthenticatedCommand
     {
         public Request Request { get; set; }
         public string UserId { get; set; }

@@ -3,18 +3,18 @@ using Coolector.Common.Events;
 
 namespace Coolector.Services.Users.Shared.Events
 {
-    public class UserNameChanged : IAuthenticatedEvent
+    public class UsernameChanged : IAuthenticatedEvent
     {
         public Guid RequestId { get; }
         public string UserId { get; }
         public string NewName { get; }
         public string State { get; }
 
-        protected UserNameChanged()
+        protected UsernameChanged()
         {
         }
 
-        public UserNameChanged(Guid requestId, string userId, string newName, string state)
+        public UsernameChanged(Guid requestId, string userId, string newName, string state)
         {
             RequestId = requestId;
             UserId = userId;

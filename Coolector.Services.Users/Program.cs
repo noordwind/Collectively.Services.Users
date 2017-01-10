@@ -15,7 +15,7 @@ namespace Coolector.Services.Users
                 .SubscribeToCommand<SignIn>()
                 .SubscribeToCommand<SignUp>()
                 .SubscribeToCommand<SignOut>()
-                .SubscribeToCommand<ChangeUserName>()
+                .SubscribeToCommand<ChangeUsername>()
                 .SubscribeToCommand<ChangeAvatar>()
                 .SubscribeToCommand<ChangePassword>()
                 .SubscribeToCommand<ResetPassword>()
