@@ -3,7 +3,7 @@ using Coolector.Common.Events;
 
 namespace Coolector.Services.Users.Shared.Events
 {
-    public class UserSignedUp : IEvent
+    public class SignedUp : IEvent
     {
         public Guid RequestId { get; }
         public string UserId { get; }
@@ -16,11 +16,11 @@ namespace Coolector.Services.Users.Shared.Events
         public string ExternalUserId { get; }
         public DateTime CreatedAt { get; }
 
-        protected UserSignedUp()
+        protected SignedUp()
         {
         }
 
-        public UserSignedUp(Guid requestId, string userId, string email, string name,
+        public SignedUp(Guid requestId, string userId, string email, string name,
             string pictureUrl, string role, string state, string provider,
             string externalUserId, DateTime createdAt)
         {

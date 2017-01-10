@@ -28,7 +28,7 @@ namespace Coolector.Services.Users.Handlers
         {
             await _handler
                 .Run(async () => await _authenticationService.SignOutAsync(command.SessionId, command.UserId))
-                .OnSuccess(async () => await _bus.PublishAsync(new UserSignedOut(command.Request.Id,
+                .OnSuccess(async () => await _bus.PublishAsync(new SignedOut(command.Request.Id,
                     command.UserId, command.SessionId)))
                 .OnCustomError(async ex => await _bus.PublishAsync(new SignOutRejected(command.Request.Id,
                     command.UserId, ex.Code, ex.Message)))

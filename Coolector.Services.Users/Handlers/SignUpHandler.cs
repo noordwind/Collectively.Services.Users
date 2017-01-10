@@ -36,16 +36,16 @@ namespace Coolector.Services.Users.Handlers
                 .OnSuccess(async () =>
                 {
                     var user = await _userService.GetAsync(userId);
-                    await _bus.PublishAsync(new UserSignedUp(command.Request.Id, userId, user.Value.Email,
+                    await _bus.PublishAsync(new SignedUp(command.Request.Id, userId, user.Value.Email,
                         user.Value.Name, string.Empty, user.Value.Role, user.Value.State,
                         user.Value.Provider, string.Empty, user.Value.CreatedAt));
                 })
-                .OnCustomError(async ex => await _bus.PublishAsync(new UserSignUpRejected(command.Request.Id,
+                .OnCustomError(async ex => await _bus.PublishAsync(new SignUpRejected(command.Request.Id,
                     null, ex.Code, ex.Message, command.Provider)))
                 .OnError(async (ex, logger) =>
                 {
                     logger.Error(ex, "Error occured while signing up a user");
-                    await _bus.PublishAsync(new UserSignUpRejected(command.Request.Id,
+                    await _bus.PublishAsync(new SignUpRejected(command.Request.Id,
                         null, OperationCodes.Error, ex.Message, command.Provider));
                 })
                 .ExecuteAsync();

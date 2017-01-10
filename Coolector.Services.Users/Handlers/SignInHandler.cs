@@ -53,14 +53,14 @@ namespace Coolector.Services.Users.Handlers
                             throw new ArgumentException($"Invalid provider: {command.Provider}", nameof(command.Provider));
                     }
                 })
-                .OnSuccess(async () => await _bus.PublishAsync(new UserSignedIn(command.Request.Id,
+                .OnSuccess(async () => await _bus.PublishAsync(new SignedIn(command.Request.Id,
                     user.Value.UserId, user.Value.Email, user.Value.Name, user.Value.Provider)))
-                .OnCustomError(async ex => await _bus.PublishAsync(new UserSignInRejected(command.Request.Id,
+                .OnCustomError(async ex => await _bus.PublishAsync(new SignInRejected(command.Request.Id,
                     null, ex.Code, ex.Message, command.Provider)))
                 .OnError(async (ex, logger) =>
                 {
                     Logger.Error(ex, "Error occured while signing in");
-                    await _bus.PublishAsync(new UserSignInRejected(command.Request.Id,
+                    await _bus.PublishAsync(new SignInRejected(command.Request.Id,
                         null, OperationCodes.Error, ex.Message, command.Provider));
                 })
                 .ExecuteAsync();
@@ -97,7 +97,7 @@ namespace Coolector.Services.Users.Handlers
             Logger.Info($"Created new user with id: '{userId}' using Facebook user id: '{externalUserId}'");
 
             user = await _userService.GetByExternalUserIdAsync(externalUserId);
-            await _bus.PublishAsync(new UserSignedUp(command.Request.Id, userId, user.Value.Email,
+            await _bus.PublishAsync(new SignedUp(command.Request.Id, userId, user.Value.Email,
                 user.Value.Name, string.Empty, user.Value.Role, user.Value.State,
                 user.Value.Provider, user.Value.ExternalUserId, user.Value.CreatedAt));
 

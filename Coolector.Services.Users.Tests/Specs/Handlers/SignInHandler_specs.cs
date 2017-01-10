@@ -80,7 +80,7 @@ namespace Coolector.Services.Users.Tests.Specs.Handlers
             Times.Once);
 
         It should_publish_user_signed_in_event = () => BusClientMock.Verify(x => x.PublishAsync(
-                Moq.It.Is<UserSignedIn>(m => m.RequestId == Command.Request.Id
+                Moq.It.Is<SignedIn>(m => m.RequestId == Command.Request.Id
                                              && m.UserId == User.UserId
                                              && m.Email == User.Email
                                              && m.Name == User.Name
@@ -90,7 +90,7 @@ namespace Coolector.Services.Users.Tests.Specs.Handlers
             Times.Once);
 
         It should_not_publish_user_sign_in_rejected = () => BusClientMock.Verify(x => x.PublishAsync(
-                Moq.It.IsAny<UserSignInRejected>(),
+                Moq.It.IsAny<SignInRejected>(),
                 Moq.It.IsAny<Guid>(),
                 Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()),
             Times.Never);
@@ -119,13 +119,13 @@ namespace Coolector.Services.Users.Tests.Specs.Handlers
             Times.Once);
 
         It should_not_publish_user_signed_in_event = () => BusClientMock.Verify(x => x.PublishAsync(
-                Moq.It.IsAny<UserSignedIn>(),
+                Moq.It.IsAny<SignedIn>(),
                 Moq.It.IsAny<Guid>(),
                 Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()),
             Times.Never);
 
         It should_publish_user_sign_in_rejected = () => BusClientMock.Verify(x => x.PublishAsync(
-                Moq.It.Is<UserSignInRejected>(m => m.RequestId == Command.Request.Id
+                Moq.It.Is<SignInRejected>(m => m.RequestId == Command.Request.Id
                                                    && m.Code == ErrorCode
                                                    && m.Provider == Command.Provider),
                 Moq.It.IsAny<Guid>(),
@@ -155,13 +155,13 @@ namespace Coolector.Services.Users.Tests.Specs.Handlers
             Times.Once);
 
         It should_not_publish_user_signed_in_event = () => BusClientMock.Verify(x => x.PublishAsync(
-                Moq.It.IsAny<UserSignedIn>(),
+                Moq.It.IsAny<SignedIn>(),
                 Moq.It.IsAny<Guid>(),
                 Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()),
             Times.Never);
 
         It should_publish_user_sign_in_rejected = () => BusClientMock.Verify(x => x.PublishAsync(
-                Moq.It.Is<UserSignInRejected>(m => m.RequestId == Command.Request.Id
+                Moq.It.Is<SignInRejected>(m => m.RequestId == Command.Request.Id
                                                    && m.Code == OperationCodes.Error
                                                    && m.Provider == Command.Provider),
                 Moq.It.IsAny<Guid>(),

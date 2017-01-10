@@ -3,7 +3,7 @@ using Coolector.Common.Events;
 
 namespace Coolector.Services.Users.Shared.Events
 {
-    public class UserSignUpRejected : IRejectedEvent
+    public class SignUpRejected : IRejectedEvent
     {
         public Guid RequestId { get; }
         public string UserId { get; }
@@ -11,11 +11,11 @@ namespace Coolector.Services.Users.Shared.Events
         public string Reason { get; }
         public string Provider { get; }
 
-        protected UserSignUpRejected()
+        protected SignUpRejected()
         {
         }
 
-        public UserSignUpRejected(Guid requestId,
+        public SignUpRejected(Guid requestId,
             string userId, string code,
             string reason, string provider)
         {
