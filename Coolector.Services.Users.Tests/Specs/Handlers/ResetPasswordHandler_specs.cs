@@ -24,13 +24,15 @@ namespace Coolector.Services.Users.Tests.Specs.Handlers
         protected static Mock<IBusClient> BusMock;
         protected static Mock<IPasswordService> PasswordServiceMock;
         protected static Mock<IOneTimeSecuredOperationService> OneTimeOperationServiceMock;
+        protected static Mock<IExceptionHandler> ExceptionHandlerMock;
 
         protected static ResetPassword Command;
         protected static string Token;
 
         public static void Initialize()
         {
-            Handler = new Handler();
+            ExceptionHandlerMock = new Mock<IExceptionHandler>();
+            Handler = new Handler(ExceptionHandlerMock.Object);
             BusMock = new Mock<IBusClient>();
             PasswordServiceMock = new Mock<IPasswordService>();
             OneTimeOperationServiceMock = new Mock<IOneTimeSecuredOperationService>();

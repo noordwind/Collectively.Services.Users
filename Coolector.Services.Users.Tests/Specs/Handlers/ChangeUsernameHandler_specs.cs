@@ -23,13 +23,15 @@ namespace Coolector.Services.Users.Tests.Specs.Handlers
         protected static IHandler Handler;
         protected static Mock<IBusClient> BusClientMock;
         protected static Mock<IUserService> UserServiceMock;
+        protected static Mock<IExceptionHandler> ExceptionHandlerMock;
 
         protected static ChangeUsername Command;
         protected static User User;
 
         protected static void Initialize()
         {
-            Handler = new Handler();
+            ExceptionHandlerMock = new Mock<IExceptionHandler>();
+            Handler = new Handler(ExceptionHandlerMock.Object);
             BusClientMock = new Mock<IBusClient>();
             UserServiceMock = new Mock<IUserService>();
 

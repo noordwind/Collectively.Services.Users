@@ -24,13 +24,15 @@ namespace Coolector.Services.Users.Tests.Specs.Handlers
         protected static Mock<IUserService> UserServiceMock;
         protected static Mock<IFacebookService> FacebookServiceMock;
         protected static Mock<IAuthenticationService> AuthenticationServiceMock;
+        protected static Mock<IExceptionHandler> ExceptionHandlerMock;
 
         protected static SignIn Command;
         protected static User User;
 
         protected static void Initialize()
         {
-            Handler = new Handler();
+            ExceptionHandlerMock = new Mock<IExceptionHandler>();
+            Handler = new Handler(ExceptionHandlerMock.Object);
             BusClientMock = new Mock<IBusClient>();
             UserServiceMock = new Mock<IUserService>();
             FacebookServiceMock = new Mock<IFacebookService>();
