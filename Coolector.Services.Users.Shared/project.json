@@ -8,12 +8,9 @@
     "projectUrl": "https://github.com/noordwind/Coolector.Services.Users",
     "packageType": "DotnetCliTool"
   },
-
   "dependencies": {
-    "Coolector.Common": "1.0.*",
-    "NETStandard.Library": "1.6.1"
+    "Coolector.Common": "1.0.*"
   },
-
   "frameworks": {
     "netstandard1.6": {}
   }
