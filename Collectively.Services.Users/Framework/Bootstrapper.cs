@@ -4,7 +4,6 @@ using Autofac;
 using Collectively.Messages.Commands;
 using Collectively.Common.Mongo;
 using Collectively.Common.Nancy;
-using Nancy.Serialization.JsonNet;
 using Collectively.Common.RabbitMq;
 using Collectively.Common.Security;
 using Collectively.Services.Users.Repositories;
@@ -52,7 +51,7 @@ namespace Collectively.Services.Users.Framework
             base.ConfigureApplicationContainer(container);
             container.Update(builder =>
             {
-                builder.RegisterType<JsonNetSerializer>().As<JsonSerializer>().SingleInstance();
+                builder.RegisterType<CustomJsonSerializer>().As<JsonSerializer>().SingleInstance();
                 builder.RegisterInstance(_configuration.GetSettings<MongoDbSettings>());
                 builder.RegisterInstance(_configuration.GetSettings<FacebookSettings>());
                 builder.RegisterInstance(AutoMapperConfig.InitializeMapper());
