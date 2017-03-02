@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Collectively.Common.Commands;
+using Collectively.Messages.Commands;
 using Collectively.Common.Domain;
 using Collectively.Common.Services;
 using Collectively.Services.Users.Domain;

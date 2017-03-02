@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using Autofac;
-using Collectively.Common.Commands;
+using Collectively.Messages.Commands;
 using Collectively.Common.Mongo;
 using Collectively.Common.Nancy;
 using Collectively.Common.Nancy.Serialization;

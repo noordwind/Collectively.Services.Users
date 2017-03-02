@@ -2,7 +2,7 @@
 using Collectively.Services.Users.Domain;
 using Collectively.Services.Users.Queries;
 using Collectively.Services.Users.Services;
-
+using Collectively.Services.Users.Dto;
 
 namespace Collectively.Services.Users.Modules
 {
