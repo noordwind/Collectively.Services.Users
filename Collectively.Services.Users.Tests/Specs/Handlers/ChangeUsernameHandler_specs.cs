@@ -6,7 +6,6 @@ using Collectively.Common.Services;
 using Collectively.Services.Users.Domain;
 using Collectively.Services.Users.Handlers;
 using Collectively.Services.Users.Services;
-
 using Collectively.Messages.Commands.Users;
 using Collectively.Messages.Events.Users;
 using Machine.Specifications;

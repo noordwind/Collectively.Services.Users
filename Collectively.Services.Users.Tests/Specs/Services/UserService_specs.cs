@@ -6,7 +6,6 @@ using Collectively.Services.Users.Domain;
 using Collectively.Services.Users.Queries;
 using Collectively.Services.Users.Repositories;
 using Collectively.Services.Users.Services;
-
 using Machine.Specifications;
 using Moq;
 using It = Machine.Specifications.It;
