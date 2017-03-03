@@ -17,7 +17,6 @@ namespace Collectively.Services.Users.Tests.Specs.Services
         protected static IUserService UserService;
         protected static Mock<IUserRepository> UserRepositoryMock;
         protected static Mock<IEncrypter> EncrypterMock;
-
         protected static Exception Exception;
         protected static string UserId;
         protected static string Username;

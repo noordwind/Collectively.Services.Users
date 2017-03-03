@@ -8,9 +8,9 @@
     "Newtonsoft.Json": "9.0.1",
     "Collectively.Common": "1.0.*",
     "Collectively.Messages": "1.0.*",
+    "Collectively.Services.Users": "1.0.*",
     "System.Drawing": "1.0.0-beta004",
     "System.Net.Http": "4.3.0",
-    "Collectively.Services.Users": "1.0.0-*"
   },
   "testRunner": "mspec",
   "frameworks": {

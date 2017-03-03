@@ -13,6 +13,7 @@
   "dependencies": {
     "Collectively.Common": "1.0.*",
     "Collectively.Messages": "1.0.*",
+    "Collectively.Services.Users": "1.0.*",
     "FluentAssertions": "4.18.0",
     "Machine.Specifications": "0.11.0",
     "Machine.Specifications.Should": "0.11.0",
