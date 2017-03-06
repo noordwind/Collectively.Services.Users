@@ -21,6 +21,8 @@ using Nancy.Configuration;
 using Newtonsoft.Json;
 using Collectively.Common.Extensions;
 using Collectively.Services.Users.Settings;
+using System;
+using Collectively.Messages.Events.Users;
 
 namespace Collectively.Services.Users.Framework
 {
@@ -70,6 +72,7 @@ namespace Collectively.Services.Users.Framework
                 builder.RegisterType<Handler>().As<IHandler>();
                 builder.RegisterInstance(_configuration.GetSettings<ExceptionlessSettings>()).SingleInstance();
                 builder.RegisterType<ExceptionlessExceptionHandler>().As<IExceptionHandler>().SingleInstance();
+                RegisterResourceFactory(builder);
 
                 var assembly = typeof(Startup).GetTypeInfo().Assembly;
                 builder.RegisterAssemblyTypes(assembly).AsClosedTypesOf(typeof(ICommandHandler<>));
@@ -134,6 +137,15 @@ namespace Collectively.Services.Users.Framework
             {
                 ctx.Request.Query[fixedNumber.Key] = fixedNumber.Value;
             }
+        }
+
+        private void RegisterResourceFactory(ContainerBuilder builder)
+        {
+            var resources = new Dictionary<Type, string>
+            {
+                [typeof(SignedUp)] = "users/{0}"
+            };
+            builder.RegisterModule(new ResourceFactory.Module(resources));
         }
     }
 }

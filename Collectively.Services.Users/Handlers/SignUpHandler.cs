@@ -4,7 +4,6 @@ using Collectively.Messages.Commands;
 using Collectively.Common.Services;
 using Collectively.Services.Users.Domain;
 using Collectively.Services.Users.Services;
-
 using Collectively.Messages.Commands.Users;
 using Collectively.Messages.Events.Users;
 using RawRabbit;
@@ -16,14 +15,17 @@ namespace Collectively.Services.Users.Handlers
         private readonly IHandler _handler;
         private readonly IBusClient _bus;
         private readonly IUserService _userService;
+        private readonly IResourceFactory _resourceFactory;
 
         public SignUpHandler(IHandler handler, 
             IBusClient bus,
-            IUserService userService)
+            IUserService userService,
+            IResourceFactory resourceFactory)
         {
             _handler = handler;
             _bus = bus;
             _userService = userService;
+            _resourceFactory = resourceFactory;
         }
 
         public async Task HandleAsync(SignUp command)
@@ -36,9 +38,9 @@ namespace Collectively.Services.Users.Handlers
                 .OnSuccess(async () =>
                 {
                     var user = await _userService.GetAsync(userId);
-                    await _bus.PublishAsync(new SignedUp(command.Request.Id, userId, user.Value.Email,
-                        user.Value.Name, string.Empty, user.Value.Role, user.Value.State,
-                        user.Value.Provider, string.Empty, user.Value.CreatedAt));
+                    var resource = _resourceFactory.Resolve<SignedUp>(userId);
+                    await _bus.PublishAsync(new SignedUp(command.Request.Id, resource, 
+                        userId, user.Value.Provider));
                 })
                 .OnCustomError(async ex => await _bus.PublishAsync(new SignUpRejected(command.Request.Id,
                     null, ex.Code, ex.Message, command.Provider)))

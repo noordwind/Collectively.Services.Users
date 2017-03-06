@@ -21,18 +21,21 @@ namespace Collectively.Services.Users.Handlers
         private readonly IUserService _userService;
         private readonly IFacebookService _facebookService;
         private readonly IAuthenticationService _authenticationService;
+        private readonly IResourceFactory _resourceFactory;
 
         public SignInHandler(IHandler handler,
             IBusClient bus,
             IUserService userService,
             IFacebookService facebookService,
-            IAuthenticationService authenticationService)
+            IAuthenticationService authenticationService, 
+            IResourceFactory resourceFactory)
         {
             _handler = handler;
             _bus = bus;
             _userService = userService;
             _facebookService = facebookService;
             _authenticationService = authenticationService;
+            _resourceFactory = resourceFactory;
         }
 
         public async Task HandleAsync(SignIn command)
@@ -97,9 +100,9 @@ namespace Collectively.Services.Users.Handlers
             Logger.Info($"Created new user with id: '{userId}' using Facebook user id: '{externalUserId}'");
 
             user = await _userService.GetByExternalUserIdAsync(externalUserId);
-            await _bus.PublishAsync(new SignedUp(command.Request.Id, userId, user.Value.Email,
-                user.Value.Name, string.Empty, user.Value.Role, user.Value.State,
-                user.Value.Provider, user.Value.ExternalUserId, user.Value.CreatedAt));
+            var resource = _resourceFactory.Resolve<SignedUp>(userId);
+            await _bus.PublishAsync(new SignedUp(command.Request.Id, resource, userId, 
+                user.Value.Provider));
 
             await _authenticationService.SignInViaFacebookAsync(command.SessionId, command.AccessToken,
                 command.IpAddress, command.UserAgent);
