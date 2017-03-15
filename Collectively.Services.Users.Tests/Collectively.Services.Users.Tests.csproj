@@ -12,13 +12,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../Collectively.Common/Collectively.Common/Collectively.Common.csproj" />
     <ProjectReference Include="../Collectively.Services.Users/Collectively.Services.Users.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0-preview-20170106-08" />
     <PackageReference Include="Collectively.Messages" Version="1.0.*" />
+    <PackageReference Include="Collectively.Common" Version="1.0.*" />
     <PackageReference Include="FluentAssertions" Version="4.18.0" />
     <PackageReference Include="Machine.Specifications" Version="0.11.0" />
     <PackageReference Include="Machine.Specifications.Should" Version="0.11.0" />
