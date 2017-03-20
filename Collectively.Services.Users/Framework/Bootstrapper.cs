@@ -70,6 +70,7 @@ namespace Collectively.Services.Users.Framework
                 builder.RegisterType<OneTimeSecuredOperationService>().As<IOneTimeSecuredOperationService>();
                 builder.RegisterType<PasswordService>().As<IPasswordService>();
                 builder.RegisterType<UserService>().As<IUserService>();
+                builder.RegisterType<AvatarService>().As<IAvatarService>();
                 builder.RegisterType<Handler>().As<IHandler>();
                 builder.RegisterInstance(_configuration.GetSettings<ExceptionlessSettings>()).SingleInstance();
                 builder.RegisterType<ExceptionlessExceptionHandler>().As<IExceptionHandler>().SingleInstance();
