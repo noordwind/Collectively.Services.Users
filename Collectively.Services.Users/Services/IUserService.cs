@@ -17,10 +17,8 @@ namespace Collectively.Services.Users.Services
         Task SignUpAsync(string userId, string email, string role,
             string provider, string password = null,
             string externalUserId = null,
-            bool activate = true, string pictureUrl = null,
-            string name = null);
+            bool activate = true, string name = null);
 
         Task ChangeNameAsync(string userId, string name);
-        Task ChangeAvatarAsync(string userId, string name);
     }
 }

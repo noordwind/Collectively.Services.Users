@@ -19,7 +19,6 @@ namespace Collectively.Services.Users.Domain
         public string Password { get; protected set; }
         public string Salt { get; protected set; }
         public string Provider { get; protected set; }
-        public string PictureUrl { get; protected set; }
         public string Role { get; protected set; }
         public string State { get; protected set; }
         public string ExternalUserId { get; protected set; }
@@ -30,13 +29,13 @@ namespace Collectively.Services.Users.Domain
         {
         }
 
-        public User(string userId, string email, string role, string provider, string pictureUrl = null)
+        public User(string userId, string email, string role, string provider)
         {
             SetUserId(userId);
             SetEmail(email);
+            Avatar = Avatar.Empty;
             Provider = provider;
             Role = role;
-            PictureUrl = pictureUrl;
             State = States.Incomplete;
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
@@ -153,12 +152,6 @@ namespace Collectively.Services.Users.Domain
                 return;
 
             State = States.Active;
-            UpdatedAt = DateTime.UtcNow;
-        }
-
-        public void SetAvatar(string pictureUrl)
-        {
-            PictureUrl = pictureUrl;
             UpdatedAt = DateTime.UtcNow;
         }
 

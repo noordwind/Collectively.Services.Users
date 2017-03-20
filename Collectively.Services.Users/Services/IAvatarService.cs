@@ -5,7 +5,8 @@ namespace Collectively.Services.Users.Services
 {
     public interface IAvatarService
     {
-         Task UploadAvatarAsync(string userId, File avatar);
-         Task RemoveAvatarAsync(string userId);
+         Task<string> GetUrlAsync(string userId);
+         Task AddOrUpdateAsync(string userId, File avatar);
+         Task RemoveAsync(string userId);
     }
 }

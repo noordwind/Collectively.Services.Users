@@ -41,7 +41,7 @@ namespace Collectively.Services.Users.Services
 
         public async Task SignUpAsync(string userId, string email, string role,
             string provider, string password = null, string externalUserId = null,
-            bool activate = true, string pictureUrl = null, string name = null)
+            bool activate = true, string name = null)
         {
             var user = await _userRepository.GetByUserIdAsync(userId);
             if (user.HasValue)
@@ -70,7 +70,7 @@ namespace Collectively.Services.Users.Services
 
             }
 
-            user = new User(userId, email, role, provider, pictureUrl);
+            user = new User(userId, email, role, provider);
             if (!password.Empty())
                 user.Value.SetPassword(password, _encrypter);
             if (name.NotEmpty())
@@ -101,19 +101,6 @@ namespace Collectively.Services.Users.Services
 
             user.Value.SetName(name);
             user.Value.Activate();
-            await _userRepository.UpdateAsync(user.Value);
-        }
-
-        public async Task ChangeAvatarAsync(string userId, string pictureUrl)
-        {
-            var user = await GetAsync(userId);
-            if (user.HasNoValue)
-            {
-                throw new ServiceException(OperationCodes.UserNotFound,
-                    $"User with id: '{userId}' has not been found.");
-            }
-
-            user.Value.SetAvatar(pictureUrl);
             await _userRepository.UpdateAsync(user.Value);
         }
     }
