@@ -2,6 +2,7 @@
 using System.Globalization;
 using Autofac;
 using Collectively.Messages.Commands;
+using Collectively.Common.Files;
 using Collectively.Common.Mongo;
 using Collectively.Common.Nancy;
 using Collectively.Common.RabbitMq;
@@ -73,6 +74,7 @@ namespace Collectively.Services.Users.Framework
                 builder.RegisterInstance(_configuration.GetSettings<ExceptionlessSettings>()).SingleInstance();
                 builder.RegisterType<ExceptionlessExceptionHandler>().As<IExceptionHandler>().SingleInstance();
                 RegisterResourceFactory(builder);
+                // builder.RegisterModule(new FilesModule(_configuration));
 
                 var assembly = typeof(Startup).GetTypeInfo().Assembly;
                 builder.RegisterAssemblyTypes(assembly).AsClosedTypesOf(typeof(ICommandHandler<>));

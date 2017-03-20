@@ -12,6 +12,7 @@ namespace Collectively.Services.Users.Domain
         private static readonly Regex NameRegex = new Regex("^(?![_.-])(?!.*[_.-]{2})[a-zA-Z0-9._.-]+(?<![_.-])$",
             RegexOptions.Compiled);
 
+        public Avatar Avatar { get; protected set; }
         public string UserId { get; protected set; }
         public string Email { get; protected set; }
         public string Name { get; protected set; }
@@ -58,7 +59,6 @@ namespace Collectively.Services.Users.Domain
             UpdatedAt = DateTime.UtcNow;
         }
 
-        //TODO: Might not work with FB etc.
         public void SetEmail(string email)
         {
             if (email.Empty())
@@ -69,9 +69,13 @@ namespace Collectively.Services.Users.Domain
                 return;
             }
             if (!email.IsEmail())
+            {
                 throw new ArgumentException($"Invalid email {email}.", nameof(email));
+            }
             if (Email.EqualsCaseInvariant(email))
+            {
                 return;
+            }
 
             Email = email.ToLowerInvariant();
             UpdatedAt = DateTime.UtcNow;
@@ -85,15 +89,25 @@ namespace Collectively.Services.Users.Domain
                     $"User name has been already set: {Name}");
             }
             if (name.Empty())
+            {
                 throw new ArgumentException("User name can not be empty.", nameof(name));
+            }
             if (Name.EqualsCaseInvariant(name))
+            {
                 return;
+            }
             if (name.Length < 2)
+            {
                 throw new ArgumentException("User name is too short.", nameof(name));
+            }
             if (name.Length > 50)
+            {
                 throw new ArgumentException("User name is too long.", nameof(name));
+            }
             if (NameRegex.IsMatch(name) == false)
+            {
                 throw new ArgumentException("User name doesn't meet the required criteria.", nameof(name));
+            }
 
             Name = name.ToLowerInvariant();
             UpdatedAt = DateTime.UtcNow;
@@ -107,6 +121,22 @@ namespace Collectively.Services.Users.Domain
             Role = role;
             UpdatedAt = DateTime.UtcNow;
         }
+
+        public void SetAvatar(Avatar avatar)
+        {
+            if (avatar == null)
+            {
+                return;
+            }
+            Avatar = avatar;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void RemoveAvatar()
+        {
+            Avatar = Avatar.Empty;
+            UpdatedAt = DateTime.UtcNow;
+        }        
 
         public void Lock()
         {

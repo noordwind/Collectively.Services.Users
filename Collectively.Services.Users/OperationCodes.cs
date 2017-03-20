@@ -26,6 +26,7 @@
         public static string OperationNotFound => "operation_not_found";
         public static string InvalidSecuredOperation => "invalid_secured_operation";
         public static string Error => "error";
+        public static string InvalidAvatar => "invalid_avatar";
         public static string InvalidUser => "invalid_user";
     }
 }
