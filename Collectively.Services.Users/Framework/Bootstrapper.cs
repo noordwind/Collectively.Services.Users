@@ -74,7 +74,7 @@ namespace Collectively.Services.Users.Framework
                 builder.RegisterInstance(_configuration.GetSettings<ExceptionlessSettings>()).SingleInstance();
                 builder.RegisterType<ExceptionlessExceptionHandler>().As<IExceptionHandler>().SingleInstance();
                 RegisterResourceFactory(builder);
-                // builder.RegisterModule(new FilesModule(_configuration));
+                builder.RegisterModule(new FilesModule(_configuration));
 
                 var assembly = typeof(Startup).GetTypeInfo().Assembly;
                 builder.RegisterAssemblyTypes(assembly).AsClosedTypesOf(typeof(ICommandHandler<>));
