@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Collectively.Services.Users": {
+      "commandName": "Project",
+      "applicationUrl": "http://localhost:10001"
+    }
+  }
+}
