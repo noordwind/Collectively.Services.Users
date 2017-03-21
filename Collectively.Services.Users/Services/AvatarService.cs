@@ -54,7 +54,7 @@ namespace Collectively.Services.Users.Services
             var user = await _userRepository.GetByUserIdAsync(userId);
             var extension = avatar.Name.Split('.').Last();
             var name = $"{userId:N}_avatar.{extension}";
-            var resizedAvatar = _imageService.ProcessImage(avatar, 100);
+            var resizedAvatar = _imageService.ProcessImage(avatar, 200);
             await RemoveAsync(user, userId);
             await _fileHandler.UploadAsync(resizedAvatar, name, url => {
                 user.Value.SetAvatar(Avatar.Create(name, url));
