@@ -12,6 +12,7 @@ using Moq;
 using RawRabbit;
 using RawRabbit.Configuration.Publish;
 using It = Machine.Specifications.It;
+using Collectively.Common.Files;
 
 namespace Collectively.Services.Users.Tests.Specs.Handlers
 {
@@ -24,6 +25,8 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
         protected static Mock<IFacebookService> FacebookServiceMock;
         protected static Mock<IAuthenticationService> AuthenticationServiceMock;
         protected static Mock<IExceptionHandler> ExceptionHandlerMock;
+        protected static Mock<IAvatarService> AvatarServiceMock;
+        protected static Mock<IFileResolver> FileResolverMock;
         protected static Mock<IResourceFactory> ResourceFactoryMock;
 
         protected static SignIn Command;
@@ -37,11 +40,14 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
             UserServiceMock = new Mock<IUserService>();
             FacebookServiceMock = new Mock<IFacebookService>();
             AuthenticationServiceMock = new Mock<IAuthenticationService>();
+            AvatarServiceMock = new Mock<IAvatarService>();
+            FileResolverMock = new Mock<IFileResolver>();
             ResourceFactoryMock = new Mock<IResourceFactory>();
 
             SignInHandler = new SignInHandler(Handler, BusClientMock.Object,
                 UserServiceMock.Object, FacebookServiceMock.Object,
-                AuthenticationServiceMock.Object, ResourceFactoryMock.Object);
+                AuthenticationServiceMock.Object, AvatarServiceMock.Object,
+                FileResolverMock.Object, ResourceFactoryMock.Object);
 
             Command = new SignIn
             {

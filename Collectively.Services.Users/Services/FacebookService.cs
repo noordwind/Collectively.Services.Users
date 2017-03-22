@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Collectively.Common.Types;
 using Collectively.Services.Users.Domain;
 using Collectively.Services.Users.Settings;
@@ -54,5 +55,8 @@ namespace Collectively.Services.Users.Services
 
         public async Task PostOnWallAsync(string accessToken, string message)
             => await _facebookClient.PostAsync("me/feed", accessToken, new {message});
-    }
+
+        public string GetAvatarUrl(string facebookId)
+            => $"https://graph.facebook.com/{facebookId}/picture?type=large";
+  }
 }

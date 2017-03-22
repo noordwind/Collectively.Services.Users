@@ -5,11 +5,12 @@ using Collectively.Common.Services;
 using Collectively.Common.Types;
 using Collectively.Services.Users.Domain;
 using Collectively.Services.Users.Services;
-
 using Collectively.Messages.Commands.Users;
 using Collectively.Messages.Events.Users;
 using NLog;
 using RawRabbit;
+using Collectively.Common.Files;
+using System.IO;
 
 namespace Collectively.Services.Users.Handlers
 {
@@ -21,6 +22,8 @@ namespace Collectively.Services.Users.Handlers
         private readonly IUserService _userService;
         private readonly IFacebookService _facebookService;
         private readonly IAuthenticationService _authenticationService;
+        private readonly IAvatarService _avatarService;
+        private readonly IFileResolver _fileResolver;
         private readonly IResourceFactory _resourceFactory;
 
         public SignInHandler(IHandler handler,
@@ -28,6 +31,8 @@ namespace Collectively.Services.Users.Handlers
             IUserService userService,
             IFacebookService facebookService,
             IAuthenticationService authenticationService, 
+            IAvatarService avatarService,
+            IFileResolver fileResolver,
             IResourceFactory resourceFactory)
         {
             _handler = handler;
@@ -35,6 +40,8 @@ namespace Collectively.Services.Users.Handlers
             _userService = userService;
             _facebookService = facebookService;
             _authenticationService = authenticationService;
+            _avatarService = avatarService;
+            _fileResolver = fileResolver;
             _resourceFactory = resourceFactory;
         }
 
@@ -98,7 +105,7 @@ namespace Collectively.Services.Users.Handlers
                 Roles.User, Providers.Facebook, externalUserId: externalUserId);
 
             Logger.Info($"Created new user with id: '{userId}' using Facebook user id: '{externalUserId}'");
-
+            await TryUploadFacebookAvatar(userId, externalUserId);
             user = await _userService.GetByExternalUserIdAsync(externalUserId);
             var resource = _resourceFactory.Resolve<SignedUp>(userId);
             await _bus.PublishAsync(new SignedUp(command.Request.Id, resource, userId, 
@@ -108,6 +115,30 @@ namespace Collectively.Services.Users.Handlers
                 command.IpAddress, command.UserAgent);
 
             return await _userService.GetByExternalUserIdAsync(externalUserId);
+        }
+
+        private async Task TryUploadFacebookAvatar(string userId, string externalUserId)
+        {
+            try
+            {
+                var avatarUrl = _facebookService.GetAvatarUrl(externalUserId);
+                var avatar = await _fileResolver.FromUrlAsync(avatarUrl);
+                if(avatar.HasNoValue)
+                {
+                    return;
+                }
+                var file = Common.Files.File.Empty;
+                using (var stream = new MemoryStream())
+                {
+                    await avatar.Value.CopyToAsync(stream);
+                    file = Common.Files.File.Create(userId, "image/jpeg", stream.ToArray());
+                }
+                await _avatarService.AddOrUpdateAsync(userId, file);
+            }
+            catch(Exception ex)
+            {
+                Logger.Error(ex, $"There was an error when trying to upload the avatar from Facebook for user: {externalUserId}.");
+            }
         }
     }
 }
