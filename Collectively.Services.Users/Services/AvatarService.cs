@@ -83,8 +83,8 @@ namespace Collectively.Services.Users.Services
             {
                 return;
             }
-            user.Value.RemoveAvatar();
             await _fileHandler.DeleteAsync(user.Value.Avatar.Name);
+            user.Value.RemoveAvatar();
         }
     }
 }
