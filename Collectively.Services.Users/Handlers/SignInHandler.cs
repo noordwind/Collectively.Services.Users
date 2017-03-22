@@ -131,7 +131,7 @@ namespace Collectively.Services.Users.Handlers
                 using (var stream = new MemoryStream())
                 {
                     await avatar.Value.CopyToAsync(stream);
-                    file = Common.Files.File.Create(userId, "image/jpeg", stream.ToArray());
+                    file = Common.Files.File.Create($"{userId}.jpg", "image/jpeg", stream.ToArray());
                 }
                 await _avatarService.AddOrUpdateAsync(userId, file);
             }
