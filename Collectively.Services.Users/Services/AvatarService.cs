@@ -52,8 +52,7 @@ namespace Collectively.Services.Users.Services
                 throw new ServiceException(OperationCodes.InvalidFile);
             }
             var user = await _userRepository.GetByUserIdAsync(userId);
-            var extension = avatar.Name.Split('.').Last();
-            var name = $"{userId:N}_avatar.{extension}";
+            var name = $"{userId:N}_avatar.jpg";
             var resizedAvatar = _imageService.ProcessImage(avatar, 200);
             await RemoveAsync(user, userId);
             await _fileHandler.UploadAsync(resizedAvatar, name, url => {
