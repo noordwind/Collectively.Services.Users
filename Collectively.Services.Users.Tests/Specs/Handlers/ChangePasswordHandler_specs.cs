@@ -53,7 +53,7 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
     }
 
     [Subject("ChangePasswordHandler HandleAsync")]
-    public class When_handle_async_change_password_command : ChangePasswordHandler_specs
+    public class when_handle_async_change_password_command : ChangePasswordHandler_specs
     {
         Establish context = () => Initialize();
 
@@ -78,7 +78,7 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
     }
 
     [Subject("ChangePasswordHandler HandleAsync")]
-    public class When_handle_async_change_password_command_and_it_fails : ChangePasswordHandler_specs
+    public class when_handle_async_change_password_command_and_it_fails : ChangePasswordHandler_specs
     {
         private Establish context = () =>
         {
@@ -111,7 +111,7 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
     }
 
     [Subject("ChangePasswordHandler HandleAsync")]
-    public class When_handle_async_change_password_command_and_it_throws_custom_exception : ChangePasswordHandler_specs
+    public class when_handle_async_change_password_command_and_it_throws_custom_exception : ChangePasswordHandler_specs
     {
         protected static string ErrorCode = "Error";
 

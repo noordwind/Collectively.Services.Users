@@ -54,7 +54,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService IsNameAvailableAsync")]
-    public class When_calling_is_name_available_async_and_user_with_same_name_exists : UserService_specs
+    public class when_calling_is_name_available_async_and_user_with_same_name_exists : UserService_specs
     {
         protected static bool Result;
 
@@ -75,7 +75,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService IsNameAvailableAsync")]
-    public class When_calling_is_name_available_async_and_user_with_same_name_does_not_exist : UserService_specs
+    public class when_calling_is_name_available_async_and_user_with_same_name_does_not_exist : UserService_specs
     {
         protected static bool Result;
 
@@ -96,7 +96,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService GetAsync")]
-    public class When_calling_get_async_and_user_exists : UserService_specs
+    public class when_calling_get_async_and_user_exists : UserService_specs
     {
         protected static Maybe<User> Result;
 
@@ -114,7 +114,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService GetAsync")]
-    public class When_calling_get_async_and_user_does_not_exist : UserService_specs
+    public class when_calling_get_async_and_user_does_not_exist : UserService_specs
     {
         protected static Maybe<User> Result;
 
@@ -123,7 +123,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
             Initialize();
             UserRepositoryMock
                 .Setup(x => x.GetByUserIdAsync(UserId))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
         };
 
         Because of = async () => Result = await UserService.GetAsync(UserId);
@@ -132,7 +132,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService GetByNameAsync")]
-    public class When_calling_get_by_name_async_and_user_exists : UserService_specs
+    public class when_calling_get_by_name_async_and_user_exists : UserService_specs
     {
         protected static Maybe<User> Result;
 
@@ -151,7 +151,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService GetByNameAsync")]
-    public class When_calling_get_by_name_async_and_user_does_not_exist : UserService_specs
+    public class when_calling_get_by_name_async_and_user_does_not_exist : UserService_specs
     {
         protected static Maybe<User> Result;
 
@@ -161,7 +161,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
             User.SetName(Username);
             UserRepositoryMock
                 .Setup(x => x.GetByNameAsync(Username))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
         };
 
         Because of = async () => Result = await UserService.GetByNameAsync(Username);
@@ -170,7 +170,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService GetByExternalUserIdAsync")]
-    public class When_calling_get_by_external_id_async_and_user_exists : UserService_specs
+    public class when_calling_get_by_external_id_async_and_user_exists : UserService_specs
     {
         protected static Maybe<User> Result;
 
@@ -189,7 +189,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService GetByExternalUserIdAsync")]
-    public class When_calling_get_by_external_id_async_and_user_does_not_exist : UserService_specs
+    public class when_calling_get_by_external_id_async_and_user_does_not_exist : UserService_specs
     {
         protected static Maybe<User> Result;
 
@@ -199,7 +199,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
             User.SetExternalUserId(ExternalId);
             UserRepositoryMock
                 .Setup(x => x.GetByExternalUserIdAsync(ExternalId))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
         };
 
         Because of = async () => Result = await UserService.GetByExternalUserIdAsync(ExternalId);
@@ -208,7 +208,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService GetByEmailAsync")]
-    public class When_calling_get_by_email_async_and_user_exists : UserService_specs
+    public class when_calling_get_by_email_async_and_user_exists : UserService_specs
     {
         protected static Maybe<User> Result;
 
@@ -226,7 +226,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService GetByExternalUserIdAsync")]
-    public class When_calling_get_by_email_async_and_user_does_not_exist : UserService_specs
+    public class when_calling_get_by_email_async_and_user_does_not_exist : UserService_specs
     {
         protected static Maybe<User> Result;
 
@@ -235,7 +235,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
             Initialize();
             UserRepositoryMock
                 .Setup(x => x.GetByEmailAsync(Email, Provider))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
         };
 
         Because of = async () => Result = await UserService.GetByEmailAsync(Email, Provider);
@@ -244,7 +244,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService BrowseAsync")]
-    public class When_calling_browse_async_and_users_exist : UserService_specs
+    public class when_calling_browse_async_and_users_exist : UserService_specs
     {
         protected static Maybe<PagedResult<User>> Result;
 
@@ -263,7 +263,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService BrowseAsync")]
-    public class When_calling_browse_async_and_users_do_not_exist : UserService_specs
+    public class when_calling_browse_async_and_users_do_not_exist : UserService_specs
     {
         protected static Maybe<PagedResult<User>> Result;
 
@@ -282,20 +282,20 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService SignUpAsync")]
-    public class When_signing_up_async : UserService_specs
+    public class when_signing_up_async : UserService_specs
     {
         Establish context = () =>
         {
             Initialize();
             UserRepositoryMock
                 .Setup(x => x.GetByUserIdAsync(UserId))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
             UserRepositoryMock
                 .Setup(x => x.GetByEmailAsync(Email, Provider))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
             UserRepositoryMock
                 .Setup(x => x.GetByNameAsync(Username))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
         };
 
         Because of = async () => await UserService.SignUpAsync(UserId,
@@ -318,7 +318,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService SignUpAsync")]
-    public class When_signing_up_async_and_user_with_id_already_exists : UserService_specs
+    public class when_signing_up_async_and_user_with_id_already_exists : UserService_specs
     {
         Establish context = () =>
         {
@@ -328,10 +328,10 @@ namespace Collectively.Services.Users.Tests.Specs.Services
                 .ReturnsAsync(User);
             UserRepositoryMock
                 .Setup(x => x.GetByEmailAsync(Email, Provider))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
             UserRepositoryMock
                 .Setup(x => x.GetByNameAsync(Username))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
         };
 
         Because of = () => Exception = Catch.Exception(() =>
@@ -358,20 +358,20 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService SignUpAsync")]
-    public class When_signing_up_async_and_user_with_same_email_and_provider_exists : UserService_specs
+    public class when_signing_up_async_and_user_with_same_email_and_provider_exists : UserService_specs
     {
         Establish context = () =>
         {
             Initialize();
             UserRepositoryMock
                 .Setup(x => x.GetByUserIdAsync(UserId))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
             UserRepositoryMock
                 .Setup(x => x.GetByEmailAsync(Email, Provider))
                 .ReturnsAsync(User);
             UserRepositoryMock
                 .Setup(x => x.GetByNameAsync(Username))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
         };
 
         Because of = () => Exception = Catch.Exception(() =>
@@ -398,17 +398,17 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService SignUpAsync")]
-    public class When_signing_up_async_and_user_with_same_name_exists : UserService_specs
+    public class when_signing_up_async_and_user_with_same_name_exists : UserService_specs
     {
         Establish context = () =>
         {
             Initialize();
             UserRepositoryMock
                 .Setup(x => x.GetByUserIdAsync(UserId))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
             UserRepositoryMock
                 .Setup(x => x.GetByEmailAsync(Email, Provider))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
             UserRepositoryMock
                 .Setup(x => x.GetByNameAsync(Username))
                 .ReturnsAsync(User);
@@ -439,7 +439,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
 
 
     [Subject("UserService SignUpAsync")]
-    public class When_signing_up_async_and_password_is_empty : UserService_specs
+    public class when_signing_up_async_and_password_is_empty : UserService_specs
     {
         Establish context = () =>
         {
@@ -447,13 +447,13 @@ namespace Collectively.Services.Users.Tests.Specs.Services
             Password = "";
             UserRepositoryMock
                 .Setup(x => x.GetByUserIdAsync(UserId))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
             UserRepositoryMock
                 .Setup(x => x.GetByEmailAsync(Email, Provider))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
             UserRepositoryMock
                 .Setup(x => x.GetByNameAsync(Username))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
         };
 
         Because of = () => Exception = Catch.Exception(() =>
@@ -480,7 +480,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService SignUpAsync")]
-    public class When_signing_up_async_and_password_is_too_short : UserService_specs
+    public class when_signing_up_async_and_password_is_too_short : UserService_specs
     {
         Establish context = () =>
         {
@@ -488,13 +488,13 @@ namespace Collectively.Services.Users.Tests.Specs.Services
             Password = "abc";
             UserRepositoryMock
                 .Setup(x => x.GetByUserIdAsync(UserId))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
             UserRepositoryMock
                 .Setup(x => x.GetByEmailAsync(Email, Provider))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
             UserRepositoryMock
                 .Setup(x => x.GetByNameAsync(Username))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
         };
 
         Because of = () => Exception = Catch.Exception(() =>
@@ -522,7 +522,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
 
 
     [Subject("UserService SignUpAsync")]
-    public class When_signing_up_async_and_password_is_too_long : UserService_specs
+    public class when_signing_up_async_and_password_is_too_long : UserService_specs
     {
         Establish context = () =>
         {
@@ -532,13 +532,13 @@ namespace Collectively.Services.Users.Tests.Specs.Services
                        "abcdefghijabcdefghijabcdefghijabcdefghij";
             UserRepositoryMock
                 .Setup(x => x.GetByUserIdAsync(UserId))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
             UserRepositoryMock
                 .Setup(x => x.GetByEmailAsync(Email, Provider))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
             UserRepositoryMock
                 .Setup(x => x.GetByNameAsync(Username))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
         };
 
         Because of = () => Exception = Catch.Exception(() =>
@@ -565,7 +565,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService SignUpAsync")]
-    public class When_signing_up_async_and_name_is_too_short : UserService_specs
+    public class when_signing_up_async_and_name_is_too_short : UserService_specs
     {
         Establish context = () =>
         {
@@ -573,13 +573,13 @@ namespace Collectively.Services.Users.Tests.Specs.Services
             Username = "a";
             UserRepositoryMock
                 .Setup(x => x.GetByUserIdAsync(UserId))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
             UserRepositoryMock
                 .Setup(x => x.GetByEmailAsync(Email, Provider))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
             UserRepositoryMock
                 .Setup(x => x.GetByNameAsync(Username))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
         };
 
         Because of = () => Exception = Catch.Exception(() =>
@@ -601,7 +601,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService SignUpAsync")]
-    public class When_signing_up_async_and_name_is_too_long : UserService_specs
+    public class when_signing_up_async_and_name_is_too_long : UserService_specs
     {
         Establish context = () =>
         {
@@ -610,13 +610,13 @@ namespace Collectively.Services.Users.Tests.Specs.Services
                        "abcdefgjijabcdefgjijabcdefgjij";
             UserRepositoryMock
                 .Setup(x => x.GetByUserIdAsync(UserId))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
             UserRepositoryMock
                 .Setup(x => x.GetByEmailAsync(Email, Provider))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
             UserRepositoryMock
                 .Setup(x => x.GetByNameAsync(Username))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
         };
 
         Because of = () => Exception = Catch.Exception(() =>
@@ -638,7 +638,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService SignUpAsync")]
-    public class When_signing_up_async_and_name_do_not_match_criteria : UserService_specs
+    public class when_signing_up_async_and_name_do_not_match_criteria : UserService_specs
     {
         Establish context = () =>
         {
@@ -646,13 +646,13 @@ namespace Collectively.Services.Users.Tests.Specs.Services
             Username = "user-asdf ^*(^*&^I sdsasda..";
             UserRepositoryMock
                 .Setup(x => x.GetByUserIdAsync(UserId))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
             UserRepositoryMock
                 .Setup(x => x.GetByEmailAsync(Email, Provider))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
             UserRepositoryMock
                 .Setup(x => x.GetByNameAsync(Username))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
         };
 
         Because of = () => Exception = Catch.Exception(() =>
@@ -674,7 +674,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService ChangeNameAsync")]
-    public class When_changing_name_async : UserService_specs
+    public class when_changing_name_async : UserService_specs
     {
         protected static string NewName = "New-username";
 
@@ -698,7 +698,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
     
     [Subject("UserService ChangeNameAsync")]
-    public class When_changing_name_async_and_user_do_not_exist : UserService_specs
+    public class when_changing_name_async_and_user_do_not_exist : UserService_specs
     {
         protected static string NewName = "New-username";
 
@@ -707,7 +707,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
             Initialize();
             UserRepositoryMock
                 .Setup(x => x.GetByUserIdAsync(UserId))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
             UserRepositoryMock
                 .Setup(x => x.ExistsAsync(NewName.ToLowerInvariant()))
                 .ReturnsAsync(false);
@@ -729,7 +729,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
 
 
     [Subject("UserService ChangeNameAsync")]
-    public class When_changing_name_async_and_new_name_is_in_use : UserService_specs
+    public class when_changing_name_async_and_new_name_is_in_use : UserService_specs
     {
         protected static string NewName = "New-username";
 
@@ -759,7 +759,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService ChangeNameAsync")]
-    public class When_changing_name_async_and_user_is_already_activated : UserService_specs
+    public class when_changing_name_async_and_user_is_already_activated : UserService_specs
     {
         protected static string NewName = "New-username";
 
@@ -790,7 +790,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService ChangeNameAsync")]
-    public class When_changing_name_async_and_name_is_empty : UserService_specs
+    public class when_changing_name_async_and_name_is_empty : UserService_specs
     {
         protected static string NewName = "";
 
@@ -815,7 +815,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService ChangeNameAsync")]
-    public class When_changing_name_async_and_name_equals_case_invariant : UserService_specs
+    public class when_changing_name_async_and_name_equals_case_invariant : UserService_specs
     {
         protected static string NewName = Username.ToUpperInvariant();
 
@@ -839,7 +839,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService ChangeNameAsync")]
-    public class When_changing_name_async_and_name_is_too_short : UserService_specs
+    public class when_changing_name_async_and_name_is_too_short : UserService_specs
     {
         protected static string NewName = "A";
 
@@ -864,7 +864,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService ChangeNameAsync")]
-    public class When_changing_name_async_and_name_is_too_long : UserService_specs
+    public class when_changing_name_async_and_name_is_too_long : UserService_specs
     {
         protected static string NewName = "AbcdefghijAbcdefghijAbcdefghij" +
                                           "AbcdefghijAbcdefghijAbcdefghij";
@@ -890,7 +890,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService ChangeNameAsync")]
-    public class When_changing_name_async_and_name_do_not_match_the_criteria : UserService_specs
+    public class when_changing_name_async_and_name_do_not_match_the_criteria : UserService_specs
     {
         protected static string NewName = "Ab cd ef .. *&*(";
 

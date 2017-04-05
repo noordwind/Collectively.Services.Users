@@ -64,7 +64,7 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
     }
 
     [Subject("ResetPasswordHandler HandleAsync")]
-    public class When_handle_async_reset_password_command : ResetPasswordHandler_specs
+    public class when_handle_async_reset_password_command : ResetPasswordHandler_specs
     {
         Establish context = () => Initialize();
 
@@ -94,7 +94,7 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
     }
 
     [Subject("ResetPasswordHandler HandleAsync")]
-    public class When_handle_async_reset_password_command_and_it_fails : ResetPasswordHandler_specs
+    public class when_handle_async_reset_password_command_and_it_fails : ResetPasswordHandler_specs
     {
         Establish context = () =>
         {
@@ -129,7 +129,7 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
     }
 
     [Subject("ResetPasswordHandler HandleAsync")]
-    public class When_handle_async_reset_password_command_and_it_throws_custom_exception : ResetPasswordHandler_specs
+    public class when_handle_async_reset_password_command_and_it_throws_custom_exception : ResetPasswordHandler_specs
     {
         protected static string ErrorCode = "Error";
 

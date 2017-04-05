@@ -67,7 +67,7 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
     }
 
     [Subject("ChangeUserNameHandler HandleAsync")]
-    public class When_handle_async_change_username_command : ChangeUsernameHandler_specs
+    public class when_handle_async_change_username_command : ChangeUsernameHandler_specs
     {
         Establish context = () => Initialize();
 
@@ -90,7 +90,7 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
     }
 
     [Subject("ChangeUserNameHandler HandleAsync")]
-    public class When_handle_async_change_username_and_it_throws_custom_exception : ChangeUsernameHandler_specs
+    public class when_handle_async_change_username_and_it_throws_custom_exception : ChangeUsernameHandler_specs
     {
         protected static string ErrorCode = "Error";
 
@@ -124,7 +124,7 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
     }
 
     [Subject("ChangeUserNameHandler HandleAsync")]
-    public class When_handle_async_change_username_and_it_throws_exception : ChangeUsernameHandler_specs
+    public class when_handle_async_change_username_and_it_throws_exception : ChangeUsernameHandler_specs
     {
         protected static string ErrorCode = "Error";
 

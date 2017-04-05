@@ -53,7 +53,7 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
     }
 
     [Subject("SetNewPasswordHandler HandleAsync")]
-    public class When_handle_async_set_new_password : SetNewPasswordHandler_specs
+    public class when_handle_async_set_new_password : SetNewPasswordHandler_specs
     {
         Establish context = () => Initialize();
 
@@ -78,7 +78,7 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
 
 
     [Subject("SetNewPasswordHandler HandleAsync")]
-    public class When_handle_async_set_new_password_and_it_throws_custom_error : SetNewPasswordHandler_specs
+    public class when_handle_async_set_new_password_and_it_throws_custom_error : SetNewPasswordHandler_specs
     {
         protected static string ErrorCode = "Error";
 
@@ -111,7 +111,7 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
     }
 
     [Subject("SetNewPasswordHandler HandleAsync")]
-    public class When_handle_async_set_new_password_and_it_fails : SetNewPasswordHandler_specs
+    public class when_handle_async_set_new_password_and_it_fails : SetNewPasswordHandler_specs
     {
         Establish context = () =>
         {

@@ -78,7 +78,7 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
     }
 
     [Subject("SignInHandler HandleAsync")]
-    public class When_handle_async_sign_in_with_collectively : SignInHandler_specs
+    public class when_handle_async_sign_in_with_collectively : SignInHandler_specs
     {
         Establish context = () => Initialize();
 
@@ -107,7 +107,7 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
 
 
     [Subject("SignInHandler HandleAsync")]
-    public class When_handle_async_sign_in_with_collectively_and_it_throws_custom_exception : SignInHandler_specs
+    public class when_handle_async_sign_in_with_collectively_and_it_throws_custom_exception : SignInHandler_specs
     {
         protected static string ErrorCode = "Error";
 
@@ -143,7 +143,7 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
     }
 
     [Subject("SignInHandler HandleAsync")]
-    public class When_handle_async_sign_in_with_collectively_and_it_throws_exception : SignInHandler_specs
+    public class when_handle_async_sign_in_with_collectively_and_it_throws_exception : SignInHandler_specs
     {
         protected static string ErrorCode = "Error";
 

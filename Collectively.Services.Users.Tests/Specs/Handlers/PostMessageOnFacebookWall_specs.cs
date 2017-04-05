@@ -50,7 +50,7 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
     }
 
     [Subject("PostOnFacebookWallHandler HandleAsync")]
-    public class When_handle_async_post_message_on_facebook : PostMessageOnFacebookWall_specs
+    public class when_handle_async_post_message_on_facebook : PostMessageOnFacebookWall_specs
     {
         Establish context = () => Initialize();
 
@@ -77,7 +77,7 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
     }
 
     [Subject("PostOnFacebookWallHandler HandleAsync")]
-    public class When_handle_async_post_message_on_facebook_and_it_fails : PostMessageOnFacebookWall_specs
+    public class when_handle_async_post_message_on_facebook_and_it_fails : PostMessageOnFacebookWall_specs
     {
         Establish context = () =>
         {

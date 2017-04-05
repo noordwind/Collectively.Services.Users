@@ -49,12 +49,13 @@ namespace Collectively.Services.Users.Tests.Specs.Services
             File = File.Create("avatar.jpg", "image/jpeg", new byte[] { 0x1 });
             AvatarService = new AvatarService(UserRepositoryMock.Object, FileHandlerMock.Object,
                 ImageServiceMock.Object, FileValidatorMock.Object);
+            FileValidatorMock.Setup(x => x.IsImage(File)).Returns(true);
             User = new User(UserId, Email, Role, Provider);
         }
     }
 
     [Subject("UserService ChangeAvatarAsync")]
-    public class When_changing_avatar_async : AvatarService_specs
+    public class when_changing_avatar_async : AvatarService_specs
     {
         Establish context = () =>
         {
@@ -73,7 +74,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
     }
 
     [Subject("UserService ChangeAvatarAsync")]
-    public class When_changing_avatar_async_and_user_do_not_exist : AvatarService_specs
+    public class when_changing_avatar_async_and_user_do_not_exist : AvatarService_specs
     {
         protected static string NewUrl = "url";
 
@@ -82,7 +83,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
             Initialize();
             UserRepositoryMock
                 .Setup(x => x.GetByUserIdAsync(UserId))
-                .ReturnsAsync(null);
+                .ReturnsAsync(() => null);
         };
 
         Because of = () => Exception = Catch.Exception(
