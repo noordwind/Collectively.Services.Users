@@ -88,7 +88,9 @@ namespace Collectively.Services.Users.Handlers
         {
             var facebookUser = await _facebookService.GetUserAsync(command.AccessToken);
             if (facebookUser.HasNoValue)
+            {
                 return new Maybe<User>();
+            }
 
             var externalUserId = facebookUser.Value.Id;
             var user = await _userService.GetByExternalUserIdAsync(externalUserId);
@@ -100,24 +102,29 @@ namespace Collectively.Services.Users.Handlers
                 return user;
             }
 
+            return await HandleFacebookSignUpAsync(facebookUser.Value, command);
+        }
+
+        private async Task<Maybe<User>> HandleFacebookSignUpAsync(FacebookUser facebookUser, SignIn command)
+        {
+            var externalUserId = facebookUser.Id;
             var userId = Guid.NewGuid().ToString("N");
-            await _userService.SignUpAsync(userId, facebookUser.Value.Email,
+            await _userService.SignUpAsync(userId, facebookUser.Email,
                 Roles.User, Providers.Facebook, externalUserId: externalUserId);
 
             Logger.Info($"Created new user with id: '{userId}' using Facebook user id: '{externalUserId}'");
-            await TryUploadFacebookAvatar(userId, externalUserId);
-            user = await _userService.GetByExternalUserIdAsync(externalUserId);
+            await TryUploadFacebookAvatarAsync(userId, externalUserId);
+            var user = await _userService.GetByExternalUserIdAsync(externalUserId);
             var resource = _resourceFactory.Resolve<SignedUp>(userId);
             await _bus.PublishAsync(new SignedUp(command.Request.Id, resource, userId, 
                 user.Value.Provider));
-
             await _authenticationService.SignInViaFacebookAsync(command.SessionId, command.AccessToken,
                 command.IpAddress, command.UserAgent);
 
             return await _userService.GetByExternalUserIdAsync(externalUserId);
-        }
+        }  
 
-        private async Task TryUploadFacebookAvatar(string userId, string externalUserId)
+        private async Task TryUploadFacebookAvatarAsync(string userId, string externalUserId)
         {
             try
             {

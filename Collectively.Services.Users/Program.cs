@@ -12,7 +12,6 @@ namespace Collectively.Services.Users
                 .Create<Startup>(port: 10001)
                 .UseAutofac(Bootstrapper.LifetimeScope)
                 .UseRabbitMq(queueName: typeof(Program).Namespace)
-                .SubscribeToCommand<SignIn>()
                 .SubscribeToCommand<SignUp>()
                 .SubscribeToCommand<SignOut>()
                 .SubscribeToCommand<ChangeUsername>()

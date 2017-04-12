@@ -113,7 +113,6 @@ namespace Collectively.Services.Users.Services
         {
             var session = new UserSession(sessionId, user.UserId,
                 _encrypter.GetRandomSecureKey(), ipAddress, userAgent);
-
             await _userSessionRepository.AddAsync(session);
         }
 
