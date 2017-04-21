@@ -34,7 +34,8 @@ namespace Collectively.Services.Users.Handlers
             await _handler
                 .Run(async () => await _userService.SignUpAsync(userId, command.Email,
                     Roles.User, Providers.Collectively,
-                    password: command.Password, name: command.Name))
+                    password: command.Password, name: command.Name,
+                    culture: command.Request.Culture))
                 .OnSuccess(async () =>
                 {
                     var user = await _userService.GetAsync(userId);

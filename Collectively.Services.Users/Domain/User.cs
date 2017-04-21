@@ -22,6 +22,7 @@ namespace Collectively.Services.Users.Domain
         public string Role { get; protected set; }
         public string State { get; protected set; }
         public string ExternalUserId { get; protected set; }
+        public string Culture { get; protected set; }
         public DateTime CreatedAt { get; protected set; }
         public DateTime UpdatedAt { get; protected set; }
 
@@ -188,6 +189,14 @@ namespace Collectively.Services.Users.Domain
             var areEqual = Password.Equals(hashedPassword);
 
             return areEqual;
+        }
+
+        public void SetCulture(string culture)
+        {
+            if (culture.Empty())
+                culture = "en-gb";
+
+            Culture = culture;
         }
     }
 }

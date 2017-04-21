@@ -12,6 +12,7 @@ namespace Collectively.Services.Users.Dto
         public string AvatarUrl { get; set; }
         public string Role { get; set; }
         public string State { get; set; }
+        public string Culture { get; set; }
         public string ExternalUserId { get; set; }
         public DateTime CreatedAt { get; set; }
     }

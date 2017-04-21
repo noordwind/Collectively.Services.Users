@@ -41,7 +41,7 @@ namespace Collectively.Services.Users.Services
 
         public async Task SignUpAsync(string userId, string email, string role,
             string provider, string password = null, string externalUserId = null,
-            bool activate = true, string name = null)
+            bool activate = true, string name = null, string culture = "en-gb")
         {
             var user = await _userRepository.GetByUserIdAsync(userId);
             if (user.HasValue)
@@ -81,6 +81,8 @@ namespace Collectively.Services.Users.Services
             }
             if (externalUserId.NotEmpty())
                 user.Value.SetExternalUserId(externalUserId);
+
+            user.Value.SetCulture(culture);
 
             await _userRepository.AddAsync(user.Value);
         }
