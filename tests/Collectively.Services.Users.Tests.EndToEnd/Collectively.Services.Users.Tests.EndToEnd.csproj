@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../Collectively.Services.Users/Collectively.Services.Users.csproj" />
+    <ProjectReference Include="../../src/Collectively.Services.Users/Collectively.Services.Users.csproj" />
   </ItemGroup>
 
   <ItemGroup>
