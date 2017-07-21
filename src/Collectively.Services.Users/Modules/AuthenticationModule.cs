@@ -9,7 +9,9 @@ namespace Collectively.Services.Users.Modules
     public class AuthenticationModule : ModuleBase
     {
         public AuthenticationModule(IServiceAuthenticatorHost serviceAuthenticatorHost,
-            IAuthenticationService authenticationService, 
+            IAuthenticationService authenticationService,
+            IUserService userService,
+            IJwtTokenHandler jwtTokenHandler, 
             ICommandHandler<SignIn> signInHandler) 
             : base(requireAuthentication: false)
         {
@@ -22,7 +24,7 @@ namespace Collectively.Services.Users.Modules
                     return HttpStatusCode.Unauthorized;
                 }
                 
-                return new { token = token.Value };
+                return token.Value;
             });
 
             Post("sign-in", async args =>
@@ -34,8 +36,10 @@ namespace Collectively.Services.Users.Modules
                 {
                     return HttpStatusCode.Unauthorized;
                 }
+                var user = await userService.GetAsync(session.Value.UserId);
+                var token = jwtTokenHandler.Create(user.Value.UserId, user.Value.Role);
 
-                return session.Value;
+                return token.Value;
             });
         }        
     }
