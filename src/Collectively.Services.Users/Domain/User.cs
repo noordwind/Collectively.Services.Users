@@ -156,6 +156,15 @@ namespace Collectively.Services.Users.Domain
             UpdatedAt = DateTime.UtcNow;
         }
 
+        public void SetUnconfirmed()
+        {
+            if (State == States.Unconfirmed)
+                return;
+
+            State = States.Unconfirmed;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
         public void SetPassword(string password, IEncrypter encrypter)
         {
             if (password.Empty())

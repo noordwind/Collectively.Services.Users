@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Collectively.Messages.Commands;
 using Collectively.Common.Services;
+using Collectively.Messages.Commands.Mailing;
 using Collectively.Services.Users.Domain;
 using Collectively.Services.Users.Services;
 using Collectively.Messages.Commands.Users;
@@ -15,16 +16,19 @@ namespace Collectively.Services.Users.Handlers
         private readonly IHandler _handler;
         private readonly IBusClient _bus;
         private readonly IUserService _userService;
+        private readonly IOneTimeSecuredOperationService _oneTimeSecuredOperationService;
         private readonly IResourceFactory _resourceFactory;
 
         public SignUpHandler(IHandler handler, 
             IBusClient bus,
             IUserService userService,
+            IOneTimeSecuredOperationService oneTimeSecuredOperationService,
             IResourceFactory resourceFactory)
         {
             _handler = handler;
             _bus = bus;
             _userService = userService;
+            _oneTimeSecuredOperationService = oneTimeSecuredOperationService;
             _resourceFactory = resourceFactory;
         }
 
@@ -35,13 +39,15 @@ namespace Collectively.Services.Users.Handlers
                 .Run(async () => await _userService.SignUpAsync(userId, command.Email,
                     Roles.User, Providers.Collectively,
                     password: command.Password, name: command.Name,
-                    culture: command.Request.Culture))
+                    culture: command.Request.Culture,
+                    activate: false))
                 .OnSuccess(async () =>
                 {
                     var user = await _userService.GetAsync(userId);
                     var resource = _resourceFactory.Resolve<SignedUp>(userId);
                     await _bus.PublishAsync(new SignedUp(command.Request.Id, resource, 
                         userId, user.Value.Provider));
+                    await PublishSendActivationEmailMessageCommandAsync(user.Value, command.Request);
                 })
                 .OnCustomError(async ex => await _bus.PublishAsync(new SignUpRejected(command.Request.Id,
                     null, ex.Code, ex.Message, command.Provider)))
@@ -52,6 +58,20 @@ namespace Collectively.Services.Users.Handlers
                         null, OperationCodes.Error, ex.Message, command.Provider));
                 })
                 .ExecuteAsync();
+        }
+
+        private async Task PublishSendActivationEmailMessageCommandAsync(User user, Request commandRequest)
+        {
+            var operationId = Guid.NewGuid();
+            await _oneTimeSecuredOperationService.CreateAsync(operationId, OneTimeSecuredOperations.ActivateAccount,
+                user.Email, DateTime.UtcNow.AddDays(7));
+            var operation = await _oneTimeSecuredOperationService.GetAsync(operationId);
+            var command = new SendActivateAccountEmailMessage
+            {
+                Email = user.Email,
+                Token = operation.Value.Token,
+                Request = Request.From<SendActivateAccountEmailMessage>(commandRequest)
+            };
         }
     }
 }

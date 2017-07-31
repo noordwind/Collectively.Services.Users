@@ -78,6 +78,8 @@ namespace Collectively.Services.Users.Services
                 user.Value.SetName(name);
                 if (activate)
                     user.Value.Activate();
+                else
+                    user.Value.SetUnconfirmed();
             }
             if (externalUserId.NotEmpty())
                 user.Value.SetExternalUserId(externalUserId);
