@@ -6,7 +6,7 @@ using Collectively.Common.Services;
 using Collectively.Services.Users.Domain;
 using Collectively.Services.Users.Queries;
 using Collectively.Services.Users.Repositories;
-
+using System;
 
 namespace Collectively.Services.Users.Services
 {
@@ -55,21 +55,18 @@ namespace Collectively.Services.Users.Services
                 throw new ServiceException(OperationCodes.EmailInUse,
                     $"User with email: {email} already exists!");
             }
-
             user = await _userRepository.GetByNameAsync(name);
             if (user.HasValue)
             {
                 throw new ServiceException(OperationCodes.NameInUse,
                     $"User with name: {name} already exists!");
             }
-
             if (provider == Providers.Collectively && password.Empty())
             {
                 throw new ServiceException(OperationCodes.InvalidPassword,
                     $"Password can not be empty!");
 
             }
-
             user = new User(userId, email, role, provider);
             if (!password.Empty())
                 user.Value.SetPassword(password, _encrypter);
@@ -80,10 +77,10 @@ namespace Collectively.Services.Users.Services
                     user.Value.Activate();
             }
             if (externalUserId.NotEmpty())
+            {
                 user.Value.SetExternalUserId(externalUserId);
-
+            }
             user.Value.SetCulture(culture);
-
             await _userRepository.AddAsync(user.Value);
         }
 
@@ -100,10 +97,27 @@ namespace Collectively.Services.Users.Services
                 throw new ServiceException(OperationCodes.NameInUse,
                     $"User with name: '{name}' already exists.");
             }
-
             user.Value.SetName(name);
             user.Value.Activate();
             await _userRepository.UpdateAsync(user.Value);
+        }
+
+        public async Task DeleteAsync(string userId, bool soft)
+        {
+            var user = await GetAsync(userId);
+            if (user.HasNoValue)
+            {
+                throw new ServiceException(OperationCodes.UserNotFound,
+                    $"User with id: '{userId}' has not been found.");
+            }
+            if(soft)
+            {
+                user.Value.MarkAsDeleted();
+                await _userRepository.UpdateAsync(user.Value);
+
+                return;
+            }
+            await _userRepository.DeleteAsync(userId);
         }
     }
 }

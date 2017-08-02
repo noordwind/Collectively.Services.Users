@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Collectively.Common.Types;
 using Collectively.Services.Users.Domain;
 using Collectively.Services.Users.Queries;
@@ -15,5 +16,6 @@ namespace Collectively.Services.Users.Repositories
         Task<Maybe<PagedResult<User>>> BrowseAsync(BrowseUsers query);
         Task AddAsync(User user);
         Task UpdateAsync(User user);
+        Task DeleteAsync(string userId);
     }
 }
