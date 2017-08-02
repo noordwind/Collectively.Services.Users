@@ -4,6 +4,7 @@ using Collectively.Common.Services;
 using Collectively.Messages.Commands;
 using Collectively.Messages.Commands.Users;
 using Collectively.Messages.Events.Users;
+using Collectively.Services.Users.Domain;
 using Collectively.Services.Users.Services;
 using RawRabbit;
 
@@ -29,16 +30,20 @@ namespace Collectively.Services.Users.Handlers
             await _handler
                 .Run(async () => await _userService
                     .ActivateAsync(command.Email, command.Token))
-                .OnSuccess(async () => await _bus
-                    .PublishAsync(new AccountActivated(command.Request.Id, command.UserId)))
+                .OnSuccess(async () =>
+                    {
+                        var user = await _userService.GetByEmailAsync(command.Email, Providers.Collectively);
+                        await _bus
+                            .PublishAsync(new AccountActivated(command.Request.Id, command.Email, user.Value.UserId));
+                    })
                 .OnCustomError(async ex => await _bus
                     .PublishAsync(new ActivateAccountRejected(command.Request.Id,
-                        command.UserId, ex.Code, ex.Message)))
+                        command.Email, ex.Code, ex.Message)))
                 .OnError(async (ex, logger) =>
                 {
                     logger.Error(ex, "Error when activating account.");
                     await _bus.PublishAsync(new ActivateAccountRejected(command.Request.Id,
-                        command.UserId, OperationCodes.Error, "error when activating account"));
+                        command.Email, OperationCodes.Error, "error when activating account"));
                 })
                 .ExecuteAsync();
         }
