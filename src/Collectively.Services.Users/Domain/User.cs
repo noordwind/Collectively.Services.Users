@@ -165,6 +165,12 @@ namespace Collectively.Services.Users.Domain
             UpdatedAt = DateTime.UtcNow;
         }
 
+        public void MarkAsDeleted()
+        {
+            State = States.Deleted;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
         public void SetPassword(string password, IEncrypter encrypter)
         {
             if (password.Empty())

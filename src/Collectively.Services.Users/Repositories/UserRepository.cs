@@ -5,6 +5,7 @@ using Collectively.Services.Users.Queries;
 using MongoDB.Driver;
 using Collectively.Common.Mongo;
 using Collectively.Services.Users.Repositories.Queries;
+using System;
 
 namespace Collectively.Services.Users.Repositories
 {
@@ -44,5 +45,8 @@ namespace Collectively.Services.Users.Repositories
 
         public async Task UpdateAsync(User user)
             => await _database.Users().ReplaceOneAsync(x => x.Id == user.Id, user);
+
+        public async Task DeleteAsync(string userId)
+            => await _database.Users().DeleteOneAsync(x => x.UserId == userId);
     }
 }

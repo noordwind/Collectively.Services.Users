@@ -22,5 +22,6 @@ namespace Collectively.Services.Users.Services
 
         Task ChangeNameAsync(string userId, string name);
         Task ActivateAsync(string email, string token);
+        Task DeleteAsync(string userId, bool soft);
     }
 }
