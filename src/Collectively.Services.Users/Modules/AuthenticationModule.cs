@@ -37,7 +37,8 @@ namespace Collectively.Services.Users.Modules
                     return HttpStatusCode.Unauthorized;
                 }
                 var user = await userService.GetAsync(session.Value.UserId);
-                var token = jwtTokenHandler.Create(user.Value.UserId, user.Value.Role);
+                var token = jwtTokenHandler.Create(user.Value.UserId, 
+                    user.Value.Role, state: user.Value.State);
 
                 return token.Value;
             });
