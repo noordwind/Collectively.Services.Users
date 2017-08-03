@@ -14,11 +14,15 @@ namespace Collectively.Services.Users.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IEncrypter _encrypter;
+        private readonly IOneTimeSecuredOperationService _seruredOperationService;
 
-        public UserService(IUserRepository userRepository, IEncrypter encrypter)
+        public UserService(IUserRepository userRepository,
+            IEncrypter encrypter,
+            IOneTimeSecuredOperationService seruredOperationService)
         {
             _userRepository = userRepository;
             _encrypter = encrypter;
+            _seruredOperationService = seruredOperationService;
         }
 
         public async Task<bool> IsNameAvailableAsync(string name)
@@ -75,6 +79,8 @@ namespace Collectively.Services.Users.Services
                 user.Value.SetName(name);
                 if (activate)
                     user.Value.Activate();
+                else
+                    user.Value.SetUnconfirmed();
             }
             if (externalUserId.NotEmpty())
             {
@@ -98,6 +104,22 @@ namespace Collectively.Services.Users.Services
                     $"User with name: '{name}' already exists.");
             }
             user.Value.SetName(name);
+            user.Value.Activate();
+            await _userRepository.UpdateAsync(user.Value);
+        }
+
+        public async Task ActivateAsync(string email, string token)
+        {
+            await _seruredOperationService.ConsumeAsync(OneTimeSecuredOperations.ActivateAccount,
+                email, token);
+
+            var user = await _userRepository.GetByEmailAsync(email, Providers.Collectively);
+            if (user.HasNoValue)
+            {
+                throw new ServiceException(OperationCodes.UserNotFound,
+                    $"User with email: '{email}' has not been found.");
+            }
+
             user.Value.Activate();
             await _userRepository.UpdateAsync(user.Value);
         }

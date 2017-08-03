@@ -21,6 +21,7 @@ namespace Collectively.Services.Users.Services
             string culture = "en-gb");
 
         Task ChangeNameAsync(string userId, string name);
+        Task ActivateAsync(string email, string token);
         Task DeleteAsync(string userId, bool soft);
     }
 }

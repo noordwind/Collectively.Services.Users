@@ -17,6 +17,7 @@ namespace Collectively.Services.Users.Tests.Specs.Services
         protected static IUserService UserService;
         protected static Mock<IUserRepository> UserRepositoryMock;
         protected static Mock<IEncrypter> EncrypterMock;
+        protected static Mock<IOneTimeSecuredOperationService> SecuredOperationServiceMock;
         protected static Exception Exception;
         protected static string UserId;
         protected static string Username;
@@ -42,7 +43,9 @@ namespace Collectively.Services.Users.Tests.Specs.Services
             Role = Roles.User;
             UserRepositoryMock = new Mock<IUserRepository>();
             EncrypterMock = new Mock<IEncrypter>();
-            UserService = new UserService(UserRepositoryMock.Object, EncrypterMock.Object);
+            SecuredOperationServiceMock = new Mock<IOneTimeSecuredOperationService>();
+            UserService = new UserService(UserRepositoryMock.Object,
+                EncrypterMock.Object, SecuredOperationServiceMock.Object);
             User = new User(UserId, Email, Role, Provider);
             Query = new BrowseUsers();
             Users = PagedResult<User>.Create(new []{User}, 1, 1, 1, 1);
