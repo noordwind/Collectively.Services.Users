@@ -7,6 +7,7 @@ using Collectively.Services.Users.Domain;
 using Collectively.Services.Users.Services;
 using Collectively.Messages.Commands.Users;
 using Collectively.Messages.Events.Users;
+using Collectively.Services.Users.Settings;
 using RawRabbit;
 
 namespace Collectively.Services.Users.Handlers
@@ -18,18 +19,21 @@ namespace Collectively.Services.Users.Handlers
         private readonly IUserService _userService;
         private readonly IOneTimeSecuredOperationService _oneTimeSecuredOperationService;
         private readonly IResourceFactory _resourceFactory;
+        private readonly AppSettings _settings;
 
         public SignUpHandler(IHandler handler, 
             IBusClient bus,
             IUserService userService,
             IOneTimeSecuredOperationService oneTimeSecuredOperationService,
-            IResourceFactory resourceFactory)
+            IResourceFactory resourceFactory,
+            AppSettings settings)
         {
             _handler = handler;
             _bus = bus;
             _userService = userService;
             _oneTimeSecuredOperationService = oneTimeSecuredOperationService;
             _resourceFactory = resourceFactory;
+            _settings = settings;
         }
 
         public async Task HandleAsync(SignUp command)
@@ -69,9 +73,12 @@ namespace Collectively.Services.Users.Handlers
             var command = new SendActivateAccountEmailMessage
             {
                 Email = user.Email,
+                Username = user.Name,
                 Token = operation.Value.Token,
+                Endpoint = _settings.ActivateAccountUrl,
                 Request = Request.From<SendActivateAccountEmailMessage>(commandRequest)
             };
+            await _bus.PublishAsync(command);
         }
     }
 }
