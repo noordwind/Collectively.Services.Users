@@ -28,5 +28,10 @@
         public static string Error => "error";
         public static string InvalidAvatar => "invalid_avatar";
         public static string InvalidUser => "invalid_user";
+        public static string UserAlreadyLocked => "user_already_locked";
+        public static string UserNotLocked => "user_not_locked";
+        public static string UserAlreadyActive => "user_already_active";
+        public static string UserAlreadyDeleted => "user_already_deleted";
+        public static string UserAlreadyUnconfirmed => "user_already_";
     }
 }

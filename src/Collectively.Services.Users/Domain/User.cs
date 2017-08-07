@@ -11,6 +11,7 @@ namespace Collectively.Services.Users.Domain
     {
         private static readonly Regex NameRegex = new Regex("^(?![_.-])(?!.*[_.-]{2})[a-zA-Z0-9._.-]+(?<![_.-])$",
             RegexOptions.Compiled);
+        private static readonly string DefaultCulture = "en-gb";
 
         public Avatar Avatar { get; protected set; }
         public string UserId { get; protected set; }
@@ -108,7 +109,6 @@ namespace Collectively.Services.Users.Domain
             {
                 throw new ArgumentException("User name doesn't meet the required criteria.", nameof(name));
             }
-
             Name = name.ToLowerInvariant();
             UpdatedAt = DateTime.UtcNow;
         }
@@ -141,17 +141,32 @@ namespace Collectively.Services.Users.Domain
         public void Lock()
         {
             if (State == States.Locked)
-                return;
-
+            {
+                throw new DomainException(OperationCodes.UserAlreadyLocked, 
+                    $"User with id: '{UserId}' was already locked.");
+            }
             State = States.Locked;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void Unlock()
+        {
+            if (State != States.Locked)
+            {
+                throw new DomainException(OperationCodes.UserNotLocked, 
+                    $"User with id: '{UserId}' is not locked.");
+            }
+            State = States.Active;
             UpdatedAt = DateTime.UtcNow;
         }
 
         public void Activate()
         {
             if (State == States.Active)
-                return;
-
+            {
+                throw new DomainException(OperationCodes.UserAlreadyActive, 
+                    $"User with id: '{UserId}' was already activated.");
+            }
             State = States.Active;
             UpdatedAt = DateTime.UtcNow;
         }
@@ -159,14 +174,21 @@ namespace Collectively.Services.Users.Domain
         public void SetUnconfirmed()
         {
             if (State == States.Unconfirmed)
-                return;
-
+            {
+                throw new DomainException(OperationCodes.UserAlreadyUnconfirmed, 
+                    $"User with id: '{UserId}' was already set as unconfirmed.");
+            }
             State = States.Unconfirmed;
             UpdatedAt = DateTime.UtcNow;
         }
 
         public void MarkAsDeleted()
         {
+            if (State == States.Active)
+            {
+                throw new DomainException(OperationCodes.UserAlreadyDeleted, 
+                    $"User with id: '{UserId}' was already marked as deleted.");
+            }
             State = States.Deleted;
             UpdatedAt = DateTime.UtcNow;
         }
@@ -209,9 +231,11 @@ namespace Collectively.Services.Users.Domain
         public void SetCulture(string culture)
         {
             if (culture.Empty())
-                culture = "en-gb";
-
+            {
+                culture = DefaultCulture;
+            }
             Culture = culture;
+            UpdatedAt = DateTime.UtcNow;
         }
     }
 }

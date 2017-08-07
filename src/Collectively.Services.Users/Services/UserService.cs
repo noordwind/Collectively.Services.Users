@@ -112,30 +112,37 @@ namespace Collectively.Services.Users.Services
         {
             await _seruredOperationService.ConsumeAsync(OneTimeSecuredOperations.ActivateAccount,
                 email, token);
-
             var user = await _userRepository.GetByEmailAsync(email, Providers.Collectively);
             if (user.HasNoValue)
             {
                 throw new ServiceException(OperationCodes.UserNotFound,
                     $"User with email: '{email}' has not been found.");
             }
-
             user.Value.Activate();
             await _userRepository.UpdateAsync(user.Value);
         }
 
+        public async Task LockAsync(string userId)
+        {
+            var user = await _userRepository.GetOrFailAsync(userId);
+            user.Lock();
+            await _userRepository.UpdateAsync(user);
+        }
+
+        public async Task UnlockAsync(string userId)
+        {
+            var user = await _userRepository.GetOrFailAsync(userId);
+            user.Unlock();
+            await _userRepository.UpdateAsync(user);
+        }
+
         public async Task DeleteAsync(string userId, bool soft)
         {
-            var user = await GetAsync(userId);
-            if (user.HasNoValue)
-            {
-                throw new ServiceException(OperationCodes.UserNotFound,
-                    $"User with id: '{userId}' has not been found.");
-            }
+            var user = await _userRepository.GetOrFailAsync(userId);
             if(soft)
             {
-                user.Value.MarkAsDeleted();
-                await _userRepository.UpdateAsync(user.Value);
+                user.MarkAsDeleted();
+                await _userRepository.UpdateAsync(user);
 
                 return;
             }
