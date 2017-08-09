@@ -14,6 +14,7 @@ namespace Collectively.Services.Users
                 .UseRabbitMq(queueName: typeof(Program).Namespace)
                 .SubscribeToCommand<SignUp>()
                 .SubscribeToCommand<SignOut>()
+                .SubscribeToCommand<ActivateAccount>()
                 .SubscribeToCommand<ChangeUsername>()
                 .SubscribeToCommand<UploadAvatar>()
                 .SubscribeToCommand<RemoveAvatar>()
