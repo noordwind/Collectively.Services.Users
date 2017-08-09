@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Collectively.Messages.Commands;
+using Collectively.Common.Extensions;
 using Collectively.Common.Services;
+using Collectively.Messages.Commands;
 using Collectively.Messages.Commands.Mailing;
 using Collectively.Services.Users.Domain;
 using Collectively.Services.Users.Services;
@@ -41,16 +42,16 @@ namespace Collectively.Services.Users.Handlers
             var userId = Guid.NewGuid().ToString("N");
             await _handler
                 .Run(async () => await _userService.SignUpAsync(userId, command.Email,
-                    Roles.User, Providers.Collectively,
+                    command.Role.Empty() ? Roles.User : command.Role, Providers.Collectively,
                     password: command.Password, name: command.Name,
                     culture: command.Request.Culture,
-                    activate: false))
+                    activate: command.State == "active"))
                 .OnSuccess(async () =>
                 {
                     var user = await _userService.GetAsync(userId);
                     var resource = _resourceFactory.Resolve<SignedUp>(userId);
                     await _bus.PublishAsync(new SignedUp(command.Request.Id, resource, 
-                        userId, user.Value.Provider));
+                        userId, user.Value.Provider, user.Value.Role, user.Value.State));
                     await PublishSendActivationEmailMessageCommandAsync(user.Value, command.Request);
                 })
                 .OnCustomError(async ex => await _bus.PublishAsync(new SignUpRejected(command.Request.Id,

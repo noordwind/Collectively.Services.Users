@@ -117,7 +117,7 @@ namespace Collectively.Services.Users.Handlers
             var user = await _userService.GetByExternalUserIdAsync(externalUserId);
             var resource = _resourceFactory.Resolve<SignedUp>(userId);
             await _bus.PublishAsync(new SignedUp(command.Request.Id, resource, userId, 
-                user.Value.Provider));
+                user.Value.Provider, user.Value.Role, user.Value.State));
             await _authenticationService.SignInViaFacebookAsync(command.SessionId, command.AccessToken,
                 command.IpAddress, command.UserAgent);
 

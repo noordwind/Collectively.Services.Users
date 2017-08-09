@@ -71,6 +71,11 @@ namespace Collectively.Services.Users.Services
                     $"Password can not be empty!");
 
             }
+            if(!Roles.IsValid(role))
+            {
+                throw new ServiceException(OperationCodes.InvalidRole, 
+                    $"Can not create a new account for user id: '{userId}', invalid role: '{role}'.");
+            }
             user = new User(userId, email, role, provider);
             if (!password.Empty())
                 user.Value.SetPassword(password, _encrypter);
