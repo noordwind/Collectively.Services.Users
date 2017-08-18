@@ -26,7 +26,7 @@ namespace Collectively.Services.Users.Handlers
         public async Task HandleAsync(LockAccount command)
         {
             await _handler
-                .Run(async () => await _userService.LockAsync(command.UserId))
+                .Run(async () => await _userService.LockAsync(command.LockUserId))
                 .OnSuccess(async () => await _bus.PublishAsync(new AccountLocked(command.Request.Id,
                     command.UserId, command.LockUserId)))
                 .OnCustomError(async ex => await _bus.PublishAsync(new LockAccountRejected(command.Request.Id,

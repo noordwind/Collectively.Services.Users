@@ -26,7 +26,7 @@ namespace Collectively.Services.Users.Handlers
         public async Task HandleAsync(UnlockAccount command)
         {
             await _handler
-                .Run(async () => await _userService.UnlockAsync(command.UserId))
+                .Run(async () => await _userService.UnlockAsync(command.UnlockUserId))
                 .OnSuccess(async () => await _bus.PublishAsync(new AccountUnlocked(command.Request.Id,
                     command.UserId, command.UnlockUserId)))
                 .OnCustomError(async ex => await _bus.PublishAsync(new UnlockAccountRejected(command.Request.Id,
