@@ -139,6 +139,11 @@ namespace Collectively.Services.Users.Services
         public async Task LockAsync(string userId)
         {
             var user = await _userRepository.GetOrFailAsync(userId);
+            if (user.Role == Roles.Owner)
+            {
+                throw new ServiceException(OperationCodes.OwnerCannotBeLocked,
+                    $"Owner account: '{userId}' can not be locked.");
+            }
             user.Lock();
             await _userRepository.UpdateAsync(user);
         }

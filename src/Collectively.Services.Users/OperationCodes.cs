@@ -22,6 +22,7 @@
         public static string InvalidCurrentPassword => "invalid_current_password";
         public static string EmailNotFound => "email_not_found";
         public static string OwnerAlreadyExists => "owner_already_exists";
+        public static string OwnerCannotBeLocked => "owner_cannot_be_locked";
         public static string InvalidPasswordResetToken => "invalid_password_reset_token";
         public static string FileTooBig => "file_too_big";
         public static string TextTooLong => "text_too_long";
