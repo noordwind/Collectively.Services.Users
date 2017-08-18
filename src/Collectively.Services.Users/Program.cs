@@ -23,6 +23,7 @@ namespace Collectively.Services.Users
                 .SubscribeToCommand<SetNewPassword>()
                 .SubscribeToCommand<PostOnFacebookWall>()
                 .SubscribeToCommand<DeleteAccount>()
+                .SubscribeToCommand<LockAccount>()
                 .SubscribeToCommand<UnlockAccount>()
                 .Build()
                 .Run();
