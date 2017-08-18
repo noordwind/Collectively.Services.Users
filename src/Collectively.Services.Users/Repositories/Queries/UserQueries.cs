@@ -16,6 +16,9 @@ namespace Collectively.Services.Users.Repositories.Queries
         public static async Task<bool> ExistsAsync(this IMongoCollection<User> users, string name)
             => await users.AsQueryable().AnyAsync(x => x.Name == name);
 
+        public static async Task<User> GetOwnerAsync(this IMongoCollection<User> users)
+            => await users.AsQueryable().FirstOrDefaultAsync(x => x.Role == Roles.Owner);
+
         public static async Task<User> GetByUserIdAsync(this IMongoCollection<User> users, string userId)
         {
             if (userId.Empty())

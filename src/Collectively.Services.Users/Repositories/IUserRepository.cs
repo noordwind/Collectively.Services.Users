@@ -9,6 +9,7 @@ namespace Collectively.Services.Users.Repositories
     public interface IUserRepository
     {
         Task<bool> ExistsAsync(string name); 
+        Task<Maybe<User>> GetOwnerAsync();
         Task<Maybe<User>> GetByUserIdAsync(string userId);
         Task<Maybe<User>> GetByExternalUserIdAsync(string externalUserId);
         Task<Maybe<User>> GetByEmailAsync(string email, string provider);
