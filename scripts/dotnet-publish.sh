@@ -1,2 +1,2 @@
 #!/bin/bash
-dotnet publish ./src/Collectively.Services.Users -c Release -o ./bin/Docker
+dotnet publish --no-restore ./src/Collectively.Services.Users -c Release -o ./bin/Docker
