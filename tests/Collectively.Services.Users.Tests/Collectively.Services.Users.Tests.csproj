@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <AssemblyName>Collectively.Services.Users.Tests</AssemblyName>
     <PackageId>Collectively.Services.Users.Tests</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-    <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion>2.0.0</RuntimeFrameworkVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,10 +19,10 @@
     <PackageReference Include="Machine.Specifications.Should" Version="0.11.0" />
     <PackageReference Include="Machine.Specifications.Runner.VisualStudio" Version="2.*" />
     <PackageReference Include="Moq" Version="4.*" />
-    <PackageReference Include="RawRabbit" Version="1.10.3" />
-    <PackageReference Include="RawRabbit.vNext" Version="1.10.3" />
-    <PackageReference Include="Collectively.Messages" Version="1.0.*" />
-    <PackageReference Include="Collectively.Common" Version="1.0.*" />    
+    <PackageReference Include="RawRabbit" Version="2.0.0-beta8" />
+    <PackageReference Include="RawRabbit.Operations.Publish" Version="2.0.0-beta8" />
+    <PackageReference Include="Collectively.Messages" Version="2.0.*" />
+    <PackageReference Include="Collectively.Common" Version="2.0.*" />    
   </ItemGroup>
 
 </Project>

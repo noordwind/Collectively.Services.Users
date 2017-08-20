@@ -42,13 +42,13 @@ In order to run the **Collectively.Services.Users** you need to have installed:
 - [MongoDB](https://www.mongodb.com)
 - [RabbitMQ](https://www.rabbitmq.com)
 
-Clone the repository and start the application via *dotnet run* command:
+Clone the repository and start the application via *dotnet run --no-restore* command:
 
 ```
 git clone https://github.com/noordwind/Collectively.Services.Users
 cd Collectively.Services.Users/Collectively.Services.Users
 dotnet restore --source https://api.nuget.org/v3/index.json --source https://www.myget.org/F/collectively/api/v3/index.json --no-cache
-dotnet run --urls "http://*:10002"
+dotnet run --no-restore --urls "http://*:10002"
 ```
 
 Once executed, you shall be able to access the service at [http://localhost:10002](http://localhost:10002)
@@ -70,6 +70,6 @@ For the local testing purposes the *.local* or *.docker* configuration files are
 
 **Solution structure**
 ----------------
-- **Collectively.Services.Users** - core and executable project via *dotnet run* command.
-- **Collectively.Services.Users.Tests** - unit & integration tests executable via *dotnet test* command.
-- **Collectively.Services.Users.Tests.EndToEnd** - End-to-End tests executable via *dotnet test* command.
+- **Collectively.Services.Users** - core and executable project via *dotnet run --no-restore* command.
+- **Collectively.Services.Users.Tests** - unit & integration tests executable via *dotnet test --no-restore* command.
+- **Collectively.Services.Users.Tests.EndToEnd** - End-to-End tests executable via *dotnet test --no-restore* command.

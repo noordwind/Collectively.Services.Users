@@ -8,8 +8,9 @@ using Collectively.Messages.Events.Users;
 using Machine.Specifications;
 using Moq;
 using RawRabbit;
-using RawRabbit.Configuration.Publish;
 using It = Machine.Specifications.It;
+using RawRabbit.Pipe;
+using System.Threading;
 
 namespace Collectively.Services.Users.Tests.Specs.Handlers
 {
@@ -64,14 +65,14 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
                 Moq.It.Is<MessageOnFacebookWallPosted>(m => m.RequestId == Command.Request.Id
                                                             && m.UserId == Command.UserId
                                                             && m.Message == Command.Message),
-                Moq.It.IsAny<Guid>(),
-                Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()),
+            Moq.It.IsAny<Action<IPipeContext>>(),
+            Moq.It.IsAny<CancellationToken>()),
             Times.Once);
 
         It should_not_publish_post_message_rejected = () => BusClientMock.Verify(x => x.PublishAsync(
-                Moq.It.IsAny<PostOnFacebookWallRejected>(),
-                Moq.It.IsAny<Guid>(),
-                Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()),
+            Moq.It.IsAny<PostOnFacebookWallRejected>(),
+            Moq.It.IsAny<Action<IPipeContext>>(),
+            Moq.It.IsAny<CancellationToken>()),
             Times.Never);
 
     }
@@ -94,8 +95,8 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
 
         It should_publish_message_posted_event = () => BusClientMock.Verify(x => x.PublishAsync(
                 Moq.It.IsAny<MessageOnFacebookWallPosted>(),
-                Moq.It.IsAny<Guid>(),
-                Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()),
+            Moq.It.IsAny<Action<IPipeContext>>(),
+            Moq.It.IsAny<CancellationToken>()),
             Times.Never);
 
         It should_not_publish_post_message_rejected = () => BusClientMock.Verify(x => x.PublishAsync(
@@ -103,8 +104,8 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
                                                                   && m.UserId == Command.UserId
                                                                   && m.Code == OperationCodes.Error
                                                                   && m.Message == Command.Message),
-                Moq.It.IsAny<Guid>(),
-                Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()),
+            Moq.It.IsAny<Action<IPipeContext>>(),
+            Moq.It.IsAny<CancellationToken>()),
             Times.Once);
 
     }

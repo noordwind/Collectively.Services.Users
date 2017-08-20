@@ -10,9 +10,10 @@ using Collectively.Messages.Events.Users;
 using Machine.Specifications;
 using Moq;
 using RawRabbit;
-using RawRabbit.Configuration.Publish;
 using It = Machine.Specifications.It;
 using Collectively.Common.Files;
+using RawRabbit.Pipe;
+using System.Threading;
 
 namespace Collectively.Services.Users.Tests.Specs.Handlers
 {
@@ -28,7 +29,6 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
         protected static Mock<IAvatarService> AvatarServiceMock;
         protected static Mock<IFileResolver> FileResolverMock;
         protected static Mock<IResourceFactory> ResourceFactoryMock;
-
         protected static SignIn Command;
         protected static User User;
 
@@ -89,19 +89,19 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
             Times.Once);
 
         It should_publish_user_signed_in_event = () => BusClientMock.Verify(x => x.PublishAsync(
-                Moq.It.Is<SignedIn>(m => m.RequestId == Command.Request.Id
-                                             && m.UserId == User.UserId
-                                             && m.Email == User.Email
-                                             && m.Name == User.Name
-                                             && m.Provider == User.Provider),
-                Moq.It.IsAny<Guid>(),
-                Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()),
+            Moq.It.Is<SignedIn>(m => m.RequestId == Command.Request.Id
+                                            && m.UserId == User.UserId
+                                            && m.Email == User.Email
+                                            && m.Name == User.Name
+                                            && m.Provider == User.Provider),
+            Moq.It.IsAny<Action<IPipeContext>>(),
+            Moq.It.IsAny<CancellationToken>()),
             Times.Once);
 
         It should_not_publish_user_sign_in_rejected = () => BusClientMock.Verify(x => x.PublishAsync(
-                Moq.It.IsAny<SignInRejected>(),
-                Moq.It.IsAny<Guid>(),
-                Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()),
+            Moq.It.IsAny<SignInRejected>(),
+            Moq.It.IsAny<Action<IPipeContext>>(),
+            Moq.It.IsAny<CancellationToken>()),
             Times.Never);
     }
 
@@ -128,17 +128,17 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
             Times.Once);
 
         It should_not_publish_user_signed_in_event = () => BusClientMock.Verify(x => x.PublishAsync(
-                Moq.It.IsAny<SignedIn>(),
-                Moq.It.IsAny<Guid>(),
-                Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()),
+            Moq.It.IsAny<SignedIn>(),
+            Moq.It.IsAny<Action<IPipeContext>>(),
+            Moq.It.IsAny<CancellationToken>()),
             Times.Never);
 
         It should_publish_user_sign_in_rejected = () => BusClientMock.Verify(x => x.PublishAsync(
-                Moq.It.Is<SignInRejected>(m => m.RequestId == Command.Request.Id
-                                                   && m.Code == ErrorCode
-                                                   && m.Provider == Command.Provider),
-                Moq.It.IsAny<Guid>(),
-                Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()),
+            Moq.It.Is<SignInRejected>(m => m.RequestId == Command.Request.Id
+                                                && m.Code == ErrorCode
+                                                && m.Provider == Command.Provider),
+            Moq.It.IsAny<Action<IPipeContext>>(),
+            Moq.It.IsAny<CancellationToken>()),
             Times.Once);
     }
 
@@ -164,17 +164,17 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
             Times.Once);
 
         It should_not_publish_user_signed_in_event = () => BusClientMock.Verify(x => x.PublishAsync(
-                Moq.It.IsAny<SignedIn>(),
-                Moq.It.IsAny<Guid>(),
-                Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()),
+            Moq.It.IsAny<SignedIn>(),
+            Moq.It.IsAny<Action<IPipeContext>>(),
+            Moq.It.IsAny<CancellationToken>()),
             Times.Never);
 
         It should_publish_user_sign_in_rejected = () => BusClientMock.Verify(x => x.PublishAsync(
-                Moq.It.Is<SignInRejected>(m => m.RequestId == Command.Request.Id
-                                                   && m.Code == OperationCodes.Error
-                                                   && m.Provider == Command.Provider),
-                Moq.It.IsAny<Guid>(),
-                Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()),
+            Moq.It.Is<SignInRejected>(m => m.RequestId == Command.Request.Id
+                                                && m.Code == OperationCodes.Error
+                                                && m.Provider == Command.Provider),
+            Moq.It.IsAny<Action<IPipeContext>>(),
+            Moq.It.IsAny<CancellationToken>()),
             Times.Once);
     }
 

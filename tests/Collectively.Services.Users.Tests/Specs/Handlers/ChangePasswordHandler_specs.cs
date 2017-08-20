@@ -9,8 +9,9 @@ using Collectively.Messages.Events.Users;
 using Machine.Specifications;
 using Moq;
 using RawRabbit;
-using RawRabbit.Configuration.Publish;
-using It = Machine.Specifications.It; 
+using It = Machine.Specifications.It;
+using RawRabbit.Pipe;
+using System.Threading;
 
 namespace Collectively.Services.Users.Tests.Specs.Handlers
 {
@@ -21,7 +22,6 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
         protected static Mock<IBusClient> BusClientMock;
         protected static Mock<IPasswordService> PasswordServiceMock;
         protected static Mock<IExceptionHandler> ExceptionHandlerMock;
-
         protected static ChangePassword Command;
 
         protected static void Initialize()
@@ -67,14 +67,14 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
         It should_publish_password_changed_event = () => BusClientMock.Verify(x => x.PublishAsync(
             Moq.It.Is<PasswordChanged>(e => e.RequestId == Command.Request.Id
                                             && e.UserId == Command.UserId),
-            Moq.It.IsAny<Guid>(),
-            Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()), Times.Once);
+                Moq.It.IsAny<Action<IPipeContext>>(),
+                Moq.It.IsAny<CancellationToken>()), Times.Once);
 
 
         It should_not_publish_change_password_rejected_event = () => BusClientMock.Verify(x => x.PublishAsync(
             Moq.It.IsAny<ChangePasswordRejected>(),
-            Moq.It.IsAny<Guid>(),
-            Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()), Times.Never);
+            Moq.It.IsAny<Action<IPipeContext>>(),
+            Moq.It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Subject("ChangePasswordHandler HandleAsync")]
@@ -98,16 +98,16 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
 
         It should_not_publish_password_changed_event = () => BusClientMock.Verify(x => x.PublishAsync(
             Moq.It.IsAny<PasswordChanged>(),
-            Moq.It.IsAny<Guid>(),
-            Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()), Times.Never);
+            Moq.It.IsAny<Action<IPipeContext>>(),
+            Moq.It.IsAny<CancellationToken>()), Times.Never);
 
 
         It should_publish_change_password_rejected_event = () => BusClientMock.Verify(x => x.PublishAsync(
             Moq.It.Is<ChangePasswordRejected>(m => m.RequestId == Command.Request.Id
                                                    && m.UserId == Command.UserId
                                                    && m.Code == OperationCodes.Error),
-            Moq.It.IsAny<Guid>(),
-            Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()), Times.Once);
+            Moq.It.IsAny<Action<IPipeContext>>(),
+            Moq.It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Subject("ChangePasswordHandler HandleAsync")]
@@ -133,15 +133,15 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
 
         It should_not_publish_password_changed_event = () => BusClientMock.Verify(x => x.PublishAsync(
             Moq.It.IsAny<PasswordChanged>(),
-            Moq.It.IsAny<Guid>(),
-            Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()), Times.Never);
+            Moq.It.IsAny<Action<IPipeContext>>(),
+            Moq.It.IsAny<CancellationToken>()), Times.Never);
 
 
         It should_publish_change_password_rejected_event = () => BusClientMock.Verify(x => x.PublishAsync(
             Moq.It.Is<ChangePasswordRejected>(m => m.RequestId == Command.Request.Id
                                                    && m.UserId == Command.UserId
                                                    && m.Code == ErrorCode),
-            Moq.It.IsAny<Guid>(),
-            Moq.It.IsAny<Action<IPublishConfigurationBuilder>>()), Times.Once);
+            Moq.It.IsAny<Action<IPipeContext>>(),
+            Moq.It.IsAny<CancellationToken>()), Times.Once);
     }
 }
