@@ -17,11 +17,10 @@ using System.Threading;
 
 namespace Collectively.Services.Users.Tests.Specs.Handlers
 {
-    public class SignInHandler_specs
+    public class SignInHandler_specs : SpecsBase
     {
         protected static SignInHandler SignInHandler;
         protected static IHandler Handler;
-        protected static Mock<IBusClient> BusClientMock;
         protected static Mock<IUserService> UserServiceMock;
         protected static Mock<IFacebookService> FacebookServiceMock;
         protected static Mock<IAuthenticationService> AuthenticationServiceMock;
@@ -36,14 +35,12 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
         {
             ExceptionHandlerMock = new Mock<IExceptionHandler>();
             Handler = new Handler(ExceptionHandlerMock.Object);
-            BusClientMock = new Mock<IBusClient>();
             UserServiceMock = new Mock<IUserService>();
             FacebookServiceMock = new Mock<IFacebookService>();
             AuthenticationServiceMock = new Mock<IAuthenticationService>();
             AvatarServiceMock = new Mock<IAvatarService>();
             FileResolverMock = new Mock<IFileResolver>();
             ResourceFactoryMock = new Mock<IResourceFactory>();
-
             SignInHandler = new SignInHandler(Handler, BusClientMock.Object,
                 UserServiceMock.Object, FacebookServiceMock.Object,
                 AuthenticationServiceMock.Object, AvatarServiceMock.Object,
@@ -88,21 +85,16 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
                 Command.SessionId, Command.Email, Command.Password, Command.IpAddress, Command.UserAgent),
             Times.Once);
 
-        It should_publish_user_signed_in_event = () => BusClientMock.Verify(x => x.PublishAsync(
+        It should_publish_user_signed_in_event = () => VerifyPublishAsync(
             Moq.It.Is<SignedIn>(m => m.RequestId == Command.Request.Id
                                             && m.UserId == User.UserId
                                             && m.Email == User.Email
                                             && m.Name == User.Name
                                             && m.Provider == User.Provider),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()),
             Times.Once);
 
-        It should_not_publish_user_sign_in_rejected = () => BusClientMock.Verify(x => x.PublishAsync(
-            Moq.It.IsAny<SignInRejected>(),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()),
-            Times.Never);
+        It should_not_publish_user_sign_in_rejected = () => VerifyPublishAsync(
+            Moq.It.IsAny<SignInRejected>(), Times.Never);
     }
 
 
@@ -127,18 +119,13 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
                 Command.SessionId, Command.Email, Command.Password, Command.IpAddress, Command.UserAgent),
             Times.Once);
 
-        It should_not_publish_user_signed_in_event = () => BusClientMock.Verify(x => x.PublishAsync(
-            Moq.It.IsAny<SignedIn>(),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()),
-            Times.Never);
+        It should_not_publish_user_signed_in_event = () => VerifyPublishAsync(
+            Moq.It.IsAny<SignedIn>(), Times.Never);
 
-        It should_publish_user_sign_in_rejected = () => BusClientMock.Verify(x => x.PublishAsync(
+        It should_publish_user_sign_in_rejected = () => VerifyPublishAsync(
             Moq.It.Is<SignInRejected>(m => m.RequestId == Command.Request.Id
                                                 && m.Code == ErrorCode
                                                 && m.Provider == Command.Provider),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()),
             Times.Once);
     }
 
@@ -163,19 +150,14 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
                 Command.SessionId, Command.Email, Command.Password, Command.IpAddress, Command.UserAgent),
             Times.Once);
 
-        It should_not_publish_user_signed_in_event = () => BusClientMock.Verify(x => x.PublishAsync(
-            Moq.It.IsAny<SignedIn>(),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()),
-            Times.Never);
+        It should_not_publish_user_signed_in_event = () => VerifyPublishAsync(
+            Moq.It.IsAny<SignedIn>(), Times.Never);
 
-        It should_publish_user_sign_in_rejected = () => BusClientMock.Verify(x => x.PublishAsync(
+        It should_publish_user_sign_in_rejected = () => VerifyPublishAsync(
             Moq.It.Is<SignInRejected>(m => m.RequestId == Command.Request.Id
                                                 && m.Code == OperationCodes.Error
-                                                && m.Provider == Command.Provider),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()),
-            Times.Once);
+                                                && m.Provider == Command.Provider), 
+                                                Times.Once);
     }
 
     //TODO write facebook sign in specs

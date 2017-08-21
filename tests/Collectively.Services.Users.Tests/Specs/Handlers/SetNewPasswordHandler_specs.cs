@@ -15,11 +15,10 @@ using System.Threading;
 
 namespace Collectively.Services.Users.Tests.Specs.Handlers
 {
-    public class SetNewPasswordHandler_specs
+    public class SetNewPasswordHandler_specs : SpecsBase
     {
         protected static SetNewPasswordHandler SetNewPasswordHandler;
         protected static IHandler Handler;
-        protected static Mock<IBusClient> BusClientMock;
         protected static Mock<IPasswordService> PasswordServiceMock;
         protected static Mock<IExceptionHandler> ExceptionHandlerMock;
         protected static SetNewPassword Command;
@@ -28,9 +27,7 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
         {
             ExceptionHandlerMock = new Mock<IExceptionHandler>();
             Handler = new Handler(ExceptionHandlerMock.Object);
-            BusClientMock = new Mock<IBusClient>();
             PasswordServiceMock = new Mock<IPasswordService>();
-            
             SetNewPasswordHandler = new SetNewPasswordHandler(Handler, 
                 BusClientMock.Object, PasswordServiceMock.Object);
 
@@ -62,17 +59,13 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
         It should_call_set_new_async = () => PasswordServiceMock.Verify(x => x.SetNewAsync(
             Command.Email, Command.Token, Command.Password), Times.Once);
 
-        It should_publish_new_password_set_event = () => BusClientMock.Verify(x => x.PublishAsync(
+        It should_publish_new_password_set_event = () => VerifyPublishAsync(
             Moq.It.Is<NewPasswordSet>(m => m.RequestId == Command.Request.Id
                                             && m.Email == Command.Email),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()),
             Times.Once);
 
-        It should_not_publish_set_new_password_rejected = () => BusClientMock.Verify(x => x.PublishAsync(
+        It should_not_publish_set_new_password_rejected = () => VerifyPublishAsync(
             Moq.It.IsAny<SetNewPasswordRejected>(),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()),
             Times.Never);
     }
 
@@ -95,18 +88,14 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
         It should_call_set_new_async = () => PasswordServiceMock.Verify(x => x.SetNewAsync(
             Command.Email, Command.Token, Command.Password), Times.Once);
 
-        It should_not_publish_new_password_set_event = () => BusClientMock.Verify(x => x.PublishAsync(
+        It should_not_publish_new_password_set_event = () => VerifyPublishAsync(
             Moq.It.IsAny<NewPasswordSet>(),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()),
             Times.Never);
 
-        It should_publish_set_new_password_rejected = () => BusClientMock.Verify(x => x.PublishAsync(
+        It should_publish_set_new_password_rejected = () => VerifyPublishAsync(
             Moq.It.Is<SetNewPasswordRejected>(m => m.RequestId == Command.Request.Id
                                                     && m.Code == ErrorCode
                                                     && m.Email == Command.Email),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()),
             Times.Once);
     }
 
@@ -126,18 +115,14 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
         It should_call_set_new_async = () => PasswordServiceMock.Verify(x => x.SetNewAsync(
             Command.Email, Command.Token, Command.Password), Times.Once);
 
-        It should_not_publish_new_password_set_event = () => BusClientMock.Verify(x => x.PublishAsync(
+        It should_not_publish_new_password_set_event = () => VerifyPublishAsync(
             Moq.It.IsAny<NewPasswordSet>(),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()),
             Times.Never);
 
-        It should_publish_set_new_password_rejected = () => BusClientMock.Verify(x => x.PublishAsync(
+        It should_publish_set_new_password_rejected = () => VerifyPublishAsync(
             Moq.It.Is<SetNewPasswordRejected>(m => m.RequestId == Command.Request.Id
                                                     && m.Code == OperationCodes.Error
                                                     && m.Email == Command.Email),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()),
             Times.Once);
     }
 }

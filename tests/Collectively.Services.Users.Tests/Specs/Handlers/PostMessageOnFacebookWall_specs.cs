@@ -14,20 +14,19 @@ using System.Threading;
 
 namespace Collectively.Services.Users.Tests.Specs.Handlers
 {
-    public abstract class PostMessageOnFacebookWall_specs
+    public abstract class PostMessageOnFacebookWall_specs : SpecsBase
     {
         protected static PostOnFacebookWallHandler PostOnFacebookWallHandler;
         protected static IHandler Handler;
-        protected static Mock<IBusClient> BusClientMock;
         protected static Mock<IFacebookService> FacebookServiceMock;
         protected static Mock<IExceptionHandler> ExceptionHandlerMock;
         protected static PostOnFacebookWall Command;
 
         protected static void Initialize()
         {
+            InitializeBus();
             ExceptionHandlerMock = new Mock<IExceptionHandler>();
             Handler = new Handler(ExceptionHandlerMock.Object);
-            BusClientMock = new Mock<IBusClient>();
             FacebookServiceMock = new Mock<IFacebookService>();
             PostOnFacebookWallHandler = new PostOnFacebookWallHandler(Handler,
                 BusClientMock.Object, FacebookServiceMock.Object);
@@ -61,18 +60,14 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
                 Command.AccessToken, Command.Message),
             Times.Once);
 
-        It should_publish_message_posted_event = () => BusClientMock.Verify(x => x.PublishAsync(
+        It should_publish_message_posted_event = () => VerifyPublishAsync(
                 Moq.It.Is<MessageOnFacebookWallPosted>(m => m.RequestId == Command.Request.Id
                                                             && m.UserId == Command.UserId
                                                             && m.Message == Command.Message),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()),
             Times.Once);
 
-        It should_not_publish_post_message_rejected = () => BusClientMock.Verify(x => x.PublishAsync(
+        It should_not_publish_post_message_rejected = () => VerifyPublishAsync(
             Moq.It.IsAny<PostOnFacebookWallRejected>(),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()),
             Times.Never);
 
     }
@@ -93,19 +88,15 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
                 Command.AccessToken, Command.Message),
             Times.Once);
 
-        It should_publish_message_posted_event = () => BusClientMock.Verify(x => x.PublishAsync(
+        It should_publish_message_posted_event = () => VerifyPublishAsync(
                 Moq.It.IsAny<MessageOnFacebookWallPosted>(),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()),
             Times.Never);
 
-        It should_not_publish_post_message_rejected = () => BusClientMock.Verify(x => x.PublishAsync(
+        It should_not_publish_post_message_rejected = () => VerifyPublishAsync(
                 Moq.It.Is<PostOnFacebookWallRejected>(m => m.RequestId == Command.Request.Id
                                                                   && m.UserId == Command.UserId
                                                                   && m.Code == OperationCodes.Error
                                                                   && m.Message == Command.Message),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()),
             Times.Once);
 
     }

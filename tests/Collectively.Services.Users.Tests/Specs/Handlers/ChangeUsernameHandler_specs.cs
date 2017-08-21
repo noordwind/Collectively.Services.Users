@@ -17,11 +17,10 @@ using System.Threading;
 
 namespace Collectively.Services.Users.Tests.Specs.Handlers
 {
-    public class ChangeUsernameHandler_specs
+    public class ChangeUsernameHandler_specs : SpecsBase
     {
         protected static ChangeUserNameHandler ChangeUserNameHandler;
         protected static IHandler Handler;
-        protected static Mock<IBusClient> BusClientMock;
         protected static Mock<IUserService> UserServiceMock;
         protected static Mock<IExceptionHandler> ExceptionHandlerMock;
         protected static ChangeUsername Command;
@@ -29,11 +28,10 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
 
         protected static void Initialize()
         {
+            InitializeBus();
             ExceptionHandlerMock = new Mock<IExceptionHandler>();
             Handler = new Handler(ExceptionHandlerMock.Object);
-            BusClientMock = new Mock<IBusClient>();
             UserServiceMock = new Mock<IUserService>();
-
             ChangeUserNameHandler = new ChangeUserNameHandler(Handler, 
                 BusClientMock.Object, UserServiceMock.Object);
 
@@ -79,13 +77,11 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
             () => UserServiceMock.Verify(x => x.GetAsync(Command.UserId), Times.Once);
 
         It should_publish_username_changed_event =
-            () => BusClientMock.Verify(x => x.PublishAsync(Moq.It.Is<UsernameChanged>(m =>
+            () => VerifyPublishAsync(Moq.It.Is<UsernameChanged>(m =>
                     m.RequestId == Command.Request.Id
                     && m.UserId == Command.UserId
                     && m.NewName == Command.Name
-                    && m.State == States.Active),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()), Times.Once);
+                    && m.State == States.Active), Times.Once);
 
     }
 
@@ -109,17 +105,13 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
         It should_not_call_get_user_async =
             () => UserServiceMock.Verify(x => x.GetAsync(Command.UserId), Times.Never);
         It should_not_publish_username_changed_event =
-            () => BusClientMock.Verify(x => x.PublishAsync(Moq.It.IsAny<UsernameChanged>(),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()), Times.Never);
+            () => VerifyPublishAsync(Moq.It.IsAny<UsernameChanged>(), Times.Never);
         It should_publish_change_username_rejected_event =
-            () => BusClientMock.Verify(x => x.PublishAsync(Moq.It.Is<ChangeUsernameRejected>(m =>
+            () => VerifyPublishAsync(Moq.It.Is<ChangeUsernameRejected>(m =>
                     m.RequestId == Command.Request.Id
                     && m.RejectedUsername == Command.Name
                     && m.UserId == Command.UserId
-                    && m.Code == ErrorCode),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()), Times.Once);
+                    && m.Code == ErrorCode), Times.Once);
 
     }
 
@@ -143,17 +135,13 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
         It should_not_call_get_user_async =
             () => UserServiceMock.Verify(x => x.GetAsync(Command.UserId), Times.Never);
         It should_not_publish_username_changed_event =
-            () => BusClientMock.Verify(x => x.PublishAsync(Moq.It.IsAny<UsernameChanged>(),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()), Times.Never);
+            () => VerifyPublishAsync(Moq.It.IsAny<UsernameChanged>(), Times.Never);
         It should_publish_change_username_rejected_event =
-            () => BusClientMock.Verify(x => x.PublishAsync(Moq.It.Is<ChangeUsernameRejected>(m =>
+            () => VerifyPublishAsync(Moq.It.Is<ChangeUsernameRejected>(m =>
                     m.RequestId == Command.Request.Id
                     && m.RejectedUsername == Command.Name
                     && m.UserId == Command.UserId
-                    && m.Code == OperationCodes.Error),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()), Times.Once);
+                    && m.Code == OperationCodes.Error), Times.Once);
 
     }
 }

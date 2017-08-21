@@ -17,11 +17,10 @@ using RawRabbit.Pipe;
 
 namespace Collectively.Services.Users.Tests.Specs.Handlers
 {
-    public abstract class ResetPasswordHandler_specs
+    public abstract class ResetPasswordHandler_specs : SpecsBase
     {
         protected static ResetPasswordHandler ResetPasswordHandler;
         protected static IHandler Handler;
-        protected static Mock<IBusClient> BusMock;
         protected static Mock<IPasswordService> PasswordServiceMock;
         protected static Mock<IOneTimeSecuredOperationService> OneTimeOperationServiceMock;
         protected static Mock<IExceptionHandler> ExceptionHandlerMock;
@@ -30,13 +29,12 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
 
         public static void Initialize()
         {
+            InitializeBus();
             ExceptionHandlerMock = new Mock<IExceptionHandler>();
             Handler = new Handler(ExceptionHandlerMock.Object);
-            BusMock = new Mock<IBusClient>();
             PasswordServiceMock = new Mock<IPasswordService>();
             OneTimeOperationServiceMock = new Mock<IOneTimeSecuredOperationService>();
-
-            ResetPasswordHandler = new ResetPasswordHandler(Handler, BusMock.Object,
+            ResetPasswordHandler = new ResetPasswordHandler(Handler, BusClientMock.Object,
                 PasswordServiceMock.Object, OneTimeOperationServiceMock.Object);
 
             var email = "email@email.com";
@@ -77,19 +75,15 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
         It should_call_get_one_time_operation = ()
             => OneTimeOperationServiceMock.Verify(x => x.GetAsync(Moq.It.IsAny<Guid>()), Times.Once);
 
-        It should_publish_send_reset_password_email_command = () => BusMock.Verify(x => x.PublishAsync(
+        It should_publish_send_reset_password_email_command = () => VerifyPublishAsync(
             Moq.It.Is<SendResetPasswordEmailMessage>(c => c.Email == Command.Email
                                                             && c.Request.Id == Command.Request.Id
                                                             && c.Token == Token
                                                             && c.Endpoint == Command.Endpoint),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()),
             Times.Once);
 
-        It should_not_publish_send_reset_password_rejected = () => BusMock.Verify(x => x.PublishAsync(
+        It should_not_publish_send_reset_password_rejected = () => VerifyPublishAsync(
             Moq.It.IsAny<ResetPasswordRejected>(),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()),
             Times.Never);
     }
 
@@ -113,18 +107,13 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
         It should_not_call_get_one_time_operation = ()
             => OneTimeOperationServiceMock.Verify(x => x.GetAsync(Moq.It.IsAny<Guid>()), Times.Never);
 
-        It should_not_publish_send_reset_password_email_command = () => BusMock.Verify(x => x.PublishAsync(
-            Moq.It.IsAny<SendResetPasswordEmailMessage>(),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()),
-            Times.Never);
+        It should_not_publish_send_reset_password_email_command = () => VerifyPublishAsync(
+            Moq.It.IsAny<SendResetPasswordEmailMessage>(), Times.Never);
 
-        It should_publish_send_reset_password_rejected = () => BusMock.Verify(x => x.PublishAsync(
+        It should_publish_send_reset_password_rejected = () => VerifyPublishAsync(
             Moq.It.Is<ResetPasswordRejected>(m => m.RequestId == Command.Request.Id
                                                     && m.Email == Command.Email 
                                                     && m.Code == OperationCodes.Error),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()),
             Times.Once);
     }
 
@@ -150,18 +139,14 @@ namespace Collectively.Services.Users.Tests.Specs.Handlers
         It should_not_call_get_one_time_operation = ()
             => OneTimeOperationServiceMock.Verify(x => x.GetAsync(Moq.It.IsAny<Guid>()), Times.Never);
 
-        It should_not_publish_send_reset_password_email_command = () => BusMock.Verify(x => x.PublishAsync(
+        It should_not_publish_send_reset_password_email_command = () => VerifyPublishAsync(
             Moq.It.IsAny<SendResetPasswordEmailMessage>(),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()),
             Times.Never);
 
-        It should_publish_send_reset_password_email_command = () => BusMock.Verify(x => x.PublishAsync(
+        It should_publish_send_reset_password_email_command = () => VerifyPublishAsync(
             Moq.It.Is<ResetPasswordRejected>(m => m.RequestId == Command.Request.Id
                                                     && m.Email == Command.Email
                                                     && m.Code == ErrorCode),
-            Moq.It.IsAny<Action<IPipeContext>>(),
-            Moq.It.IsAny<CancellationToken>()),
             Times.Once);
     }
 }
