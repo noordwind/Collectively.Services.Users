@@ -39,7 +39,7 @@ namespace Collectively.Services.Users.Services
                 throw new ServiceException(OperationCodes.UserNotFound,
                     $"User with email '{email}' has not been found.");
             }
-            if (user.Value.State != States.Active)
+            if (user.Value.State != States.Active && user.Value.State != States.Unconfirmed)
             {
                 throw new ServiceException(OperationCodes.InactiveUser,
                     $"User '{user.Value.Id}' is not active.");
