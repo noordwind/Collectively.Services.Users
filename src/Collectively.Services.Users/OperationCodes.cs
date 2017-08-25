@@ -9,6 +9,8 @@
         public static string SessionNotFound => "session_not_found";
         public static string InvalidSessionKey => "invalid_session_key";
         public static string SessionExpired => "session_expired";
+        public static string SessionRefreshed => "session_refreshed";
+        public static string SessionDestroyed => "session_destroyed";
         public static string InvalidCredentials => "invalid_credentials";
         public static string InvalidRole => "invalid_role";
         public static string EmailInUse => "email_in_use";

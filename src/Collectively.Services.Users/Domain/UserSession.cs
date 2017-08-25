@@ -46,7 +46,7 @@ namespace Collectively.Services.Users.Domain
             UpdatedAt = DateTime.UtcNow;
         }
 
-        public UserSession Refresh(Guid id, string key, Guid parentId,
+        public UserSession Refresh(Guid newSessionId, string key, Guid parentId,
             string ipAddress = null, string userAgent = null)
         {
             CheckIfAlreadyRefreshedOrDestroyed();
@@ -54,20 +54,20 @@ namespace Collectively.Services.Users.Domain
             Refreshed = true;
             UpdatedAt = DateTime.UtcNow;
 
-            return new UserSession(id, UserId, key, ipAddress, userAgent, parentId);
+            return new UserSession(newSessionId, UserId, key, ipAddress, userAgent, parentId);
         }
 
         private void CheckIfAlreadyRefreshedOrDestroyed()
         {
             if (Refreshed)
             {
-                throw new DomainException(OperationCodes.SessionExpired,
+                throw new DomainException(OperationCodes.SessionRefreshed,
                     $"Session for user id: '{UserId}' " +
                     $"with key: '{Key}' has been already refreshed.");
             }
             if (Destroyed)
             {
-                throw new DomainException(OperationCodes.SessionExpired,
+                throw new DomainException(OperationCodes.SessionDestroyed,
                     $"Session for user id: '{UserId}' " +
                     $"with key: '{Key}' has been already destroyed.");
             }

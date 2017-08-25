@@ -20,7 +20,7 @@ namespace Collectively.Services.Users.Services
         Task CreateSessionAsync(Guid sessionId, string userId,
             string ipAddress = null, string userAgent = null);
 
-        Task RefreshSessionAsync(Guid sessionId, string sessionKey,
-            string ipAddress = null, string userAgent = null);
+        Task RefreshSessionAsync(Guid sessionId, Guid newSessionId, 
+            string sessionKey, string ipAddress = null, string userAgent = null);
     }
 }

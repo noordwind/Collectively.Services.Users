@@ -43,7 +43,7 @@ namespace Collectively.Services.Users.Handlers
                 {
                     logger.Error(ex, "Error when activating account.");
                     await _bus.PublishAsync(new ActivateAccountRejected(command.Request.Id,
-                        command.Email, OperationCodes.Error, "error when activating account"));
+                        command.Email, OperationCodes.Error, "Error when activating account"));
                 })
                 .ExecuteAsync();
         }

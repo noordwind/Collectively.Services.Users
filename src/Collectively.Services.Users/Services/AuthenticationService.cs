@@ -116,8 +116,8 @@ namespace Collectively.Services.Users.Services
             await _userSessionRepository.AddAsync(session);
         }
 
-        public async Task RefreshSessionAsync(Guid sessionId, string sessionKey,
-            string ipAddress = null, string userAgent = null)
+        public async Task RefreshSessionAsync(Guid sessionId, Guid newSessionId,
+            string sessionKey, string ipAddress = null, string userAgent = null)
         {
             var parentSession = await _userSessionRepository.GetByIdAsync(sessionId);
             if (parentSession.HasNoValue)
@@ -130,7 +130,7 @@ namespace Collectively.Services.Users.Services
                 throw new ServiceException(OperationCodes.InvalidSessionKey,
                     $"Invalid session key: '{sessionKey}'");
             }
-            var newSession = parentSession.Value.Refresh(Guid.NewGuid(),
+            var newSession = parentSession.Value.Refresh(newSessionId,
                 _encrypter.GetRandomSecureKey(), sessionId, ipAddress, userAgent);
             await _userSessionRepository.UpdateAsync(parentSession.Value);
             await _userSessionRepository.AddAsync(newSession);
