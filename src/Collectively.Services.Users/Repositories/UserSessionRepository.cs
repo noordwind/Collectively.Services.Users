@@ -24,5 +24,8 @@ namespace Collectively.Services.Users.Repositories
 
         public async Task UpdateAsync(UserSession session)
             => await _database.UserSessions().ReplaceOneAsync(x => x.Id == session.Id, session);
+
+        public async Task DeleteAsync(Guid id)
+            => await _database.UserSessions().DeleteOneAsync(x => x.Id == id);
     }
 }

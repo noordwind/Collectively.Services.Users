@@ -132,8 +132,8 @@ namespace Collectively.Services.Users.Services
             }
             var newSession = parentSession.Value.Refresh(newSessionId,
                 _encrypter.GetRandomSecureKey(), sessionId, ipAddress, userAgent);
-            await _userSessionRepository.UpdateAsync(parentSession.Value);
             await _userSessionRepository.AddAsync(newSession);
+            await _userSessionRepository.DeleteAsync(sessionId);
         }
     }
 }

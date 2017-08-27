@@ -10,5 +10,6 @@ namespace Collectively.Services.Users.Repositories
         Task<Maybe<UserSession>> GetByIdAsync(Guid id);
         Task AddAsync(UserSession session);
         Task UpdateAsync(UserSession session);
+        Task DeleteAsync(Guid id);
     }
 }
