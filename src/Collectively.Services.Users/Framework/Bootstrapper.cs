@@ -12,7 +12,7 @@ using Collectively.Services.Users.Services;
 using Microsoft.Extensions.Configuration;
 using Nancy.Bootstrapper;
 using Nancy.Bootstrappers.Autofac;
-using NLog;
+using Serilog;
 using RawRabbit.Configuration;
 using System.Reflection;
 using Collectively.Common.Exceptionless;
@@ -29,7 +29,7 @@ namespace Collectively.Services.Users.Framework
 {
     public class Bootstrapper : AutofacNancyBootstrapper
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger Logger = Log.Logger;
         private static IExceptionHandler _exceptionHandler;
         private static readonly string DecimalSeparator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
         private static readonly string InvalidDecimalSeparator = DecimalSeparator == "." ? "," : ".";
@@ -118,7 +118,7 @@ namespace Collectively.Services.Users.Framework
             };
             pipelines.SetupTokenAuthentication(container);
             _exceptionHandler = container.Resolve<IExceptionHandler>();
-            Logger.Info("Collectively.Services.Users API has started.");
+            Logger.Information("Collectively.Services.Users API has started.");
         }
 
         private void FixNumberFormat(NancyContext ctx)

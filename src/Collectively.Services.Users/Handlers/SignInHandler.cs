@@ -7,7 +7,7 @@ using Collectively.Services.Users.Domain;
 using Collectively.Services.Users.Services;
 using Collectively.Messages.Commands.Users;
 using Collectively.Messages.Events.Users;
-using NLog;
+using Serilog;
 using RawRabbit;
 using Collectively.Common.Files;
 using System.IO;
@@ -16,7 +16,7 @@ namespace Collectively.Services.Users.Handlers
 {
     public class SignInHandler : ICommandHandler<SignIn>
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger Logger = Log.Logger;
         private readonly IHandler _handler;
         private readonly IBusClient _bus;
         private readonly IUserService _userService;
@@ -112,7 +112,7 @@ namespace Collectively.Services.Users.Handlers
             await _userService.SignUpAsync(userId, facebookUser.Email,
                 Roles.User, Providers.Facebook, externalUserId: externalUserId);
 
-            Logger.Info($"Created new user with id: '{userId}' using Facebook user id: '{externalUserId}'");
+            Logger.Information($"Created new user with id: '{userId}' using Facebook user id: '{externalUserId}'");
             await TryUploadFacebookAvatarAsync(userId, externalUserId);
             var user = await _userService.GetByExternalUserIdAsync(externalUserId);
             var resource = _resourceFactory.Resolve<SignedUp>(userId);

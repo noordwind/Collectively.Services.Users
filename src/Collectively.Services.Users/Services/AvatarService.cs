@@ -6,13 +6,13 @@ using Collectively.Common.Files;
 using Collectively.Common.Types;
 using Collectively.Services.Users.Domain;
 using Collectively.Services.Users.Repositories;
-using NLog;
+using Serilog;
 
 namespace Collectively.Services.Users.Services
 {
     public class AvatarService : IAvatarService
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger Logger = Log.Logger;
         private readonly IUserRepository _userRepository;
         private readonly IFileHandler _fileHandler;
         private readonly IImageService _imageService;

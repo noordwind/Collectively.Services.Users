@@ -6,12 +6,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Nancy.Owin;
-using NLog.Extensions.Logging;
 using Lockbox.Client.Extensions;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Collectively.Services.Users.Framework;
-using NLog.Web;
+using Collectively.Common.Logging;
 
 namespace Collectively.Services.Users
 {
@@ -40,6 +39,7 @@ namespace Collectively.Services.Users
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            services.AddSerilog(Configuration);
             services.AddWebEncoders();
             services.AddCors();
             ApplicationContainer = GetServiceContainer(services);
@@ -49,9 +49,7 @@ namespace Collectively.Services.Users
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddNLog();
-            app.AddNLogWeb();
-            env.ConfigureNLog("nlog.config");
+            app.UseSerilog(loggerFactory);
             app.UseCors(builder => builder.AllowAnyHeader()
 	            .AllowAnyMethod()
 	            .AllowAnyOrigin()
