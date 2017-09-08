@@ -62,16 +62,16 @@ namespace Collectively.Services.Users.Framework
                 builder.RegisterModule<MongoDbModule>();
                 builder.RegisterType<MongoDbInitializer>().As<IDatabaseInitializer>();
                 builder.RegisterType<Encrypter>().As<IEncrypter>().SingleInstance();
-                builder.RegisterType<OneTimeSecuredOperationRepository>().As<IOneTimeSecuredOperationRepository>();
-                builder.RegisterType<UserRepository>().As<IUserRepository>();
-                builder.RegisterType<UserSessionRepository>().As<IUserSessionRepository>();
-                builder.RegisterType<AuthenticationService>().As<IAuthenticationService>();
-                builder.RegisterType<FacebookClient>().As<IFacebookClient>();
-                builder.RegisterType<FacebookService>().As<IFacebookService>();
-                builder.RegisterType<OneTimeSecuredOperationService>().As<IOneTimeSecuredOperationService>();
-                builder.RegisterType<PasswordService>().As<IPasswordService>();
-                builder.RegisterType<UserService>().As<IUserService>();
-                builder.RegisterType<AvatarService>().As<IAvatarService>();
+                builder.RegisterType<OneTimeSecuredOperationRepository>().As<IOneTimeSecuredOperationRepository>().InstancePerLifetimeScope();
+                builder.RegisterType<UserRepository>().As<IUserRepository>().InstancePerLifetimeScope();
+                builder.RegisterType<UserSessionRepository>().As<IUserSessionRepository>().InstancePerLifetimeScope();
+                builder.RegisterType<AuthenticationService>().As<IAuthenticationService>().InstancePerLifetimeScope();
+                builder.RegisterType<FacebookClient>().As<IFacebookClient>().InstancePerLifetimeScope();
+                builder.RegisterType<FacebookService>().As<IFacebookService>().InstancePerLifetimeScope();
+                builder.RegisterType<OneTimeSecuredOperationService>().As<IOneTimeSecuredOperationService>().InstancePerLifetimeScope();
+                builder.RegisterType<PasswordService>().As<IPasswordService>().InstancePerLifetimeScope();
+                builder.RegisterType<UserService>().As<IUserService>().InstancePerLifetimeScope();
+                builder.RegisterType<AvatarService>().As<IAvatarService>().InstancePerLifetimeScope();
                 builder.RegisterType<Handler>().As<IHandler>();
                 builder.RegisterInstance(_configuration.GetSettings<ExceptionlessSettings>()).SingleInstance();
                 builder.RegisterType<ExceptionlessExceptionHandler>().As<IExceptionHandler>().SingleInstance();
@@ -79,7 +79,7 @@ namespace Collectively.Services.Users.Framework
                 builder.RegisterModule(new FilesModule(_configuration));
 
                 var assembly = typeof(Startup).GetTypeInfo().Assembly;
-                builder.RegisterAssemblyTypes(assembly).AsClosedTypesOf(typeof(ICommandHandler<>));
+                builder.RegisterAssemblyTypes(assembly).AsClosedTypesOf(typeof(ICommandHandler<>)).InstancePerLifetimeScope();
 
                 SecurityContainer.Register(builder, _configuration);
                 RabbitMqContainer.Register(builder, _configuration.GetSettings<RawRabbitConfiguration>());
@@ -89,6 +89,7 @@ namespace Collectively.Services.Users.Framework
 
         protected override void RequestStartup(ILifetimeScope container, IPipelines pipelines, NancyContext context)
         {
+            pipelines.SetupTokenAuthentication(container.Resolve<IJwtTokenHandler>());
             pipelines.OnError.AddItemToEndOfPipeline((ctx, ex) =>
             {
                 _exceptionHandler.Handle(ex, ctx.ToExceptionData(),
@@ -116,7 +117,6 @@ namespace Collectively.Services.Users.Framework
                 ctx.Response.Headers.Add("Access-Control-Allow-Methods", "POST,PUT,GET,OPTIONS,DELETE");
                 ctx.Response.Headers.Add("Access-Control-Allow-Headers", "Authorization, Origin, X-Requested-With, Content-Type, Accept");
             };
-            pipelines.SetupTokenAuthentication(container);
             _exceptionHandler = container.Resolve<IExceptionHandler>();
             Logger.Information("Collectively.Services.Users API has started.");
         }
