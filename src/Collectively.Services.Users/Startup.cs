@@ -20,21 +20,9 @@ namespace Collectively.Services.Users
         public IConfiguration Configuration { get; set; }
         public IContainer ApplicationContainer { get; set; }
 
-        public Startup(IHostingEnvironment env)
+        public Startup(IConfiguration configuration)
         {
-            EnvironmentName = env.EnvironmentName.ToLowerInvariant();
-            var builder = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{EnvironmentName}.json", optional: true)
-                .AddEnvironmentVariables()
-                .SetBasePath(env.ContentRootPath);
-
-            if (env.IsProduction() || env.IsDevelopment())
-            {
-                builder.AddLockbox();
-            }
-
-            Configuration = builder.Build();
+            Configuration = configuration;
         }
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
