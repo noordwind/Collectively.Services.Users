@@ -52,11 +52,11 @@ namespace Collectively.Services.Users.Services
                 throw new ServiceException(OperationCodes.InvalidFile);
             }
             var user = await _userRepository.GetByUserIdAsync(userId);
-            var name = $"{userId:N}_avatar.jpg";
+            var name = $"avatar_{userId:N}.jpg";
             var resizedAvatar = _imageService.ProcessImage(avatar, 200);
             await RemoveAsync(user, userId);
-            await _fileHandler.UploadAsync(resizedAvatar, name, url => {
-                user.Value.SetAvatar(Avatar.Create(name, url));
+            await _fileHandler.UploadAsync(resizedAvatar, name, (baseUrl, fullUrl) => {
+                user.Value.SetAvatar(Avatar.Create(name, fullUrl));
             });
             await _userRepository.UpdateAsync(user.Value);
         }
