@@ -36,6 +36,9 @@ namespace Collectively.Services.Users.Repositories
         public async Task<Maybe<User>> GetByNameAsync(string name)
             => await _database.Users().GetByNameAsync(name);
 
+        public async Task<Maybe<string>> GetStateAsync(string id)
+            => await _database.Users().GetStateAsync(id);
+
         public async Task<Maybe<PagedResult<User>>> BrowseAsync(BrowseUsers query)
         {
             return await _database.Users()

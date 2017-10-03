@@ -40,6 +40,9 @@ namespace Collectively.Services.Users.Services
         public async Task<Maybe<User>> GetByEmailAsync(string email, string provider)
             => await _userRepository.GetByEmailAsync(email, provider);
 
+        public async Task<Maybe<string>> GetStateAsync(string userId)
+            => await _userRepository.GetStateAsync(userId);
+
         public async Task<Maybe<PagedResult<User>>> BrowseAsync(BrowseUsers query)
             => await _userRepository.BrowseAsync(query);
 

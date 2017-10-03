@@ -12,6 +12,7 @@ namespace Collectively.Services.Users.Services
         Task<Maybe<User>> GetByNameAsync(string name);
         Task<Maybe<User>> GetByExternalUserIdAsync(string externalUserId);
         Task<Maybe<User>> GetByEmailAsync(string email, string provider);
+        Task<Maybe<string>> GetStateAsync(string userId);
         Task<Maybe<PagedResult<User>>> BrowseAsync(BrowseUsers query);
 
         Task SignUpAsync(string userId, string email, string role,

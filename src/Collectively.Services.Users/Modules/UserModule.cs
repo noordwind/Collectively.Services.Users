@@ -20,6 +20,10 @@ namespace Collectively.Services.Users.Modules
                 .MapTo<UserDto>()
                 .HandleAsync());
 
+            Get("{id}/state", async args => await Fetch<GetUserState, string>
+                (async x => await userService.GetStateAsync(x.Id))
+                .HandleAsync());
+
             Get("{name}/account", async args => await Fetch<GetUserByName, User>
                 (async x => await userService.GetByNameAsync(x.Name))
                 .MapTo<UserDto>()
