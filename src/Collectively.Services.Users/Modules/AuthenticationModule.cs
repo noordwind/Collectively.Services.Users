@@ -42,6 +42,14 @@ namespace Collectively.Services.Users.Modules
             Post("sign-in", async args =>
             {
                 var command = BindRequest<SignIn>();
+                if (command.SessionId == Guid.Empty)
+                {
+                    command.SessionId = Guid.NewGuid();
+                }
+                if (command.Request == null)
+                {
+                    command.Request = Messages.Commands.Request.New<SignIn>(Guid.NewGuid());
+                }
                 await signInHandler.HandleAsync(command);
                 var session = await HandleSessionAsync(command.SessionId);
                 if (session.HasNoValue)
